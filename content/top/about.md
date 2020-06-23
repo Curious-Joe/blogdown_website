@@ -1,3 +1,13 @@
----
-{}
----
+<img src="/top/about_files/profile_pic.png" width="60" height='40'/>
+
+
+I'm a data scientist by profession. I work in the higher education industry. I come from a business management background with trainings in computer programming. I have worked in the market research and telecommunication industries before moving into data science.
+
+I love the always changing and improving nature of the technology industry especially in the area of data science and artificial intelligence. 
+
+I have a bachelor degree in Business Administration and MS in Quality Management and Assurance. Currently I'm working as a data scientist at Illinois State University, Illinois's first public university!
+
+While not working, I enjoy travelling, catching fish, watching movies, learning about new technology and watching documentaries.
+
+Feel free to connect Huabing via LinkedIn (https://www.linkedin.com/in/arafath-hossain/) or drop me an email (a.h.fahad90@gmail.com).
+

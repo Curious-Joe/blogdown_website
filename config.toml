@@ -1,4 +1,4 @@
-baseurl = "https://curiousjoe.netlify.app"
+baseurl = "https://curiousjoe.netlify.app/"
 title = "Curious Joe"
 theme = "hugo-theme-cleanwhite"
 languageCode = "en-us"
