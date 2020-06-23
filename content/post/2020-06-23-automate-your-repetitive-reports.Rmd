@@ -1,0 +1,222 @@
+---
+title: Automate Your Repetitive Reports!
+author: Arafath Hossain
+date: '2020-06-23'
+slug: automate-your-repetitive-reports
+categories:
+  - R
+tags:
+  - R Markdown
+  - Reporting
+  - Automation
+subtitle: ''
+description: ''
+image: ''
+---
+
+<center> 
+<img src="https://thumbs.gfycat.com/ImpressiveInstructiveIberianemeraldlizard-small.gif" width="600" height='400'/>
+</center>
+
+
+## What is R script automation and why?
+
+In most use cases R is used to analyze data, run statistical tests and build model. In doing so, data scientists constantly interact with R by writing codes and produce results from these interactions. Eventually, these results are stored, shared or presented as a report. But what if you have to reproduce the report every day or in other type of regular interval? Well, you can always pull up the R script and re-run the script. But wouldn't it be nicer if it would be done automatically without you being in the middle to initiate R and running the script? 
+
+In this article we'll know how to do exactly that!
+
+
+## Outline of what we'll do here
+
+Broady, this article has two sections:
+
+Firstly, in this article we'll create a report that uses a live data, meaning a data source that gets updated in regular interval. 
+
+Secondly, once the report is created, we'll automate the process of recreating the report daily to capture the updated data.
+
+
+### Part01: Creating the report: 
+
+Since the goal of this article is to automate the reproduction of an already built report, I have created a report already and posted here: http://rpubs.com/arafath/CRAN_Report. 
+
+Feel free to go to that report and recreate it in your work station. You can name the RMarkdown script same as mine (*'CRAN_Download_Report.Rmd'*) and save it in the same location where you want to have your *.bat* file and other outputs stored.
+
+What is done in that report looks like this:
+
+ - Calling API from The Comprehensive R Archive Network (CRAN) to download daily and weekly download count of packages,
+
+ > 1. Loading the data in R,
+ > 2. Calculating some basic statistics e.g. counts,
+ > 3. Visualizing the data
+ > 4. Generating a report (html format) with the basic stats and visuals.
+
+**Data used:**
+
+CRAN has an API calling which we can get the total number of times any package is downloaded during a specific time. We'll use the package called *cranlogs* to call the api. 
+
+
+### Part02: Automating the report reproduction
+
+Once we have a working R script that produces result that we want, the reproduction workflow looks like as follows:
+
+  > 1. Open up R console or some IDE 
+  > 2. Load the required R script 
+  > 3. Run the script to produce the result
+
+In this step we'll know how to tell R to do all these above steps **automatically**. In doing so R will also complete all the steps mentioned in Part01 too. 
+
+
+**How does the automation work:**
+
+To automate rerunning the R script we will use Windows Task Scheduler (WTS). Using task scheduler a user can ask windows to execute a batch file (.bat) at a regular interval. A batch file contains a series of commands that can be executed by the command line interpreter. 
+
+We will create a batch file that will run an R script automatically on daily basis. Inside that R script, it's instructed to call the .Rmd file which creates the report.
+
+<p>&nbsp;</p>
+
+#### Creating the R script to run the .Rmd file
+
+You can copy and paste the following codes in a R script and save it as *run.R* (my r script file name):
+
+    # Loading libraries [install the libraries before if not already installed]
+    library(knitr)
+    library(rmarkdown)
+    library(mailR)
+    
+    # Knits rmd file (.Rmd is saved in the working directory)
+    knit('CRAN_Download_Report.Rmd')
+    
+    # Creates the html output
+    render("CRAN_Download_Report.md")
+    
+    # sending email notification
+    send.mail(from = "youremail@gmail.com",
+          to = c("testemail@gmail.com"),
+          cc = 'youremail@gmail.com',
+          replyTo = c("Reply to someone else <youremail@gmail.com>"),
+          subject = "Report update status",
+          body = "Daily report on CRAN package download is updated!",
+          smtp = list(host.name = "smtp.gmail.com", port = 587, user.name = "youremail", passwd =    "password", tls = TRUE),
+          authenticate = TRUE,
+          send = TRUE)
+
+
+
+What this R script does is basically kniting the rmd file and generate a html report, save it in the working directory and send an email notification. 
+
+<p>&nbsp;</p>
+
+#### Running R from Window's command shell
+
+Before creating the batch file, we can run our R script from command terminal manually and check if it runs as expected. 
+
+**Setting up directory**
+
+Open the windows command shell. Search for 'cmd' or 'command prompt' in the windows and open it. It will open the black command shell.
+
+Now change the command directory to your desired location using 'cd' command followed by your desired file location (ref: image01). 
+
+![image01](/post/2020-06-23-automate-your-repetitive-reports_files/cmd_cd.png){width=800px}
+
+<p>&nbsp;</p>
+
+**Running R from command line**
+
+The structure of the command that we'll use is like this:
+<R.exe location> CMD BATCH <.R file location> <file saving location> 
+    
+Here,   
+- *R.exe location* is the file location where your R executible file is located. Executing this file should open up the R console. 
+
+- *.R file location* is the file location where you have saved your r script which will call the .Rmd file.
+
+- *file saving location* is the location where you want to save your execution output. 
+
+
+For similiplicity, I'm using the same file location as my R working directory and location to save any outputs.
+
+
+These are the exact locations in my case:
+
+    R.exe location = "C:\Program Files\R\R-3.6.1\bin\x64\R.exe" 
+    .R file location = "C:\Users\ahossa1\Personal\Learning\Automating R Script\run.R" 
+    file saving location = "C:\Users\ahossa1\Personal\Learning\Automating R Script\test.Rout"
+
+
+Here's the final line of code in my computer (ref: image02):
+
+    "C:\Program Files\R\R-3.6.1\bin\x64\R.exe" CMD BATCH "C:\Users\ahossa1\Personal\Learning\Projects\Automating R Script\run.R" "C:\Users\ahossa1\Personal\Learning\Projects\Automating R Script\CRAN.Rout"
+
+<center>
+![image02](/post/2020-06-23-automate-your-repetitive-reports_files/cmd_batch.png){width=800px}
+</center>
+
+Once you enter the command (image02) and execute it, it should run the R script, which will knit rmarkdown document and save the report. You should also receive an email with the notification!  
+
+<p>&nbsp;</p>
+
+#### Creating a batch file with the command line instructions
+
+We can save the command line instructions (image02) as a .bat file and save it. Then, any time we'll need to re-create the report we can execute the .bat file and it'll automatically call upon command line interface and execute the R script.
+
+To do that, open a text file (.txt). Paste the Windows shell commands in the .txt file and save it with an extension of *.bat*. 
+
+In my computer I have named it *'run.bat'*.
+
+<font color = maroon>**In cases where you don't need to re-create a report on regular interval, you can just use this .bat file. All you'll have to do is to double click (or single click) the .bat file and the report will be generated with the updated data.**</font>
+
+<p>&nbsp;</p>
+
+#### Automating command line activities using Windows Task Scheduler
+
+Now we'll ask our computer to automatically call the .bat file in regular interval.
+
+  1. In Windows search bar search for 'Task Schduler' and open the app. Below how it looks like in my computer
+
+<center>
+![image03](/post/2020-06-23-automate-your-repetitive-reports_files/taskScheduler.png){width=800px}
+</center>
+
+  2. Select *Create Basic Task* (red marked on image03). 
+  
+  3. Give the task a name 
+
+<center>
+![image04](/post/2020-06-23-automate-your-repetitive-reports_files/tsName.png){width=800px}
+</center>
+
+  4. Go next and select a trigger. I selected *Daily*. 
+
+<center>
+image05
+![image05](/post/2020-06-23-automate-your-repetitive-reports_files/tsInterval.png){width=800px}
+</center>
+  
+  5. Go next and select start time. 
+
+<center>
+![image06](/post/2020-06-23-automate-your-repetitive-reports_files/tsStart.png){width=800px}
+</center>
+
+  6. Go next and select *Start a program* as the action.
+
+<center>
+![image07](/post/2020-06-23-automate-your-repetitive-reports_files/tsEnd.png){width=800px}
+</center>
+  
+  7. Go next and load the program/script (.bat file).
+
+<center>
+![image08](/post/2020-06-23-automate-your-repetitive-reports_files/tsBat.png){width=800px}
+</center>
+  
+<p>&nbsp;</p>
+**Voilà!!** We are done! 
+
+Now every day at 3.30pm. the report below with CRAN package downloads will be created and an email notification will be sent!
+
+
+<center>
+![](/post/2020-06-23-automate-your-repetitive-reports_files/output.png){width=800px}
+</center>
+

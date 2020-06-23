@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="Curious Joe">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="//img/home-bg-jeep.jpg">
+    <meta property="twitter:image" content="//img/home-bg-jeep.jpg" />
+    
+
+    
+    <meta name="title" content="Automate Your Repetitive Reports!" />
+    <meta property="og:title" content="Automate Your Repetitive Reports!" />
+    <meta property="twitter:title" content="Automate Your Repetitive Reports!" />
+    
+
+    
+    <meta name="description" content="赵化冰，程序员, 开源爱好者，生活探险家 | 这里是 赵化冰 的博客，与你一起发现更大的世界。">
+    <meta property="og:description" content="赵化冰，程序员, 开源爱好者，生活探险家 | 这里是 赵化冰 的博客，与你一起发现更大的世界。" />
+    <meta property="twitter:description" content="赵化冰，程序员, 开源爱好者，生活探险家 | 这里是 赵化冰 的博客，与你一起发现更大的世界。" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="赵化冰, zhaohuabing, Zhaohuabing, , 赵化冰的网络日志, 赵化冰的博客, Zhaohuabing Blog, 博客, 个人网站, 互联网, Web, 云原生, PaaS, Istio, Kubernetes, 微服务, Microservice">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>Automate Your Repetitive Reports!-赵化冰的博客 | Zhaohuabing Blog</title>
+
+    <link rel="canonical" href="/post/automate-your-repetitive-reports/">
+
+    <link rel="stylesheet" href="/css/iDisqus.min.css"/>
+	
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+    
+    
+    <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    
+    
+
+    
+    
+    <script src="/js/jquery.min.js"></script>
+    
+    
+    <script src="/js/bootstrap.min.js"></script>
+    
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    
+
+</head>
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Curious Joe</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/life">life</a>
+                        </li>
+                        
+                        <li>
+                            <a href="/categories/note">note</a>
+                        </li>
+                        
+                        <li>
+                            <a href="/categories/r">r</a>
+                        </li>
+                        
+                        <li>
+                            <a href="/categories/tech">tech</a>
+                        </li>
+                        
+                        <li>
+                            <a href="/categories/tips">tips</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/top/books/">BOOKS</a></li>
+                    
+                        <li><a href="/top/about/">ABOUT</a></li>
+                    
+
+                    
+		    <li>
+                        <a href="/search">SEARCH <img src="/img/search.png" height="15" style="cursor: pointer;" alt="Search"></a>
+		    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/home-bg-jeep.jpg')
+    }
+</style>
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/r-markdown" title="R Markdown">
+                            R Markdown
+                        </a>
+                        
+                        <a class="tag" href="/tags/reporting" title="Reporting">
+                            Reporting
+                        </a>
+                        
+                        <a class="tag" href="/tags/automation" title="Automation">
+                            Automation
+                        </a>
+                        
+                    </div>
+                    <h1>Automate Your Repetitive Reports!</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by 
+                        
+                            Arafath Hossain
+                         
+                        on 
+                        Tuesday, June 23, 2020
+                        
+                        
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-11 col-lg-offset-1
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <header>
+                    <h2>TOC</h2>
+                </header>
+                
+                
+                
+
+
+<center>
+<img src="https://thumbs.gfycat.com/ImpressiveInstructiveIberianemeraldlizard-small.gif" width="600" height='400'/>
+</center>
+<div id="what-is-r-script-automation-and-why" class="section level2">
+<h2>What is R script automation and why?</h2>
+<p>In most use cases R is used to analyze data, run statistical tests and build model. In doing so, data scientists constantly interact with R by writing codes and produce results from these interactions. Eventually, these results are stored, shared or presented as a report. But what if you have to reproduce the report every day or in other type of regular interval? Well, you can always pull up the R script and re-run the script. But wouldn’t it be nicer if it would be done automatically without you being in the middle to initiate R and running the script?</p>
+<p>In this article we’ll know how to do exactly that!</p>
+</div>
+<div id="outline-of-what-well-do-here" class="section level2">
+<h2>Outline of what we’ll do here</h2>
+<p>Broady, this article has two sections:</p>
+<p>Firstly, in this article we’ll create a report that uses a live data, meaning a data source that gets updated in regular interval.</p>
+<p>Secondly, once the report is created, we’ll automate the process of recreating the report daily to capture the updated data.</p>
+<div id="part01-creating-the-report" class="section level3">
+<h3>Part01: Creating the report:</h3>
+<p>Since the goal of this article is to automate the reproduction of an already built report, I have created a report already and posted here: <a href="http://rpubs.com/arafath/CRAN_Report" class="uri">http://rpubs.com/arafath/CRAN_Report</a>.</p>
+<p>Feel free to go to that report and recreate it in your work station. You can name the RMarkdown script same as mine (<em>‘CRAN_Download_Report.Rmd’</em>) and save it in the same location where you want to have your <em>.bat</em> file and other outputs stored.</p>
+<p>What is done in that report looks like this:</p>
+<ul>
+<li>Calling API from The Comprehensive R Archive Network (CRAN) to download daily and weekly download count of packages,</li>
+</ul>
+<blockquote>
+<ol style="list-style-type: decimal">
+<li>Loading the data in R,</li>
+<li>Calculating some basic statistics e.g. counts,</li>
+<li>Visualizing the data</li>
+<li>Generating a report (html format) with the basic stats and visuals.</li>
+</ol>
+</blockquote>
+<p><strong>Data used:</strong></p>
+<p>CRAN has an API calling which we can get the total number of times any package is downloaded during a specific time. We’ll use the package called <em>cranlogs</em> to call the api.</p>
+</div>
+<div id="part02-automating-the-report-reproduction" class="section level3">
+<h3>Part02: Automating the report reproduction</h3>
+<p>Once we have a working R script that produces result that we want, the reproduction workflow looks like as follows:</p>
+<blockquote>
+<ol style="list-style-type: decimal">
+<li>Open up R console or some IDE</li>
+<li>Load the required R script</li>
+<li>Run the script to produce the result</li>
+</ol>
+</blockquote>
+<p>In this step we’ll know how to tell R to do all these above steps <strong>automatically</strong>. In doing so R will also complete all the steps mentioned in Part01 too.</p>
+<p><strong>How does the automation work:</strong></p>
+<p>To automate rerunning the R script we will use Windows Task Scheduler (WTS). Using task scheduler a user can ask windows to execute a batch file (.bat) at a regular interval. A batch file contains a series of commands that can be executed by the command line interpreter.</p>
+<p>We will create a batch file that will run an R script automatically on daily basis. Inside that R script, it’s instructed to call the .Rmd file which creates the report.</p>
+<p>
+ 
+</p>
+<div id="creating-the-r-script-to-run-the-.rmd-file" class="section level4">
+<h4>Creating the R script to run the .Rmd file</h4>
+<p>You can copy and paste the following codes in a R script and save it as <em>run.R</em> (my r script file name):</p>
+<pre><code># Loading libraries [install the libraries before if not already installed]
+library(knitr)
+library(rmarkdown)
+library(mailR)
+
+# Knits rmd file (.Rmd is saved in the working directory)
+knit(&#39;CRAN_Download_Report.Rmd&#39;)
+
+# Creates the html output
+render(&quot;CRAN_Download_Report.md&quot;)
+
+# sending email notification
+send.mail(from = &quot;youremail@gmail.com&quot;,
+      to = c(&quot;testemail@gmail.com&quot;),
+      cc = &#39;youremail@gmail.com&#39;,
+      replyTo = c(&quot;Reply to someone else &lt;youremail@gmail.com&gt;&quot;),
+      subject = &quot;Report update status&quot;,
+      body = &quot;Daily report on CRAN package download is updated!&quot;,
+      smtp = list(host.name = &quot;smtp.gmail.com&quot;, port = 587, user.name = &quot;youremail&quot;, passwd =    &quot;password&quot;, tls = TRUE),
+      authenticate = TRUE,
+      send = TRUE)</code></pre>
+<p>What this R script does is basically kniting the rmd file and generate a html report, save it in the working directory and send an email notification.</p>
+<p>
+ 
+</p>
+</div>
+<div id="running-r-from-windows-command-shell" class="section level4">
+<h4>Running R from Window’s command shell</h4>
+<p>Before creating the batch file, we can run our R script from command terminal manually and check if it runs as expected.</p>
+<p><strong>Setting up directory</strong></p>
+<p>Open the windows command shell. Search for ‘cmd’ or ‘command prompt’ in the windows and open it. It will open the black command shell.</p>
+<p>Now change the command directory to your desired location using ‘cd’ command followed by your desired file location (ref: image01).</p>
+<div class="figure">
+<img src="/post/2020-06-23-automate-your-repetitive-reports_files/cmd_cd.png" width="800" alt="" />
+<p class="caption">image01</p>
+</div>
+<p>
+ 
+</p>
+<p><strong>Running R from command line</strong></p>
+<p>The structure of the command that we’ll use is like this:
+&lt;R.exe location&gt; CMD BATCH &lt;.R file location&gt; <file saving location></p>
+<p>Here,<br />
+- <em>R.exe location</em> is the file location where your R executible file is located. Executing this file should open up the R console.</p>
+<ul>
+<li><p><em>.R file location</em> is the file location where you have saved your r script which will call the .Rmd file.</p></li>
+<li><p><em>file saving location</em> is the location where you want to save your execution output.</p></li>
+</ul>
+<p>For similiplicity, I’m using the same file location as my R working directory and location to save any outputs.</p>
+<p>These are the exact locations in my case:</p>
+<pre><code>R.exe location = &quot;C:\Program Files\R\R-3.6.1\bin\x64\R.exe&quot; 
+.R file location = &quot;C:\Users\ahossa1\Personal\Learning\Automating R Script\run.R&quot; 
+file saving location = &quot;C:\Users\ahossa1\Personal\Learning\Automating R Script\test.Rout&quot;</code></pre>
+<p>Here’s the final line of code in my computer (ref: image02):</p>
+<pre><code>&quot;C:\Program Files\R\R-3.6.1\bin\x64\R.exe&quot; CMD BATCH &quot;C:\Users\ahossa1\Personal\Learning\Projects\Automating R Script\run.R&quot; &quot;C:\Users\ahossa1\Personal\Learning\Projects\Automating R Script\CRAN.Rout&quot;</code></pre>
+<center>
+<img src="/post/2020-06-23-automate-your-repetitive-reports_files/cmd_batch.png" title="fig:" width="800" alt="image02" />
+</center>
+<p>Once you enter the command (image02) and execute it, it should run the R script, which will knit rmarkdown document and save the report. You should also receive an email with the notification!</p>
+<p>
+ 
+</p>
+</div>
+<div id="creating-a-batch-file-with-the-command-line-instructions" class="section level4">
+<h4>Creating a batch file with the command line instructions</h4>
+<p>We can save the command line instructions (image02) as a .bat file and save it. Then, any time we’ll need to re-create the report we can execute the .bat file and it’ll automatically call upon command line interface and execute the R script.</p>
+<p>To do that, open a text file (.txt). Paste the Windows shell commands in the .txt file and save it with an extension of <em>.bat</em>.</p>
+<p>In my computer I have named it <em>‘run.bat’</em>.</p>
+<p><font color = maroon><strong>In cases where you don’t need to re-create a report on regular interval, you can just use this .bat file. All you’ll have to do is to double click (or single click) the .bat file and the report will be generated with the updated data.</strong></font></p>
+<p>
+ 
+</p>
+</div>
+<div id="automating-command-line-activities-using-windows-task-scheduler" class="section level4">
+<h4>Automating command line activities using Windows Task Scheduler</h4>
+<p>Now we’ll ask our computer to automatically call the .bat file in regular interval.</p>
+<ol style="list-style-type: decimal">
+<li>In Windows search bar search for ‘Task Schduler’ and open the app. Below how it looks like in my computer</li>
+</ol>
+<center>
+<img src="/post/2020-06-23-automate-your-repetitive-reports_files/taskScheduler.png" title="fig:" width="800" alt="image03" />
+</center>
+<ol start="2" style="list-style-type: decimal">
+<li><p>Select <em>Create Basic Task</em> (red marked on image03).</p></li>
+<li><p>Give the task a name</p></li>
+</ol>
+<center>
+<img src="/post/2020-06-23-automate-your-repetitive-reports_files/tsName.png" title="fig:" width="800" alt="image04" />
+</center>
+<ol start="4" style="list-style-type: decimal">
+<li>Go next and select a trigger. I selected <em>Daily</em>.</li>
+</ol>
+<center>
+image05
+<img src="/post/2020-06-23-automate-your-repetitive-reports_files/tsInterval.png" width="800" alt="image05" />
+</center>
+<ol start="5" style="list-style-type: decimal">
+<li>Go next and select start time.</li>
+</ol>
+<center>
+<img src="/post/2020-06-23-automate-your-repetitive-reports_files/tsStart.png" title="fig:" width="800" alt="image06" />
+</center>
+<ol start="6" style="list-style-type: decimal">
+<li>Go next and select <em>Start a program</em> as the action.</li>
+</ol>
+<center>
+<img src="/post/2020-06-23-automate-your-repetitive-reports_files/tsEnd.png" title="fig:" width="800" alt="image07" />
+</center>
+<ol start="7" style="list-style-type: decimal">
+<li>Go next and load the program/script (.bat file).</li>
+</ol>
+<center>
+<img src="/post/2020-06-23-automate-your-repetitive-reports_files/tsBat.png" title="fig:" width="800" alt="image08" />
+</center>
+<p>
+ 
+</p>
+<p><strong>Voilà!!</strong> We are done!</p>
+<p>Now every day at 3.30pm. the report below with CRAN package downloads will be created and an email notification will be sent!</p>
+<center>
+<img src="/post/2020-06-23-automate-your-repetitive-reports_files/output.png" width="800" />
+</center>
+</div>
+</div>
+</div>
+
+
+                
+                
+<div class="entry-shang text-center">
+    
+	    <p>「真诚赞赏，手留余香」</p>
+	
+	<button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+	<div class="zs-modal-head">
+		<button type="button" class="close">×</button>
+		<span class="author"><a href="/"><img src="/img/favicon.png" />Curious Joe</a></span>
+        
+	        <p class="tip"><i></i><span>真诚赞赏，手留余香</span></p>
+		
+ 
+	</div>
+	<div class="zs-modal-body">
+		<div class="zs-modal-btns">
+			<button class="btn btn-blink" data-num="2">2元</button>
+			<button class="btn btn-blink" data-num="5">5元</button>
+			<button class="btn btn-blink" data-num="10">10元</button>
+			<button class="btn btn-blink" data-num="50">50元</button>
+			<button class="btn btn-blink" data-num="100">100元</button>
+			<button class="btn btn-blink" data-num="1">任意金额</button>
+		</div>
+		<div class="zs-modal-pay">
+			<button class="btn btn-bred" id="pay-text">2元</button>
+			<p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+			<img src="/img/reward/wechat-2.png"  id="pay-image"/>
+		</div>
+	</div>
+	<div class="zs-modal-footer">
+		<label><input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked"><span ><span class="zs-wechat"><img src="/img/reward/wechat-btn.png"/></span></label>
+		<label><input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay"><img src="/img/reward/alipay-btn.png"/></span></label>
+	</div>
+</div>
+<script type="text/javascript" src="/js/reward.js"></script>
+
+                
+
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/post/readme/" data-toggle="tooltip" data-placement="top" title="Clean White Theme for Hugo">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                </ul>
+
+                
+<div id="disqus-comment"></div>
+
+
+
+            </div>
+            
+            <div class="
+                col-lg-11 col-lg-offset-1
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/docker" title="docker">
+                            docker
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/istio" title="istio">
+                            istio
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/kubernetes" title="kubernetes">
+                            kubernetes
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/microservice" title="microservice">
+                            microservice
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/r-markdown" title="r-markdown">
+                            r-markdown
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/security" title="security">
+                            security
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/service-mesh" title="service-mesh">
+                            service-mesh
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/tips" title="tips">
+                            tips
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+                <section>
+                    <hr>
+                    <h5>FRIENDS</h5>
+                    <ul class="list-inline">
+                        
+                        <li><a target="_blank" href="https://zhaozhihan.com">Linda的博客</a></li>
+                        
+                    </ul>
+                </section>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                   
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="Curious Joe" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fa fa-circle fa-stack-2x"></i>
+                               <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+                   
+                    
+                    <li>
+                        <a href="mailto:youremail@gmail.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		    
+                    
+                    
+                    
+                    
+
+                    
+
+		    
+                    
+                    <li>
+                        <a target="_blank" href="/your%20wechat%20qr%20code%20image">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-wechat fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		    
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/yourgithub">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		    
+                    
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://www.linkedin.com/in/yourlinkedinid">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		    
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://stackoverflow.com/users/yourstackoverflowid">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-stack-overflow fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+            
+                    
+                    
+                    
+            
+            
+            
+                </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; Curious Joe 2020
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    async("https://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+</body>
+</html>
