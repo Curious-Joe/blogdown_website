@@ -1,5 +1,5 @@
 ---
-title: Twitter_sentiment_analysis_on_Bangladesh
+title: Twitter Sentiment Analysis on Bangladesh
 author: Arafath Hossain
 date: '2020-06-23'
 slug: twitter-sentiment-analysis-on-bangladesh
