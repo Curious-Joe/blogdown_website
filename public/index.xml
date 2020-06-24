@@ -2,39 +2,50 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Curious Joe</title>
-    <link>/</link>
+    <link>https://curiousjoe.netlify.app/</link>
     <description>Recent content on Curious Joe</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Tue, 23 Jun 2020 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://curiousjoe.netlify.app/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Automate Your Repetitive Reports!</title>
-      <link>/post/automate-your-repetitive-reports/</link>
+      <link>https://curiousjoe.netlify.app/post/automate-your-repetitive-reports/</link>
       <pubDate>Tue, 23 Jun 2020 00:00:00 +0000</pubDate>
       
-      <guid>/post/automate-your-repetitive-reports/</guid>
+      <guid>https://curiousjoe.netlify.app/post/automate-your-repetitive-reports/</guid>
       <description>What is R script automation and why?In most use cases R is used to analyze data, run statistical tests and build model. In doing so, data scientists constantly interact with R by writing codes and produce results from these interactions. Eventually, these results are stored, shared or presented as a report. But what if you have to reproduce the report every day or in other type of regular interval?</description>
     </item>
     
     <item>
+      <title>Twitter_sentiment_analysis_on_Bangladesh</title>
+      <link>https://curiousjoe.netlify.app/post/twitter-sentiment-analysis-on-bangladesh/</link>
+      <pubDate>Tue, 23 Jun 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://curiousjoe.netlify.app/post/twitter-sentiment-analysis-on-bangladesh/</guid>
+      <description>The objective of this analysis was to get an idea about what topic related to Bangladesh that people like to talk about and how they feel overall.
+ObjectiveBreaking down the objective for clear analysis gives us three specific goals:
+Around which topics twitter discussions usually circle around,What is the overall sentiment about Bangladesh that is conveyed by the tweets,As an extension of the previous two steps: A topic wise sentiment analysis to reveal what kind of sentiments(s) carried by the generally discussed topics.</description>
+    </item>
+    
+    <item>
       <title>Clean White Theme for Hugo</title>
-      <link>/post/readme/</link>
+      <link>https://curiousjoe.netlify.app/post/readme/</link>
       <pubDate>Wed, 09 Jan 2019 00:00:00 +0000</pubDate>
       
-      <guid>/post/readme/</guid>
+      <guid>https://curiousjoe.netlify.app/post/readme/</guid>
       <description>Clean White Theme for Hugo CleanWhite is a clean, elegant, but fully functional blog theme for Hugo. Here is a live demo site using this theme. It is based on huxblog Jekyll Theme and Clean Blog Jekyll Theme. These two upstream projects have done awesome jobs to create a blog theme, what I&amp;rsquo;m doing here is porting it to Hugo, of which I like the simplicity and the much faster</description>
     </item>
     
     <item>
       <title>Hello R Markdown</title>
-      <link>/post/2015-07-23-r-rmarkdown/</link>
+      <link>https://curiousjoe.netlify.app/post/2015-07-23-r-rmarkdown/</link>
       <pubDate>Thu, 23 Jul 2015 21:13:14 -0500</pubDate>
       
-      <guid>/post/2015-07-23-r-rmarkdown/</guid>
+      <guid>https://curiousjoe.netlify.app/post/2015-07-23-r-rmarkdown/</guid>
       <description>R MarkdownThis is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see http://rmarkdown.rstudio.com.
 You can embed an R code chunk like this:
 summary(cars)## speed dist ## Min. : 4.0 Min. : 2.00 ## 1st Qu.:12.0 1st Qu.: 26.00 ## Median :15.0 Median : 36.00 ## Mean :15.4 Mean : 42.98 ## 3rd Qu.</description>
@@ -42,19 +53,19 @@ summary(cars)## speed dist ## Min. : 4.0 Min. : 2.00 ## 1st Qu.:12.0 1st Qu.: 2
     
     <item>
       <title></title>
-      <link>/search/placeholder/</link>
+      <link>https://curiousjoe.netlify.app/search/placeholder/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/search/placeholder/</guid>
+      <guid>https://curiousjoe.netlify.app/search/placeholder/</guid>
       <description></description>
     </item>
     
     <item>
       <title></title>
-      <link>/top/about/</link>
+      <link>https://curiousjoe.netlify.app/top/about/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/top/about/</guid>
+      <guid>https://curiousjoe.netlify.app/top/about/</guid>
       <description>I am a data scientist by profession. I work in the higher education industry. I come from a business management background with trainings in computer programming. I have worked in the market research and telecommunication industries before moving into data science.
 I love the always changing and improving nature of the technology industry especially in the area of data science and artificial intelligence.
 I have a bachelor degree in Business Administration and MS in Quality Management and Assurance.</description>
@@ -62,10 +73,10 @@ I have a bachelor degree in Business Administration and MS in Quality Management
     
     <item>
       <title></title>
-      <link>/top/books/</link>
+      <link>https://curiousjoe.netlify.app/top/books/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/top/books/</guid>
+      <guid>https://curiousjoe.netlify.app/top/books/</guid>
       <description></description>
     </item>
     

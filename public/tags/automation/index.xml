@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Automation on Curious Joe</title>
-    <link>/tags/automation/</link>
+    <link>https://curiousjoe.netlify.app/tags/automation/</link>
     <description>Recent content in Automation on Curious Joe</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Tue, 23 Jun 2020 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/tags/automation/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://curiousjoe.netlify.app/tags/automation/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Automate Your Repetitive Reports!</title>
-      <link>/post/automate-your-repetitive-reports/</link>
+      <link>https://curiousjoe.netlify.app/post/automate-your-repetitive-reports/</link>
       <pubDate>Tue, 23 Jun 2020 00:00:00 +0000</pubDate>
       
-      <guid>/post/automate-your-repetitive-reports/</guid>
+      <guid>https://curiousjoe.netlify.app/post/automate-your-repetitive-reports/</guid>
       <description>What is R script automation and why?In most use cases R is used to analyze data, run statistical tests and build model. In doing so, data scientists constantly interact with R by writing codes and produce results from these interactions. Eventually, these results are stored, shared or presented as a report. But what if you have to reproduce the report every day or in other type of regular interval?</description>
     </item>
     
