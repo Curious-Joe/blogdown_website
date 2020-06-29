@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Project Documentation on Curious Joe</title>
+    <link>/tags/project-documentation/</link>
+    <description>Recent content in Project Documentation on Curious Joe</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 20 Sep 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/project-documentation/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Is that Red Wine Good Enough?</title>
+      <link>/post/is-the-red-wine-good-enough/</link>
+      <pubDate>Fri, 20 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/is-the-red-wine-good-enough/</guid>
+      <description>Exploring DataExploring FeaturesTransforming Target FeatureExploring Predictors VisuallyChecking CorrelationFeature EngineeringFitting ModelSplitting DataFitting Model on Training DataChecking Model PerformanceSummary InisghtLet’s assume that we have been hired by a winery to build a predictive model to check the qulity of their red wine. The traiditional way of wine testing is done by a human expert. Thus the process is prone to human error.</description>
+    </item>
+    
+  </channel>
+</rss>

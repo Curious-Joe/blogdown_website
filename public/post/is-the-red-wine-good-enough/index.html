@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="Curious Joe">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="//img/seagull.jpg">
+    <meta property="twitter:image" content="//img/seagull.jpg" />
+    
+
+    
+    <meta name="title" content="Is that Red Wine Good Enough?" />
+    <meta property="og:title" content="Is that Red Wine Good Enough?" />
+    <meta property="twitter:title" content="Is that Red Wine Good Enough?" />
+    
+
+    
+    <meta name="description" content="This is a tutorial prepared for the marketing analytics students of a business undergraduate program. The goal was to introduce them to the basic workflow of predictive modeling and demostrate how they can document their projects.">
+    <meta property="og:description" content="This is a tutorial prepared for the marketing analytics students of a business undergraduate program. The goal was to introduce them to the basic workflow of predictive modeling and demostrate how they can document their projects." />
+    <meta property="twitter:description" content="This is a tutorial prepared for the marketing analytics students of a business undergraduate program. The goal was to introduce them to the basic workflow of predictive modeling and demostrate how they can document their projects." />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="R, Python, Docker, Shiny, Statistics, Analysis, Data Cleaning, Programming">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>Is that Red Wine Good Enough?-Arafath Hossain | Curious Joe</title>
+
+    <link rel="canonical" href="/post/is-the-red-wine-good-enough/">
+
+    <link rel="stylesheet" href="/css/iDisqus.min.css"/>
+	
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+    
+    
+    <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    
+    
+
+    
+    
+    <script src="/js/jquery.min.js"></script>
+    
+    
+    <script src="/js/bootstrap.min.js"></script>
+    
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    
+
+</head>
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Curious Joe</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/r">r</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/top/about/">ABOUT</a></li>
+                    
+
+                    
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('https://curiousjoe.netlify.app/img/wine_quality_cover.jpg')
+    }
+</style>
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/predictive-modeling" title="Predictive Modeling">
+                            Predictive Modeling
+                        </a>
+                        
+                        <a class="tag" href="/tags/tutorial" title="Tutorial">
+                            Tutorial
+                        </a>
+                        
+                        <a class="tag" href="/tags/project-documentation" title="Project Documentation">
+                            Project Documentation
+                        </a>
+                        
+                    </div>
+                    <h1>Is that Red Wine Good Enough?</h1>
+                    <h2 class="subheading">Predicting sample wine quality using binary classification model.</h2>
+                    <span class="meta">
+                        Posted by 
+                        
+                            Arafath Hossain
+                         
+                        on 
+                        Friday, September 20, 2019
+                        
+                        
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-11 col-lg-offset-1
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <header>
+                    <h2>TOC</h2>
+                </header>
+                
+                
+                
+
+<div id="TOC">
+<ul>
+<li><a href="#exploring-data">Exploring Data</a></li>
+<li><a href="#exploring-features">Exploring Features</a><ul>
+<li><a href="#transforming-target-feature">Transforming Target Feature</a></li>
+<li><a href="#exploring-predictors-visually">Exploring Predictors Visually</a></li>
+<li><a href="#checking-correlation">Checking Correlation</a></li>
+</ul></li>
+<li><a href="#feature-engineering">Feature Engineering</a></li>
+<li><a href="#fitting-model">Fitting Model</a><ul>
+<li><a href="#splitting-data">Splitting Data</a></li>
+<li><a href="#fitting-model-on-training-data">Fitting Model on Training Data</a></li>
+</ul></li>
+<li><a href="#checking-model-performance">Checking Model Performance</a></li>
+<li><a href="#summary-inisght">Summary Inisght</a></li>
+</ul>
+</div>
+
+<p>Let’s assume that we have been hired by a winery to build a predictive model to check the qulity of their red wine. The traiditional way of wine testing is done by a human expert. Thus the process is prone to human error. The goal is to establish a process of producing an objective method of wine testing and combining that with the existing process to reduce human error.</p>
+<p>For the purpose of building the predictive model, we’ll use a dataset provided by UCI machine learning repository. We’ll try to predict wine quality based on features associated with wine.</p>
+<p><strong>Goal:</strong></p>
+<ul>
+<li>Explore the data</li>
+<li>Predict the wine quality (binary classification)</li>
+<li>Explore model result</li>
+</ul>
+<div id="exploring-data" class="section level1">
+<h1>Exploring Data</h1>
+<p><strong>Loading data, libraries and primary glimpsing over data</strong></p>
+<pre class="r"><code># libraries
+library(dplyr)
+library(ggplot2)
+library(caTools)
+library(caret)
+library(GGally)</code></pre>
+<pre class="r"><code>dataFrame = read.csv(&quot;https://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-red.csv&quot;, sep = &#39;;&#39;)</code></pre>
+<pre class="r"><code>summary(dataFrame)</code></pre>
+<pre><code>##  fixed.acidity   volatile.acidity  citric.acid    residual.sugar  
+##  Min.   : 4.60   Min.   :0.1200   Min.   :0.000   Min.   : 0.900  
+##  1st Qu.: 7.10   1st Qu.:0.3900   1st Qu.:0.090   1st Qu.: 1.900  
+##  Median : 7.90   Median :0.5200   Median :0.260   Median : 2.200  
+##  Mean   : 8.32   Mean   :0.5278   Mean   :0.271   Mean   : 2.539  
+##  3rd Qu.: 9.20   3rd Qu.:0.6400   3rd Qu.:0.420   3rd Qu.: 2.600  
+##  Max.   :15.90   Max.   :1.5800   Max.   :1.000   Max.   :15.500  
+##    chlorides       free.sulfur.dioxide total.sulfur.dioxide    density      
+##  Min.   :0.01200   Min.   : 1.00       Min.   :  6.00       Min.   :0.9901  
+##  1st Qu.:0.07000   1st Qu.: 7.00       1st Qu.: 22.00       1st Qu.:0.9956  
+##  Median :0.07900   Median :14.00       Median : 38.00       Median :0.9968  
+##  Mean   :0.08747   Mean   :15.87       Mean   : 46.47       Mean   :0.9967  
+##  3rd Qu.:0.09000   3rd Qu.:21.00       3rd Qu.: 62.00       3rd Qu.:0.9978  
+##  Max.   :0.61100   Max.   :72.00       Max.   :289.00       Max.   :1.0037  
+##        pH          sulphates         alcohol         quality     
+##  Min.   :2.740   Min.   :0.3300   Min.   : 8.40   Min.   :3.000  
+##  1st Qu.:3.210   1st Qu.:0.5500   1st Qu.: 9.50   1st Qu.:5.000  
+##  Median :3.310   Median :0.6200   Median :10.20   Median :6.000  
+##  Mean   :3.311   Mean   :0.6581   Mean   :10.42   Mean   :5.636  
+##  3rd Qu.:3.400   3rd Qu.:0.7300   3rd Qu.:11.10   3rd Qu.:6.000  
+##  Max.   :4.010   Max.   :2.0000   Max.   :14.90   Max.   :8.000</code></pre>
+<p>From the features we see ‘quality’ is our target feature. And we have total 11 features to be used as the predictors.</p>
+</div>
+<div id="exploring-features" class="section level1">
+<h1>Exploring Features</h1>
+<div id="transforming-target-feature" class="section level2">
+<h2>Transforming Target Feature</h2>
+<p>Since we will cover talk about the classification model, we’ll convert our target feature from continuous to binary class. So that we would be able to fit one of the very widely used yet very easy classification models.</p>
+<p><em>Distribution of original target feature labels</em></p>
+<pre class="r"><code># checking ratio of different labels in target feature
+prop.table(table(dataFrame$quality))</code></pre>
+<pre><code>## 
+##           3           4           5           6           7           8 
+## 0.006253909 0.033145716 0.425891182 0.398999375 0.124452783 0.011257036</code></pre>
+<pre class="r"><code>dataFrame = dataFrame %&gt;%
+  mutate(quality_bin = as.factor(ifelse(quality &lt;= 5, 0,1))) %&gt;%
+  select(-quality)
+
+
+p = round(prop.table(table(dataFrame$quality_bin))*100,2)</code></pre>
+<p>After tranformation we have 53.47% cases classified records as good wines vs 46.53% as bad wines.</p>
+<p>We have a nice distribution of our target classes here! Which is very nice. Otherwise, we would’ve had to deal with <em>Data Balancing</em>. Though we won’t cover that area in this tutorial, it’s a great discussion area to delve into. So some extra points for those who’ll learn about it!</p>
+<p>In short, we would like to <strong>have a balanced distribution of observations from different labels in our target feature</strong>. Otherwise, some ML algorithms tend to overfit.</p>
+</div>
+<div id="exploring-predictors-visually" class="section level2">
+<h2>Exploring Predictors Visually</h2>
+<p><strong>Exploring acidity</strong></p>
+<pre class="r"><code>dataFrame %&gt;%
+  ggplot(aes(x = as.factor(quality_bin), y = fixed.acidity, color = quality_bin)) +
+  geom_boxplot(outlier.color = &quot;darkred&quot;, notch = FALSE) +
+  ylab(&quot;Acidity&quot;) + xlab(&quot;Quality (1 = good, 2 = bad)&quot;) + 
+  theme(legend.position = &quot;none&quot;, axis.title.x = element_blank()) + 
+  theme_minimal()</code></pre>
+<p><img src="/post/2019-09-20-is-the-red-wine-good-enough_files/figure-html/viz_acidity-1.png" width="672" /></p>
+<p>We have multiple features that are continuous and can plot them similarly. Which means we’ll have to re write the code that we have just wrote in code chunk: viz_acidity again and again. In coding, we don’t want to do that. So we’ll create a function and wrap that around our code so that it can be reused in future!</p>
+<p>If it sounds too much, just stick with it. Once you see the code, it’ll make a lot more sense.</p>
+<pre class="r"><code># boxplot_viz
+# plots continuous feature in boxplot categorized on the quality_bin feature labels from dataFrame 
+# @param feat Feature name (string) to be plotted
+boxplot_viz = function(feat){
+
+  dataFrame %&gt;%
+    ggplot(aes_string(x = as.factor(&#39;quality_bin&#39;), y = feat, color = &#39;quality_bin&#39;)) +
+    geom_boxplot(outlier.color = &quot;darkred&quot;, notch = FALSE) +
+    labs(title = paste0(&quot;Boxplot of feature: &quot;, feat)) + ylab(feat) + xlab(&quot;Quality (1 = good, 2 = bad)&quot;) + 
+    theme(legend.position = &quot;none&quot;, axis.title.x = element_blank()) + 
+    theme_minimal()
+}</code></pre>
+<pre class="r"><code>boxplot_viz(&#39;volatile.acidity&#39;)</code></pre>
+<p><img src="/post/2019-09-20-is-the-red-wine-good-enough_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<pre class="r"><code>for (i in names(dataFrame %&gt;% select(-&#39;quality_bin&#39;))){
+  print(boxplot_viz(i))
+}</code></pre>
+<p><img src="/post/2019-09-20-is-the-red-wine-good-enough_files/figure-html/unnamed-chunk-5-1.png" width="672" /><img src="/post/2019-09-20-is-the-red-wine-good-enough_files/figure-html/unnamed-chunk-5-2.png" width="672" /><img src="/post/2019-09-20-is-the-red-wine-good-enough_files/figure-html/unnamed-chunk-5-3.png" width="672" /><img src="/post/2019-09-20-is-the-red-wine-good-enough_files/figure-html/unnamed-chunk-5-4.png" width="672" /><img src="/post/2019-09-20-is-the-red-wine-good-enough_files/figure-html/unnamed-chunk-5-5.png" width="672" /><img src="/post/2019-09-20-is-the-red-wine-good-enough_files/figure-html/unnamed-chunk-5-6.png" width="672" /><img src="/post/2019-09-20-is-the-red-wine-good-enough_files/figure-html/unnamed-chunk-5-7.png" width="672" /><img src="/post/2019-09-20-is-the-red-wine-good-enough_files/figure-html/unnamed-chunk-5-8.png" width="672" /><img src="/post/2019-09-20-is-the-red-wine-good-enough_files/figure-html/unnamed-chunk-5-9.png" width="672" /><img src="/post/2019-09-20-is-the-red-wine-good-enough_files/figure-html/unnamed-chunk-5-10.png" width="672" /><img src="/post/2019-09-20-is-the-red-wine-good-enough_files/figure-html/unnamed-chunk-5-11.png" width="672" /></p>
+</div>
+<div id="checking-correlation" class="section level2">
+<h2>Checking Correlation</h2>
+<p>We can quickly check correlations among our predictors.</p>
+<pre class="r"><code>dataFrame %&gt;% 
+  # correlation plot 
+  ggcorr(method = c(&#39;complete.obs&#39;,&#39;pearson&#39;), 
+         nbreaks = 6, digits = 3, palette = &quot;RdGy&quot;, label = TRUE, label_size = 3, 
+         label_color = &quot;white&quot;, label_round = 2)</code></pre>
+<p><img src="/post/2019-09-20-is-the-red-wine-good-enough_files/figure-html/correlation-1.png" width="672" /></p>
+<p>Highly correlated features don’t add new information to the model and blurrs the effect of individual feature on the predictor and thus makes it difficult to explain effect of individual features on target feature. This problem is called <strong>Multicollinearity</strong>. As a general rule, we don’t want to keep features with very high correlation.</p>
+<ul>
+<li>What should be the threshold of correlation?</li>
+<li>How do we decide which variable to drop?</li>
+<li>Do correlated features hurt predictive accuracy?</li>
+</ul>
+<p>All these are great questions and worth having a good understanding about. So again extra points for those who’ll learn about !</p>
+<p>Before making any decision based on correlation, check distribution of the feature. Unless any two features have a linear relation, correlation doesn’t mean much.</p>
+</div>
+</div>
+<div id="feature-engineering" class="section level1">
+<h1>Feature Engineering</h1>
+<p>Based on the insight gained from the data exploration, some features may need to be transformed or new features can be created. Some common feature engineering tasks are:</p>
+<ul>
+<li>Normalization and standardization of features</li>
+<li>Binning continuous features</li>
+<li>Creating composit features</li>
+<li>Creating dummy variables</li>
+</ul>
+<p>This tutorial won’t cover <em>feature engineering</em> but it’s a great area to explore. A great data exploration followed by necessary feature engineering are the absolute necessary prerequisites before fitting any predictive model!</p>
+</div>
+<div id="fitting-model" class="section level1">
+<h1>Fitting Model</h1>
+<div id="splitting-data" class="section level2">
+<h2>Splitting Data</h2>
+<p>In practical world we train our predictive models on historical data which is called <strong>Training Data</strong>. Then we apply that model on new unseen data, called <strong>Test Data</strong>, and measure the performance. thus we can be sure that our model is stable or not over fitted on training data. But since we won’t have access to new wine data, we’ll split our dataset into training and testing data on a 80:20 ratio.</p>
+<pre class="r"><code>set.seed(123)
+split = sample.split(dataFrame$quality_bin, SplitRatio = 0.80)
+training_set = subset(dataFrame, split == TRUE)
+test_set = subset(dataFrame, split == FALSE)</code></pre>
+<p>Let’s check the data balance in training and test data.</p>
+<pre class="r"><code>prop.table(table(training_set$quality_bin))</code></pre>
+<pre><code>## 
+##         0         1 
+## 0.4652072 0.5347928</code></pre>
+<pre class="r"><code>prop.table(table(test_set$quality_bin))</code></pre>
+<pre><code>## 
+##        0        1 
+## 0.465625 0.534375</code></pre>
+</div>
+<div id="fitting-model-on-training-data" class="section level2">
+<h2>Fitting Model on Training Data</h2>
+<p>We’ll fit <strong>Logistic Regression</strong> classification model on our dataset.</p>
+<pre class="r"><code>model_log = glm(quality_bin ~ ., 
+                data = training_set, family = &#39;binomial&#39;)
+summary(model_log)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = quality_bin ~ ., family = &quot;binomial&quot;, data = training_set)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -3.3688  -0.8309   0.2989   0.8109   2.4184  
+## 
+## Coefficients:
+##                        Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)           17.369521  90.765368   0.191  0.84824    
+## fixed.acidity          0.069510   0.112062   0.620  0.53507    
+## volatile.acidity      -3.602258   0.558889  -6.445 1.15e-10 ***
+## citric.acid           -1.543276   0.638161  -2.418  0.01559 *  
+## residual.sugar         0.012106   0.060364   0.201  0.84106    
+## chlorides             -4.291590   1.758614  -2.440  0.01467 *  
+## free.sulfur.dioxide    0.027452   0.009293   2.954  0.00314 ** 
+## total.sulfur.dioxide  -0.016723   0.003229  -5.180 2.22e-07 ***
+## density              -23.425390  92.700349  -0.253  0.80050    
+## pH                    -0.977906   0.828710  -1.180  0.23799    
+## sulphates              3.070254   0.532655   5.764 8.21e-09 ***
+## alcohol                0.946654   0.120027   7.887 3.10e-15 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 1766.9  on 1278  degrees of freedom
+## Residual deviance: 1301.4  on 1267  degrees of freedom
+## AIC: 1325.4
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<p>Let’s plot the variables with the lowest p values/highest absolute z value.</p>
+<pre class="r"><code>p = varImp(model_log) %&gt;% data.frame() 
+p = p %&gt;% mutate(Features = rownames(p)) %&gt;% arrange(desc(Overall)) %&gt;% mutate(Features = tolower(Features))
+
+p %&gt;% ggplot(aes(x = reorder(Features, Overall), y = Overall)) + geom_col(width = .50, fill = &#39;darkred&#39;) + coord_flip() + 
+  labs(title = &quot;Importance of Features&quot;, subtitle = &quot;Based on the value of individual z score&quot;) +
+  xlab(&quot;Features&quot;) + ylab(&quot;Abs. Z Score&quot;) + 
+  theme_minimal()</code></pre>
+<p><img src="/post/2019-09-20-is-the-red-wine-good-enough_files/figure-html/featImp-1.png" width="672" /></p>
+</div>
+</div>
+<div id="checking-model-performance" class="section level1">
+<h1>Checking Model Performance</h1>
+<p>We’ll check how our model performs by running it on our previously unseen test data. We’ll compare the predicted outcome with the actual outcome and calculate some typically used binary classification model performance measuring metrics.</p>
+<pre class="r"><code># predict target feature in test data
+y_pred = as.data.frame(predict(model_log, type = &quot;response&quot;, newdata = test_set)) %&gt;% 
+  structure( names = c(&quot;pred_prob&quot;)) %&gt;%
+  mutate(pred_cat = as.factor(ifelse(pred_prob &gt; 0.5, &quot;1&quot;, &quot;0&quot;))) %&gt;% 
+  mutate(actual_cat = test_set$quality_bin)</code></pre>
+<pre class="r"><code>p = confusionMatrix(y_pred$pred_cat, y_pred$actual_cat, positive = &quot;1&quot;)
+p</code></pre>
+<pre><code>## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction   0   1
+##          0 108  46
+##          1  41 125
+##                                           
+##                Accuracy : 0.7281          
+##                  95% CI : (0.6758, 0.7761)
+##     No Information Rate : 0.5344          
+##     P-Value [Acc &gt; NIR] : 9.137e-13       
+##                                           
+##                   Kappa : 0.4548          
+##                                           
+##  Mcnemar&#39;s Test P-Value : 0.668           
+##                                           
+##             Sensitivity : 0.7310          
+##             Specificity : 0.7248          
+##          Pos Pred Value : 0.7530          
+##          Neg Pred Value : 0.7013          
+##              Prevalence : 0.5344          
+##          Detection Rate : 0.3906          
+##    Detection Prevalence : 0.5188          
+##       Balanced Accuracy : 0.7279          
+##                                           
+##        &#39;Positive&#39; Class : 1               
+## </code></pre>
+<p><font color = maroon><strong>Model Perfomance Summary:</strong></p>
+<ul>
+<li><strong>Accuracy</strong>: 72.81% of the wine samples have been classified correctly.</li>
+<li><strong>Sensitivity/Recall</strong>: 73.1% of the actual good wine samples have been classified correctly.</li>
+<li><strong>Pos Pred Value/Precision</strong>: 75.3% of the total good wine predictions are actually good wines. </font></li>
+</ul>
+</div>
+<div id="summary-inisght" class="section level1">
+<h1>Summary Inisght</h1>
+<p>So let’s summarize about what we have learned about wine testing from our exercise:</p>
+<ul>
+<li>Alchohol content, Volatile Acidity, Sulphate and total Sulpher Dioxide are the top four most statistically significant features that affect wine quality.</li>
+<li>Given the information about the 11 features that we have analyzed, we can accurately predict wine quality in about 73% of the cases,</li>
+<li>Which is about 26% more accurate than the accuracy achieved by using traditional expert based method.</li>
+</ul>
+<center>
+<a href="https://www.theguardian.com/lifeandstyle/2013/jun/23/wine-tasting-junk-science-analysis">“People could tell the difference between wines under £5 and those above £10 only 53% of the time for whites and only 47% of the time for reds.”</a>
+</center>
+<p><br/></p>
+<center>
+<div>
+<p><img src="https://media1.tenor.com/images/f050405657f9ac48d3b976051436e885/tenor.gif?itemid=10577278" width="400"/></p>
+</div>
+</center>
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;">
+
+</div>
+</div>
+
+
+                
+
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/post/twitter-topic-modeling-sentiment-analysis/" data-toggle="tooltip" data-placement="top" title="Topic Modeling and Sentiment Analysis on Tweets">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/post/automate-your-repetitive-reports/" data-toggle="tooltip" data-placement="top" title="Automate Your Repetitive Reports!">Next
+                            Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+                
+<div id="disqus-comment"></div>
+
+
+
+            </div>
+            
+            <div class="
+                col-lg-11 col-lg-offset-1
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/tutorial" title="tutorial">
+                            tutorial
+                        </a>
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                   
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="Curious Joe" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fa fa-circle fa-stack-2x"></i>
+                               <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+                   
+                    
+                    <li>
+                        <a href="mailto:a.h.fahad90@gmail.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		    
+                    
+                    
+                    
+                    
+
+                    
+		    
+		    
+		    
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/Curious-Joe">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		    
+                    
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://www.linkedin.com/in/arafath-hossain/">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		    
+		    
+    		           
+                   <li>
+                       <a target="_blank" href="https://www.youtube.com/channel/UCyhSHzYsOlY_Q3XpMeyPqjA?view_as=subscriber">
+                           <span class="fa-stack fa-lg">
+                               <i class="fa fa-circle fa-stack-2x"></i>
+                               <i class="fa fa-youtube fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+               
+
+		    
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+                </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; Curious Joe 2020
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    async("https://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+</body>
+</html>

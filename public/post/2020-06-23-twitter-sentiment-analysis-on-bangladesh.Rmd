@@ -9,6 +9,7 @@ tags:
   - Topic Modeling
   - Sentiment Analysis
   - Text Mining
+  - NLP
 subtitle: 'What people talk about and how they feel about what they say.'
 description: 'Twitter is a popular source for minning social media posts. In this article I harvested tweets that had mention of "Bangladesh", my home country and ran two specific text analysis: topic modeling and sentiment analysis. '
 image: 'https://curiousjoe.netlify.app/img/twitter_analysis_cover.jpg'

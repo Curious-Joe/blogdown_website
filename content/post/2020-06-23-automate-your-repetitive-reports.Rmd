@@ -9,6 +9,7 @@ tags:
   - R Markdown
   - Reporting
   - Automation
+  - Tutorial
 subtitle: 'Automating a task using R and windows task manager.'
 description: 'R can be used as a great tool to automate your repeat works such as: refreshing a report everyday based on new data or running some ETL process and storing the data in Data Base. In this article I will show how to automate a report creation and communication by using R and Windows scheduler.'
 image: 'https://thumbs.gfycat.com/ImpressiveInstructiveIberianemeraldlizard-small.gif'

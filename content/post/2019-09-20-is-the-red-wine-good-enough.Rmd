@@ -1,0 +1,239 @@
+---
+title: Is that Red Wine Good Enough?
+author: Arafath Hossain
+date: '2019-09-20'
+slug: is-the-red-wine-good-enough
+categories:
+  - R
+tags:
+  - Predictive Modeling
+  - Tutorial
+  - Project Documentation
+subtitle: 'Predicting sample wine quality using binary classification model.'
+description: 'This is a tutorial prepared for the marketing analytics students of a business undergraduate program. The goal was to introduce them to the basic workflow of predictive modeling and demostrate how they can document their projects.'
+image: 'https://curiousjoe.netlify.app/img/wine_quality_cover.jpg'
+output:
+  blogdown::html_page:
+      toc: TRUE
+---
+
+Let's assume that we have been hired by a winery to build a predictive model to check the qulity of their red wine. The traiditional way of wine testing is done by a human expert. Thus the process is prone to human error. The goal is to establish a process of producing an objective method of wine testing and combining that with the existing process to reduce human error. 
+
+For the purpose of building the predictive model, we'll use a dataset provided by UCI machine learning repository. We'll try to predict wine quality based on features associated with wine. 
+
+**Goal:**
+
+ - Explore the data
+ - Predict the wine quality (binary classification)
+ - Explore model result
+
+
+# Exploring Data
+
+**Loading data, libraries and primary glimpsing over data**
+
+```{r load_data_libraries, warning=FALSE, message=FALSE}
+# libraries
+library(dplyr)
+library(ggplot2)
+library(caTools)
+library(caret)
+library(GGally)
+```
+
+```{r data}
+dataFrame = read.csv("https://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-red.csv", sep = ';')
+```
+
+```{r}
+summary(dataFrame)
+```
+
+From the features we see 'quality' is our target feature. And we have total 11 features to be used as the predictors.
+
+# Exploring Features
+
+## Transforming Target Feature
+
+Since we will cover talk about the classification model, we'll convert our target feature from continuous to binary class. So that we would be able to fit one of the very widely used yet very easy classification models. 
+
+*Distribution of original target feature labels*
+```{r}
+# checking ratio of different labels in target feature
+prop.table(table(dataFrame$quality))
+```
+
+```{r}
+dataFrame = dataFrame %>%
+  mutate(quality_bin = as.factor(ifelse(quality <= 5, 0,1))) %>%
+  select(-quality)
+
+
+p = round(prop.table(table(dataFrame$quality_bin))*100,2)
+```
+
+After tranformation we have `r p[2]`% cases classified records as good wines vs `r p[1]`% as bad wines. 
+
+We have a nice distribution of our target classes here! Which is very nice. Otherwise, we would've had to deal with *Data Balancing*. Though we won't cover that area in this tutorial, it's a great discussion area to delve into. So some extra points for those who'll learn about it! 
+
+In short, we would like to **have a balanced distribution of observations from different labels in our target feature**. Otherwise, some ML algorithms tend to overfit.
+
+## Exploring Predictors Visually
+
+**Exploring acidity**
+
+```{r viz_acidity}
+dataFrame %>%
+  ggplot(aes(x = as.factor(quality_bin), y = fixed.acidity, color = quality_bin)) +
+  geom_boxplot(outlier.color = "darkred", notch = FALSE) +
+  ylab("Acidity") + xlab("Quality (1 = good, 2 = bad)") + 
+  theme(legend.position = "none", axis.title.x = element_blank()) + 
+  theme_minimal()
+```
+
+We have multiple features that are continuous and can plot them similarly. Which means we'll have to re write the code that we have just wrote in code chunk: viz_acidity again and again. In coding, we don't want to do that. So we'll create a function and wrap that around our code so that it can be reused in future! 
+
+If it sounds too much, just stick with it. Once you see the code, it'll make a lot more sense.
+
+```{r function_viz_cont_feat}
+# boxplot_viz
+# plots continuous feature in boxplot categorized on the quality_bin feature labels from dataFrame 
+# @param feat Feature name (string) to be plotted
+boxplot_viz = function(feat){
+
+  dataFrame %>%
+    ggplot(aes_string(x = as.factor('quality_bin'), y = feat, color = 'quality_bin')) +
+    geom_boxplot(outlier.color = "darkred", notch = FALSE) +
+    labs(title = paste0("Boxplot of feature: ", feat)) + ylab(feat) + xlab("Quality (1 = good, 2 = bad)") + 
+    theme(legend.position = "none", axis.title.x = element_blank()) + 
+    theme_minimal()
+}
+```
+
+```{r}
+boxplot_viz('volatile.acidity')
+```
+
+```{r}
+for (i in names(dataFrame %>% select(-'quality_bin'))){
+  print(boxplot_viz(i))
+}
+```
+
+## Checking Correlation
+We can quickly check correlations among our predictors. 
+
+```{r correlation, warning=FALSE}
+dataFrame %>% 
+  # correlation plot 
+  ggcorr(method = c('complete.obs','pearson'), 
+         nbreaks = 6, digits = 3, palette = "RdGy", label = TRUE, label_size = 3, 
+         label_color = "white", label_round = 2)
+```
+
+Highly correlated features don't add new information to the model and blurrs the effect of individual feature on the predictor and thus makes it difficult to explain effect of individual features on target feature. This problem is called **Multicollinearity**. As a general rule, we don't want to keep features with very high correlation.
+
+ - What should be the threshold of correlation? 
+ - How do we decide which variable to drop? 
+ - Do correlated features hurt predictive accuracy? 
+ 
+All these are great questions and worth having a good understanding about. So again extra points for those who'll learn about ! 
+
+Before making any decision based on correlation, check distribution of the feature. Unless any two features have a linear relation, correlation doesn't mean much. 
+
+
+# Feature Engineering
+
+Based on the insight gained from the data exploration, some features may need to be transformed or new features can be created. Some common feature engineering tasks are:
+
+- Normalization and standardization of features
+- Binning continuous features
+- Creating composit features 
+- Creating dummy variables
+
+This tutorial won't cover *feature engineering* but it's a great area to explore. A great data exploration followed by necessary feature engineering are the absolute necessary prerequisites before fitting any predictive model! 
+
+
+# Fitting Model
+
+## Splitting Data
+In practical world we train our predictive models on historical data which is called **Training Data**. Then we apply that model on new unseen data, called **Test Data**, and measure the performance. thus we can be sure that our model is stable or not over fitted on training data. But since we won't have access to new wine data, we'll split our dataset into training and testing data on a 80:20 ratio.
+
+```{r dataSplit}
+set.seed(123)
+split = sample.split(dataFrame$quality_bin, SplitRatio = 0.80)
+training_set = subset(dataFrame, split == TRUE)
+test_set = subset(dataFrame, split == FALSE)
+```
+
+Let's check the data balance in training and test data.
+
+```{r}
+prop.table(table(training_set$quality_bin))
+prop.table(table(test_set$quality_bin))
+```
+
+## Fitting Model on Training Data
+We'll fit **Logistic Regression** classification model on our dataset. 
+
+```{r modelFit}
+model_log = glm(quality_bin ~ ., 
+                data = training_set, family = 'binomial')
+summary(model_log)
+```
+
+Let's plot the variables with the lowest p values/highest absolute z value.
+
+```{r featImp}
+p = varImp(model_log) %>% data.frame() 
+p = p %>% mutate(Features = rownames(p)) %>% arrange(desc(Overall)) %>% mutate(Features = tolower(Features))
+
+p %>% ggplot(aes(x = reorder(Features, Overall), y = Overall)) + geom_col(width = .50, fill = 'darkred') + coord_flip() + 
+  labs(title = "Importance of Features", subtitle = "Based on the value of individual z score") +
+  xlab("Features") + ylab("Abs. Z Score") + 
+  theme_minimal()
+```
+
+# Checking Model Performance 
+We'll check how our model performs by running it on our previously unseen test data. We'll compare the predicted outcome with the actual outcome and calculate some typically used binary classification model performance measuring metrics.
+
+```{r prediction}
+# predict target feature in test data
+y_pred = as.data.frame(predict(model_log, type = "response", newdata = test_set)) %>% 
+  structure( names = c("pred_prob")) %>%
+  mutate(pred_cat = as.factor(ifelse(pred_prob > 0.5, "1", "0"))) %>% 
+  mutate(actual_cat = test_set$quality_bin)
+```
+
+
+```{r confusion_matrix}
+p = confusionMatrix(y_pred$pred_cat, y_pred$actual_cat, positive = "1")
+p
+```
+
+<font color = maroon>**Model Perfomance Summary:**
+ 
+ - **Accuracy**: `r round(p$overall['Accuracy']*100, 2)`%  of the wine samples have been classified correctly.
+ - **Sensitivity/Recall**: `r round(p$byClass['Recall']*100, 2)`% of the actual good wine samples have been classified correctly.
+ - **Pos Pred Value/Precision**: `r round(p$byClass['Precision']*100, 2)`% of the total good wine predictions are actually good wines. </font>
+ 
+ 
+# Summary Inisght
+So let's summarize about what we have learned about wine testing from our exercise: 
+
+- Alchohol content, Volatile Acidity, Sulphate and total Sulpher Dioxide are the top four most statistically significant features that affect wine quality. 
+- Given the information about the 11 features that we have analyzed, we can accurately predict wine quality in about 73% of the cases,
+- Which is about `r 73-47`% more accurate than the accuracy achieved by using traditional expert based method. 
+
+<center> ["People could tell the difference between wines under £5 and those above £10 only 53% of the time for whites and only 47% of the time for reds."](https://www.theguardian.com/lifeandstyle/2013/jun/23/wine-tasting-junk-science-analysis) </center>
+
+<br/>
+
+
+<center>
+<div>
+<img src="https://media1.tenor.com/images/f050405657f9ac48d3b976051436e885/tenor.gif?itemid=10577278" width="400"/>
+</div> </center>
+
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>
+
