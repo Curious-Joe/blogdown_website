@@ -6,7 +6,7 @@
     <description>Recent content in Tags on Curious Joe</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 23 Jun 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 10 Jan 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     
@@ -14,7 +14,7 @@
     <item>
       <title>Automation</title>
       <link>/tags/automation/</link>
-      <pubDate>Tue, 23 Jun 2020 00:00:00 +0000</pubDate>
+      <pubDate>Fri, 10 Jan 2020 00:00:00 +0000</pubDate>
       
       <guid>/tags/automation/</guid>
       <description></description>
@@ -23,7 +23,7 @@
     <item>
       <title>R Markdown</title>
       <link>/tags/r-markdown/</link>
-      <pubDate>Tue, 23 Jun 2020 00:00:00 +0000</pubDate>
+      <pubDate>Fri, 10 Jan 2020 00:00:00 +0000</pubDate>
       
       <guid>/tags/r-markdown/</guid>
       <description></description>
@@ -32,9 +32,36 @@
     <item>
       <title>Reporting</title>
       <link>/tags/reporting/</link>
-      <pubDate>Tue, 23 Jun 2020 00:00:00 +0000</pubDate>
+      <pubDate>Fri, 10 Jan 2020 00:00:00 +0000</pubDate>
       
       <guid>/tags/reporting/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Sentiment Analysis</title>
+      <link>/tags/sentiment-analysis/</link>
+      <pubDate>Thu, 10 May 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/sentiment-analysis/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Text Mining</title>
+      <link>/tags/text-mining/</link>
+      <pubDate>Thu, 10 May 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/text-mining/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Topic Modeling</title>
+      <link>/tags/topic-modeling/</link>
+      <pubDate>Thu, 10 May 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/topic-modeling/</guid>
       <description></description>
     </item>
     

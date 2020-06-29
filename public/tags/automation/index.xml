@@ -6,7 +6,7 @@
     <description>Recent content in Automation on Curious Joe</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 23 Jun 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 10 Jan 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/automation/index.xml" rel="self" type="application/rss+xml" />
     
@@ -14,10 +14,10 @@
     <item>
       <title>Automate Your Repetitive Reports!</title>
       <link>/post/automate-your-repetitive-reports/</link>
-      <pubDate>Tue, 23 Jun 2020 00:00:00 +0000</pubDate>
+      <pubDate>Fri, 10 Jan 2020 00:00:00 +0000</pubDate>
       
       <guid>/post/automate-your-repetitive-reports/</guid>
-      <description>What is R script automation and why?Outline of what we’ll do herePart01: Creating the report:Part02: Automating the report reproductionWhat is R script automation and why?In most use cases R is used to analyze data, run statistical tests and build model. In doing so, data scientists constantly interact with R by writing codes and produce results from these interactions. Eventually, these results are stored, shared or presented as a report.</description>
+      <description>What is R script automation and why?Outline of what we’ll do herePart01: Creating the report:Part02: Automating the report reproductionWhat is R script automation and why?In most use cases R is used to analyze data, run statistical tests and build model. In doing so, data scientists constantly interact with R by writing codes and produce results from these interactions. Eventually, these results are stored, shared or presented as a report.</description>
     </item>
     
   </channel>

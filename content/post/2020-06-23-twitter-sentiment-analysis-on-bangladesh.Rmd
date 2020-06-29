@@ -1,19 +1,24 @@
 ---
-title: Twitter Sentiment Analysis on Bangladesh
+title: Topic modeling and sentiment analysis on tweets
 author: Arafath Hossain
-date: '2020-06-23'
-slug: twitter-sentiment-analysis-on-bangladesh
+date: '2018-05-10'
+slug: twitter-topic-modeling-sentiment-analysis
 categories:
   - R
 tags:
-  - R Markdown
-subtitle: ''
-description: ''
-image: ''
+  - Topic Modeling
+  - Sentiment Analysis
+  - Text Mining
+subtitle: 'What people talk about and how they feel about what they say.'
+description: 'Twitter is a popular source for minning social media posts. In this article I harvested tweets that had mention of "Bangladesh", my home country and ran two specific text analysis: topic modeling and sentiment analysis. '
+image: 'https://curiousjoe.netlify.app/img/twitter_analysis_cover.jpg'
+output:
+  blogdown::html_page:
+      toc: TRUE
 ---
 
 
-The objective of this analysis was to get an idea about what topic related to Bangladesh that people like to talk about and how they feel overall. 
+Twitter is a popular source for minning social media posts. In this article I harvested tweets that had mention of 'Bangladesh', my home country and ran two specific text analysis: topic modeling and sentiment analysis. The overall goal was to understand which topics related to Bangladesh are popular among the Twitter users and derive some understanding about the sentiments that they expressed through their tweets. 
   
 # Objective
   Breaking down the objective for clear analysis gives us three specific goals:

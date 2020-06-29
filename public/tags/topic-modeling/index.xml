@@ -1,24 +1,15 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>R on Curious Joe</title>
-    <link>/categories/r/</link>
-    <description>Recent content in R on Curious Joe</description>
+    <title>Topic Modeling on Curious Joe</title>
+    <link>/tags/topic-modeling/</link>
+    <description>Recent content in Topic Modeling on Curious Joe</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 10 Jan 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 10 May 2018 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/categories/r/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/tags/topic-modeling/index.xml" rel="self" type="application/rss+xml" />
     
-    
-    <item>
-      <title>Automate Your Repetitive Reports!</title>
-      <link>/post/automate-your-repetitive-reports/</link>
-      <pubDate>Fri, 10 Jan 2020 00:00:00 +0000</pubDate>
-      
-      <guid>/post/automate-your-repetitive-reports/</guid>
-      <description>What is R script automation and why?Outline of what we’ll do herePart01: Creating the report:Part02: Automating the report reproductionWhat is R script automation and why?In most use cases R is used to analyze data, run statistical tests and build model. In doing so, data scientists constantly interact with R by writing codes and produce results from these interactions. Eventually, these results are stored, shared or presented as a report.</description>
-    </item>
     
     <item>
       <title>Topic modeling and sentiment analysis on tweets</title>

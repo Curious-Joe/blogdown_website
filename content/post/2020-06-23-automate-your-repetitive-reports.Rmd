@@ -1,7 +1,7 @@
 ---
 title: Automate Your Repetitive Reports!
 author: Arafath Hossain
-date: '2020-06-23'
+date: '2020-01-10'
 slug: automate-your-repetitive-reports
 categories:
   - R
@@ -9,18 +9,13 @@ tags:
   - R Markdown
   - Reporting
   - Automation
-subtitle: ''
-description: ''
-image: ''
+subtitle: 'Automating a task using R and windows task manager.'
+description: 'R can be used as a great tool to automate your repeat works such as: refreshing a report everyday based on new data or running some ETL process and storing the data in Data Base. In this article I will show how to automate a report creation and communication by using R and Windows scheduler.'
+image: 'https://thumbs.gfycat.com/ImpressiveInstructiveIberianemeraldlizard-small.gif'
 output:
   blogdown::html_page:
       toc: TRUE
 ---
-
-<center> 
-<img src="https://thumbs.gfycat.com/ImpressiveInstructiveIberianemeraldlizard-small.gif" width="600" height='400'/>
-</center>
-
 
 ## What is R script automation and why?
 

@@ -6,7 +6,7 @@
     <description>Recent content in R Markdown on Curious Joe</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 23 Jun 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 10 Jan 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/r-markdown/index.xml" rel="self" type="application/rss+xml" />
     
@@ -14,21 +14,10 @@
     <item>
       <title>Automate Your Repetitive Reports!</title>
       <link>/post/automate-your-repetitive-reports/</link>
-      <pubDate>Tue, 23 Jun 2020 00:00:00 +0000</pubDate>
+      <pubDate>Fri, 10 Jan 2020 00:00:00 +0000</pubDate>
       
       <guid>/post/automate-your-repetitive-reports/</guid>
-      <description>What is R script automation and why?Outline of what we’ll do herePart01: Creating the report:Part02: Automating the report reproductionWhat is R script automation and why?In most use cases R is used to analyze data, run statistical tests and build model. In doing so, data scientists constantly interact with R by writing codes and produce results from these interactions. Eventually, these results are stored, shared or presented as a report.</description>
-    </item>
-    
-    <item>
-      <title>Twitter Sentiment Analysis on Bangladesh</title>
-      <link>/post/twitter-sentiment-analysis-on-bangladesh/</link>
-      <pubDate>Tue, 23 Jun 2020 00:00:00 +0000</pubDate>
-      
-      <guid>/post/twitter-sentiment-analysis-on-bangladesh/</guid>
-      <description>The objective of this analysis was to get an idea about what topic related to Bangladesh that people like to talk about and how they feel overall.
-ObjectiveBreaking down the objective for clear analysis gives us three specific goals:
-Around which topics twitter discussions usually circle around,What is the overall sentiment about Bangladesh that is conveyed by the tweets,As an extension of the previous two steps: A topic wise sentiment analysis to reveal what kind of sentiments(s) carried by the generally discussed topics.</description>
+      <description>What is R script automation and why?Outline of what we’ll do herePart01: Creating the report:Part02: Automating the report reproductionWhat is R script automation and why?In most use cases R is used to analyze data, run statistical tests and build model. In doing so, data scientists constantly interact with R by writing codes and produce results from these interactions. Eventually, these results are stored, shared or presented as a report.</description>
     </item>
     
   </channel>
