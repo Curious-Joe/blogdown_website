@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-<img src="/top/about_files/profile_pic.png" width="400" height='600'/>
+<img src="/top/about_files/profile_pic.png" width="250" height='300'/>
 
 
 I am a data scientist by profession. I work in the higher education industry. I come from a business management background with trainings in computer programming. I have worked in the market research and telecommunication industries before moving into data science.

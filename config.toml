@@ -19,7 +19,7 @@ home = ["HTML", "RSS"]
   SEOTitle = "Arafath Hossain | Curious Joe"
   description = "A blog to log my data journey"
   keyword = "R, Python, Docker, Shiny, Statistics, Analysis, Data Cleaning, Programming"
-  slogan = "Stay Curious"
+  slogan = "Blog of Arafath Hossain"
   showtoc = true
 
 
