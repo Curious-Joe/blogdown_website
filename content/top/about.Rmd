@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 <img src="/top/about_files/profile_pic.png" width="250" height='300'/>
 
 
-I am a data scientist by profession. Currently I'm working in the higher education industry. Before moving into the area of Data Science, I worked in the areas of market research and product management. 
+I am a data scientist by profession. Currently I'm working in the higher education industry. Before moving into the area of Data Science, I worked in market research and product management. 
 
 I like the constant improving nature of the technologies used in data science and Machine Learning areas and love to experiment with new tools and methodologies. 
 
