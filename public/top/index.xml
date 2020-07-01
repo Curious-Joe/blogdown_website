@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tops on Curious Joe</title>
@@ -7,7 +6,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     
-	<atom:link href="/top/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="/top/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -16,9 +15,15 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/top/about/</guid>
-      <description>I am a data scientist by profession. Currently I’m working in the higher education industry. Before moving into the area of Data Science, I worked in market research and product management.
-I like the constant improving nature of the technologies used in data science and Machine Learning areas and love to experiment with new tools and methodologies.
-While not working, I enjoy travelling, catching fish, watching movies, learning about new technology and watching documentaries on random topics!</description>
+      <description>
+
+
+&lt;p&gt;&lt;img src=&#34;/top/about_files/profile_pic.png&#34; width=&#34;250&#34; height=&#39;300&#39;/&gt;&lt;/p&gt;
+&lt;p&gt;I am a data scientist by profession. Currently I’m working in the higher education industry. Before moving into the area of Data Science, I worked in market research and product management.&lt;/p&gt;
+&lt;p&gt;I like the constant improving nature of the technologies used in data science and Machine Learning areas and love to experiment with new tools and methodologies.&lt;/p&gt;
+&lt;p&gt;While not working, I enjoy travelling, catching fish, watching movies, learning about new technology and watching documentaries on random topics!&lt;/p&gt;
+&lt;p&gt;And also I love connecting and interacting with people in LinkedIn! So please feel free to connect with me via LinkedIn (&lt;a href=&#34;https://www.linkedin.com/in/arafath-hossain/&#34; class=&#34;uri&#34;&gt;https://www.linkedin.com/in/arafath-hossain/&lt;/a&gt;) or drop me an email at (&lt;a href=&#34;mailto:a.h.fahad90@gmail.com&#34; class=&#34;email&#34;&gt;a.h.fahad90@gmail.com&lt;/a&gt;).&lt;/p&gt;
+</description>
     </item>
     
     <item>

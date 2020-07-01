@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Project Documentation on Curious Joe</title>
@@ -8,7 +7,7 @@
     <language>en-us</language>
     <lastBuildDate>Fri, 20 Sep 2019 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/tags/project-documentation/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="/tags/project-documentation/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -17,7 +16,284 @@
       <pubDate>Fri, 20 Sep 2019 00:00:00 +0000</pubDate>
       
       <guid>/post/is-the-red-wine-good-enough/</guid>
-      <description>Exploring DataExploring FeaturesTransforming Target FeatureExploring Predictors VisuallyChecking CorrelationFeature EngineeringFitting ModelSplitting DataFitting Model on Training DataChecking Model PerformanceSummary InisghtLet’s assume that we have been hired by a winery to build a predictive model to check the qulity of their red wine. The traiditional way of wine testing is done by a human expert. Thus the process is prone to human error.</description>
+      <description>
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#exploring-data&#34;&gt;Exploring Data&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#exploring-features&#34;&gt;Exploring Features&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#transforming-target-feature&#34;&gt;Transforming Target Feature&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#exploring-predictors-visually&#34;&gt;Exploring Predictors Visually&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#checking-correlation&#34;&gt;Checking Correlation&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#feature-engineering&#34;&gt;Feature Engineering&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#fitting-model&#34;&gt;Fitting Model&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#splitting-data&#34;&gt;Splitting Data&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#fitting-model-on-training-data&#34;&gt;Fitting Model on Training Data&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#checking-model-performance&#34;&gt;Checking Model Performance&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#summary-inisght&#34;&gt;Summary Inisght&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Let’s assume that we have been hired by a winery to build a predictive model to check the qulity of their red wine. The traiditional way of wine testing is done by a human expert. Thus the process is prone to human error. The goal is to establish a process of producing an objective method of wine testing and combining that with the existing process to reduce human error.&lt;/p&gt;
+&lt;p&gt;For the purpose of building the predictive model, we’ll use a dataset provided by UCI machine learning repository. We’ll try to predict wine quality based on features associated with wine.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Goal:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Explore the data&lt;/li&gt;
+&lt;li&gt;Predict the wine quality (binary classification)&lt;/li&gt;
+&lt;li&gt;Explore model result&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div id=&#34;exploring-data&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Exploring Data&lt;/h1&gt;
+&lt;p&gt;&lt;strong&gt;Loading data, libraries and primary glimpsing over data&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# libraries
+library(dplyr)
+library(ggplot2)
+library(caTools)
+library(caret)
+library(GGally)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dataFrame = read.csv(&amp;quot;https://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-red.csv&amp;quot;, sep = &amp;#39;;&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;summary(dataFrame)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##  fixed.acidity   volatile.acidity  citric.acid    residual.sugar  
+##  Min.   : 4.60   Min.   :0.1200   Min.   :0.000   Min.   : 0.900  
+##  1st Qu.: 7.10   1st Qu.:0.3900   1st Qu.:0.090   1st Qu.: 1.900  
+##  Median : 7.90   Median :0.5200   Median :0.260   Median : 2.200  
+##  Mean   : 8.32   Mean   :0.5278   Mean   :0.271   Mean   : 2.539  
+##  3rd Qu.: 9.20   3rd Qu.:0.6400   3rd Qu.:0.420   3rd Qu.: 2.600  
+##  Max.   :15.90   Max.   :1.5800   Max.   :1.000   Max.   :15.500  
+##    chlorides       free.sulfur.dioxide total.sulfur.dioxide    density      
+##  Min.   :0.01200   Min.   : 1.00       Min.   :  6.00       Min.   :0.9901  
+##  1st Qu.:0.07000   1st Qu.: 7.00       1st Qu.: 22.00       1st Qu.:0.9956  
+##  Median :0.07900   Median :14.00       Median : 38.00       Median :0.9968  
+##  Mean   :0.08747   Mean   :15.87       Mean   : 46.47       Mean   :0.9967  
+##  3rd Qu.:0.09000   3rd Qu.:21.00       3rd Qu.: 62.00       3rd Qu.:0.9978  
+##  Max.   :0.61100   Max.   :72.00       Max.   :289.00       Max.   :1.0037  
+##        pH          sulphates         alcohol         quality     
+##  Min.   :2.740   Min.   :0.3300   Min.   : 8.40   Min.   :3.000  
+##  1st Qu.:3.210   1st Qu.:0.5500   1st Qu.: 9.50   1st Qu.:5.000  
+##  Median :3.310   Median :0.6200   Median :10.20   Median :6.000  
+##  Mean   :3.311   Mean   :0.6581   Mean   :10.42   Mean   :5.636  
+##  3rd Qu.:3.400   3rd Qu.:0.7300   3rd Qu.:11.10   3rd Qu.:6.000  
+##  Max.   :4.010   Max.   :2.0000   Max.   :14.90   Max.   :8.000&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;From the features we see ‘quality’ is our target feature. And we have total 11 features to be used as the predictors.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;exploring-features&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Exploring Features&lt;/h1&gt;
+&lt;div id=&#34;transforming-target-feature&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Transforming Target Feature&lt;/h2&gt;
+&lt;p&gt;Since we will cover talk about the classification model, we’ll convert our target feature from continuous to binary class. So that we would be able to fit one of the very widely used yet very easy classification models.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Distribution of original target feature labels&lt;/em&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# checking ratio of different labels in target feature
+prop.table(table(dataFrame$quality))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+##           3           4           5           6           7           8 
+## 0.006253909 0.033145716 0.425891182 0.398999375 0.124452783 0.011257036&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dataFrame = dataFrame %&amp;gt;%
+  mutate(quality_bin = as.factor(ifelse(quality &amp;lt;= 5, 0,1))) %&amp;gt;%
+  select(-quality)
+
+
+p = round(prop.table(table(dataFrame$quality_bin))*100,2)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;After tranformation we have 53.47% cases classified records as good wines vs 46.53% as bad wines.&lt;/p&gt;
+&lt;p&gt;We have a nice distribution of our target classes here! Which is very nice. Otherwise, we would’ve had to deal with &lt;em&gt;Data Balancing&lt;/em&gt;. Though we won’t cover that area in this tutorial, it’s a great discussion area to delve into. So some extra points for those who’ll learn about it!&lt;/p&gt;
+&lt;p&gt;In short, we would like to &lt;strong&gt;have a balanced distribution of observations from different labels in our target feature&lt;/strong&gt;. Otherwise, some ML algorithms tend to overfit.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;exploring-predictors-visually&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Exploring Predictors Visually&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;Exploring acidity&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dataFrame %&amp;gt;%
+  ggplot(aes(x = as.factor(quality_bin), y = fixed.acidity, color = quality_bin)) +
+  geom_boxplot(outlier.color = &amp;quot;darkred&amp;quot;, notch = FALSE) +
+  ylab(&amp;quot;Acidity&amp;quot;) + xlab(&amp;quot;Quality (1 = good, 2 = bad)&amp;quot;) + 
+  theme(legend.position = &amp;quot;none&amp;quot;, axis.title.x = element_blank()) + 
+  theme_minimal()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2019-09-20-is-the-red-wine-good-enough_files/figure-html/viz_acidity-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We have multiple features that are continuous and can plot them similarly. Which means we’ll have to re write the code that we have just wrote in code chunk: viz_acidity again and again. In coding, we don’t want to do that. So we’ll create a function and wrap that around our code so that it can be reused in future!&lt;/p&gt;
+&lt;p&gt;If it sounds too much, just stick with it. Once you see the code, it’ll make a lot more sense.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# boxplot_viz
+# plots continuous feature in boxplot categorized on the quality_bin feature labels from dataFrame 
+# @param feat Feature name (string) to be plotted
+boxplot_viz = function(feat){
+
+  dataFrame %&amp;gt;%
+    ggplot(aes_string(x = as.factor(&amp;#39;quality_bin&amp;#39;), y = feat, color = &amp;#39;quality_bin&amp;#39;)) +
+    geom_boxplot(outlier.color = &amp;quot;darkred&amp;quot;, notch = FALSE) +
+    labs(title = paste0(&amp;quot;Boxplot of feature: &amp;quot;, feat)) + ylab(feat) + xlab(&amp;quot;Quality (1 = good, 2 = bad)&amp;quot;) + 
+    theme(legend.position = &amp;quot;none&amp;quot;, axis.title.x = element_blank()) + 
+    theme_minimal()
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;boxplot_viz(&amp;#39;volatile.acidity&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2019-09-20-is-the-red-wine-good-enough_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;for (i in names(dataFrame %&amp;gt;% select(-&amp;#39;quality_bin&amp;#39;))){
+  print(boxplot_viz(i))
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2019-09-20-is-the-red-wine-good-enough_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;img src=&#34;/post/2019-09-20-is-the-red-wine-good-enough_files/figure-html/unnamed-chunk-5-2.png&#34; width=&#34;672&#34; /&gt;&lt;img src=&#34;/post/2019-09-20-is-the-red-wine-good-enough_files/figure-html/unnamed-chunk-5-3.png&#34; width=&#34;672&#34; /&gt;&lt;img src=&#34;/post/2019-09-20-is-the-red-wine-good-enough_files/figure-html/unnamed-chunk-5-4.png&#34; width=&#34;672&#34; /&gt;&lt;img src=&#34;/post/2019-09-20-is-the-red-wine-good-enough_files/figure-html/unnamed-chunk-5-5.png&#34; width=&#34;672&#34; /&gt;&lt;img src=&#34;/post/2019-09-20-is-the-red-wine-good-enough_files/figure-html/unnamed-chunk-5-6.png&#34; width=&#34;672&#34; /&gt;&lt;img src=&#34;/post/2019-09-20-is-the-red-wine-good-enough_files/figure-html/unnamed-chunk-5-7.png&#34; width=&#34;672&#34; /&gt;&lt;img src=&#34;/post/2019-09-20-is-the-red-wine-good-enough_files/figure-html/unnamed-chunk-5-8.png&#34; width=&#34;672&#34; /&gt;&lt;img src=&#34;/post/2019-09-20-is-the-red-wine-good-enough_files/figure-html/unnamed-chunk-5-9.png&#34; width=&#34;672&#34; /&gt;&lt;img src=&#34;/post/2019-09-20-is-the-red-wine-good-enough_files/figure-html/unnamed-chunk-5-10.png&#34; width=&#34;672&#34; /&gt;&lt;img src=&#34;/post/2019-09-20-is-the-red-wine-good-enough_files/figure-html/unnamed-chunk-5-11.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;checking-correlation&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Checking Correlation&lt;/h2&gt;
+&lt;p&gt;We can quickly check correlations among our predictors.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dataFrame %&amp;gt;% 
+  # correlation plot 
+  ggcorr(method = c(&amp;#39;complete.obs&amp;#39;,&amp;#39;pearson&amp;#39;), 
+         nbreaks = 6, digits = 3, palette = &amp;quot;RdGy&amp;quot;, label = TRUE, label_size = 3, 
+         label_color = &amp;quot;white&amp;quot;, label_round = 2)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2019-09-20-is-the-red-wine-good-enough_files/figure-html/correlation-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Highly correlated features don’t add new information to the model and blurrs the effect of individual feature on the predictor and thus makes it difficult to explain effect of individual features on target feature. This problem is called &lt;strong&gt;Multicollinearity&lt;/strong&gt;. As a general rule, we don’t want to keep features with very high correlation.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;What should be the threshold of correlation?&lt;/li&gt;
+&lt;li&gt;How do we decide which variable to drop?&lt;/li&gt;
+&lt;li&gt;Do correlated features hurt predictive accuracy?&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;All these are great questions and worth having a good understanding about. So again extra points for those who’ll learn about !&lt;/p&gt;
+&lt;p&gt;Before making any decision based on correlation, check distribution of the feature. Unless any two features have a linear relation, correlation doesn’t mean much.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;feature-engineering&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Feature Engineering&lt;/h1&gt;
+&lt;p&gt;Based on the insight gained from the data exploration, some features may need to be transformed or new features can be created. Some common feature engineering tasks are:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Normalization and standardization of features&lt;/li&gt;
+&lt;li&gt;Binning continuous features&lt;/li&gt;
+&lt;li&gt;Creating composit features&lt;/li&gt;
+&lt;li&gt;Creating dummy variables&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;This tutorial won’t cover &lt;em&gt;feature engineering&lt;/em&gt; but it’s a great area to explore. A great data exploration followed by necessary feature engineering are the absolute necessary prerequisites before fitting any predictive model!&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;fitting-model&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Fitting Model&lt;/h1&gt;
+&lt;div id=&#34;splitting-data&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Splitting Data&lt;/h2&gt;
+&lt;p&gt;In practical world we train our predictive models on historical data which is called &lt;strong&gt;Training Data&lt;/strong&gt;. Then we apply that model on new unseen data, called &lt;strong&gt;Test Data&lt;/strong&gt;, and measure the performance. thus we can be sure that our model is stable or not over fitted on training data. But since we won’t have access to new wine data, we’ll split our dataset into training and testing data on a 80:20 ratio.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;set.seed(123)
+split = sample.split(dataFrame$quality_bin, SplitRatio = 0.80)
+training_set = subset(dataFrame, split == TRUE)
+test_set = subset(dataFrame, split == FALSE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Let’s check the data balance in training and test data.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;prop.table(table(training_set$quality_bin))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+##         0         1 
+## 0.4652072 0.5347928&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;prop.table(table(test_set$quality_bin))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+##        0        1 
+## 0.465625 0.534375&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;fitting-model-on-training-data&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Fitting Model on Training Data&lt;/h2&gt;
+&lt;p&gt;We’ll fit &lt;strong&gt;Logistic Regression&lt;/strong&gt; classification model on our dataset.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;model_log = glm(quality_bin ~ ., 
+                data = training_set, family = &amp;#39;binomial&amp;#39;)
+summary(model_log)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+## Call:
+## glm(formula = quality_bin ~ ., family = &amp;quot;binomial&amp;quot;, data = training_set)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -3.3688  -0.8309   0.2989   0.8109   2.4184  
+## 
+## Coefficients:
+##                        Estimate Std. Error z value Pr(&amp;gt;|z|)    
+## (Intercept)           17.369521  90.765368   0.191  0.84824    
+## fixed.acidity          0.069510   0.112062   0.620  0.53507    
+## volatile.acidity      -3.602258   0.558889  -6.445 1.15e-10 ***
+## citric.acid           -1.543276   0.638161  -2.418  0.01559 *  
+## residual.sugar         0.012106   0.060364   0.201  0.84106    
+## chlorides             -4.291590   1.758614  -2.440  0.01467 *  
+## free.sulfur.dioxide    0.027452   0.009293   2.954  0.00314 ** 
+## total.sulfur.dioxide  -0.016723   0.003229  -5.180 2.22e-07 ***
+## density              -23.425390  92.700349  -0.253  0.80050    
+## pH                    -0.977906   0.828710  -1.180  0.23799    
+## sulphates              3.070254   0.532655   5.764 8.21e-09 ***
+## alcohol                0.946654   0.120027   7.887 3.10e-15 ***
+## ---
+## Signif. codes:  0 &amp;#39;***&amp;#39; 0.001 &amp;#39;**&amp;#39; 0.01 &amp;#39;*&amp;#39; 0.05 &amp;#39;.&amp;#39; 0.1 &amp;#39; &amp;#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 1766.9  on 1278  degrees of freedom
+## Residual deviance: 1301.4  on 1267  degrees of freedom
+## AIC: 1325.4
+## 
+## Number of Fisher Scoring iterations: 4&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Let’s plot the variables with the lowest p values/highest absolute z value.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p = varImp(model_log) %&amp;gt;% data.frame() 
+p = p %&amp;gt;% mutate(Features = rownames(p)) %&amp;gt;% arrange(desc(Overall)) %&amp;gt;% mutate(Features = tolower(Features))
+
+p %&amp;gt;% ggplot(aes(x = reorder(Features, Overall), y = Overall)) + geom_col(width = .50, fill = &amp;#39;darkred&amp;#39;) + coord_flip() + 
+  labs(title = &amp;quot;Importance of Features&amp;quot;, subtitle = &amp;quot;Based on the value of individual z score&amp;quot;) +
+  xlab(&amp;quot;Features&amp;quot;) + ylab(&amp;quot;Abs. Z Score&amp;quot;) + 
+  theme_minimal()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2019-09-20-is-the-red-wine-good-enough_files/figure-html/featImp-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;checking-model-performance&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Checking Model Performance&lt;/h1&gt;
+&lt;p&gt;We’ll check how our model performs by running it on our previously unseen test data. We’ll compare the predicted outcome with the actual outcome and calculate some typically used binary classification model performance measuring metrics.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# predict target feature in test data
+y_pred = as.data.frame(predict(model_log, type = &amp;quot;response&amp;quot;, newdata = test_set)) %&amp;gt;% 
+  structure( names = c(&amp;quot;pred_prob&amp;quot;)) %&amp;gt;%
+  mutate(pred_cat = as.factor(ifelse(pred_prob &amp;gt; 0.5, &amp;quot;1&amp;quot;, &amp;quot;0&amp;quot;))) %&amp;gt;% 
+  mutate(actual_cat = test_set$quality_bin)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p = confusionMatrix(y_pred$pred_cat, y_pred$actual_cat, positive = &amp;quot;1&amp;quot;)
+p&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction   0   1
+##          0 108  46
+##          1  41 125
+##                                           
+##                Accuracy : 0.7281          
+##                  95% CI : (0.6758, 0.7761)
+##     No Information Rate : 0.5344          
+##     P-Value [Acc &amp;gt; NIR] : 9.137e-13       
+##                                           
+##                   Kappa : 0.4548          
+##                                           
+##  Mcnemar&amp;#39;s Test P-Value : 0.668           
+##                                           
+##             Sensitivity : 0.7310          
+##             Specificity : 0.7248          
+##          Pos Pred Value : 0.7530          
+##          Neg Pred Value : 0.7013          
+##              Prevalence : 0.5344          
+##          Detection Rate : 0.3906          
+##    Detection Prevalence : 0.5188          
+##       Balanced Accuracy : 0.7279          
+##                                           
+##        &amp;#39;Positive&amp;#39; Class : 1               
+## &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;font color = maroon&gt;&lt;strong&gt;Model Perfomance Summary:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Accuracy&lt;/strong&gt;: 72.81% of the wine samples have been classified correctly.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Sensitivity/Recall&lt;/strong&gt;: 73.1% of the actual good wine samples have been classified correctly.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Pos Pred Value/Precision&lt;/strong&gt;: 75.3% of the total good wine predictions are actually good wines. &lt;/font&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div id=&#34;summary-inisght&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Summary Inisght&lt;/h1&gt;
+&lt;p&gt;So let’s summarize about what we have learned about wine testing from our exercise:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Alchohol content, Volatile Acidity, Sulphate and total Sulpher Dioxide are the top four most statistically significant features that affect wine quality.&lt;/li&gt;
+&lt;li&gt;Given the information about the 11 features that we have analyzed, we can accurately predict wine quality in about 73% of the cases,&lt;/li&gt;
+&lt;li&gt;Which is about 26% more accurate than the accuracy achieved by using traditional expert based method.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;center&gt;
+&lt;a href=&#34;https://www.theguardian.com/lifeandstyle/2013/jun/23/wine-tasting-junk-science-analysis&#34;&gt;“People could tell the difference between wines under £5 and those above £10 only 53% of the time for whites and only 47% of the time for reds.”&lt;/a&gt;
+&lt;/center&gt;
+&lt;p&gt;&lt;br/&gt;&lt;/p&gt;
+&lt;center&gt;
+&lt;div&gt;
+&lt;p&gt;&lt;img src=&#34;https://media1.tenor.com/images/f050405657f9ac48d3b976051436e885/tenor.gif?itemid=10577278&#34; width=&#34;400&#34;/&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/center&gt;
+&lt;div class=&#34;tocify-extend-page&#34; data-unique=&#34;tocify-extend-page&#34; style=&#34;height: 0;&#34;&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
     </item>
     
   </channel>
