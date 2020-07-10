@@ -5,7 +5,7 @@
     <description>Recent content in Tutorial on Curious Joe</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 09 Jul 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 10 Jul 2020 00:00:00 +0000</lastBuildDate>
     
         <atom:link href="/tags/tutorial/index.xml" rel="self" type="application/rss+xml" />
     
@@ -13,7 +13,7 @@
     <item>
       <title>Automatically Build Data Tables from US Census Survey!</title>
       <link>/post/automatically-build-data-tables-from-us-census-survey/</link>
-      <pubDate>Thu, 09 Jul 2020 00:00:00 +0000</pubDate>
+      <pubDate>Fri, 10 Jul 2020 00:00:00 +0000</pubDate>
       
       <guid>/post/automatically-build-data-tables-from-us-census-survey/</guid>
       <description>
@@ -363,12 +363,12 @@ summary(getAcsIncome(names = &amp;#39;all&amp;#39;, KEY = API_KEY))&lt;/code&gt;
 ##                                                           Max.   :250001  
 ##                                                           NA&amp;#39;s   :1013    
 ##       moe          UPDATE_DATE                 
-##  Min.   :   550   Min.   :2020-07-10 00:03:33  
-##  1st Qu.:  6051   1st Qu.:2020-07-10 00:03:33  
-##  Median :  8711   Median :2020-07-10 00:03:33  
-##  Mean   : 10212   Mean   :2020-07-10 00:03:33  
-##  3rd Qu.: 12521   3rd Qu.:2020-07-10 00:03:33  
-##  Max.   :126054   Max.   :2020-07-10 00:03:33  
+##  Min.   :   550   Min.   :2020-07-10 09:03:57  
+##  1st Qu.:  6051   1st Qu.:2020-07-10 09:03:57  
+##  Median :  8711   Median :2020-07-10 09:03:57  
+##  Mean   : 10212   Mean   :2020-07-10 09:03:57  
+##  3rd Qu.: 12521   3rd Qu.:2020-07-10 09:03:57  
+##  Max.   :126054   Max.   :2020-07-10 09:03:57  
 ##  NA&amp;#39;s   :1092&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;/div&gt;
