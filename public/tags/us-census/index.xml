@@ -1,0 +1,388 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>US Census on Curious Joe</title>
+    <link>/tags/us-census/</link>
+    <description>Recent content in US Census on Curious Joe</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 09 Jul 2020 00:00:00 +0000</lastBuildDate>
+    
+        <atom:link href="/tags/us-census/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Automatically Build Data Tables from US Census Survey!</title>
+      <link>/post/automatically-build-data-tables-from-us-census-survey/</link>
+      <pubDate>Thu, 09 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/automatically-build-data-tables-from-us-census-survey/</guid>
+      <description>
+&lt;script src=&#34;/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#brief-background-on-us-census-surveys&#34;&gt;Brief Background on US Census Surveys&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#preparation&#34;&gt;Preparation&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#getting-your-api-key&#34;&gt;Getting your API Key&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#setting-up-the-key&#34;&gt;Setting up the Key&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#calling-census-api-to-get-tract-household-income&#34;&gt;Calling Census API to Get Tract Household Income&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#limitations-of-this-code&#34;&gt;Limitations of this Code&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#overcoming-the-limitations&#34;&gt;Overcoming the Limitations&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#making-the-state-name-input-flexible&#34;&gt;Making the state name input flexible&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#adding-fall-back-capability-in-the-year-input&#34;&gt;Adding fall back capability in the year input&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#adding-a-column-for-data-and-time&#34;&gt;Adding a column for data and time&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#whats-next&#34;&gt;What’s next?&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;p&gt;US Census Bureau is probably the most reliable souce of demographic data on the US population. There are hundreds of use cases of the data from Us Census Bureau. In one of our recent projects we used household income data from Census as a proxy to missing actual household income data in our table.&lt;/p&gt;
+&lt;p&gt;In this article, I’ll show how we got the income data from ACS5 survey using the ‘tidycensus’ package. In doing so, I’ll show how to write your own function to wrap the out of the box function to serve your customised purpose. As bonus I’ll briefly describe how you may automate this entire process so that you can run this process from a server, save the data in your database and each year automatically update the table with the new Census data.&lt;/p&gt;
+&lt;div id=&#34;brief-background-on-us-census-surveys&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Brief Background on US Census Surveys&lt;/h2&gt;
+&lt;p&gt;There are different types of surveys conducted by the Census Bureau. Not all of them have the same data or data at the same level based on their nature. Here you can find details about the different survey types and other details: &lt;a href=&#34;https://www.census.gov/programs-surveys.html&#34; class=&#34;uri&#34;&gt;https://www.census.gov/programs-surveys.html&lt;/a&gt;. For our purpose we needed a survey that has household income data at the most grannular geographic level. We ended up using the American Community Survey &lt;a href=&#34;https://www.census.gov/data/developers/data-sets/acs-5year.html&#34;&gt;ACS5 survey&lt;/a&gt; because this survey contains household income data at the Census &lt;a href=&#34;https://www.census.gov/content/dam/Census/data/developers/geoareaconcepts.pdf&#34;&gt;Tract&lt;/a&gt; level which is the most grannular level for which household income data is available in census.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;preparation&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Preparation&lt;/h2&gt;
+&lt;div id=&#34;getting-your-api-key&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Getting your API Key&lt;/h3&gt;
+&lt;p&gt;For this project we have used an R package called &lt;em&gt;tidyverse&lt;/em&gt;. Behind the scene &lt;em&gt;tidycensus&lt;/em&gt; package calls the API provided by the Census Bureau. To call this API you need to have a key, which is basically is unique ID that is automatically generated against each new user by the Census Bureau. You can get a key from here: &lt;a href=&#34;https://api.census.gov/data/key_signup.html&#34; class=&#34;uri&#34;&gt;https://api.census.gov/data/key_signup.html&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Once you have the key save it in a separte text file or an r script. So that later on we can load the file and use that key in our functions.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;setting-up-the-key&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Setting up the Key&lt;/h3&gt;
+&lt;p&gt;Once you have the API key available you need to set it up to be used by the functions from tidycensus package. You can set it up using following line of code:&lt;/p&gt;
+&lt;pre class=&#34;markdown&#34;&gt;&lt;code&gt;census_api_key(&amp;#39;YOUR_API_KEY&amp;#39;, install = FALSE, overwrite = TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now we have all the prerequisits set to call the Census API.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;calling-census-api-to-get-tract-household-income&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Calling Census API to Get Tract Household Income&lt;/h2&gt;
+&lt;p&gt;Using the following line of code you can get all the tract level household income data for an entire state in the US. We are using this variable &lt;em&gt;B19013_001&lt;/em&gt; from the ACS5 survey. You can learn more about all the available variables going to this link: &lt;a href=&#34;https://api.census.gov/data/2018/acs/acs5/variables.html&#34; class=&#34;uri&#34;&gt;https://api.census.gov/data/2018/acs/acs5/variables.html&lt;/a&gt;
+So to get tract level median household income in IL for the ACS5 survey of 2018 you can run the following line of code:&lt;/p&gt;
+&lt;pre class=&#34;markdown&#34;&gt;&lt;code&gt;get_acs(state = &amp;#39;IL&amp;#39;, year = 2018, geography = &amp;#39;tract&amp;#39;, variables = &amp;#39;B19013_001&amp;#39;, 
+                                     geometry = FALSE, survey = &amp;#39;acs5&amp;#39;, show_call = TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Explanation of the code&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;get_acs()&lt;/em&gt; function is used to call the API for the ACS surveys. You should read through the code description for details but here is the brief description of the parameters used in this case:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;state: abbreviated name or names of the state(s),&lt;/li&gt;
+&lt;li&gt;year: for which year’s ACS survey you are looking for.&lt;/li&gt;
+&lt;li&gt;geography: at which geographic level you are looking at. We are looking for &lt;em&gt;tract&lt;/em&gt; level data. Other options are county, block etc.&lt;/li&gt;
+&lt;li&gt;survey: which survey you are looking for. We are looking for **ACS5* survey,&lt;/li&gt;
+&lt;li&gt;show_call: setting it up as true prints the message output in the R console while the API is called. Really helpful when you put this function in production to check back reason behind in case the function fails.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div id=&#34;limitations-of-this-code&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Limitations of this Code&lt;/h2&gt;
+&lt;p&gt;Our goal is to fetch that data, store the data in a database and then schedule that script to be re-run automatically every year. Using this out of the box function doesn’t serve that entire purpose because of these limitations:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;It has to have a state name as an input. We could make it dynamic so that we could use it to load all states’ data or just a selective set of states or just one state,&lt;/li&gt;
+&lt;li&gt;We want to schedule this to run automatically at a specific date. But since the ACS5 survey publication date is not exactly same each year, we need to have some flexibility so that in case our desired year’s survey isn’t populated the function falls back to fetch latest available data.&lt;/li&gt;
+&lt;li&gt;We would like to have a column with the date and time recorded when this data is called and store that along with other data in the database table.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;In the next sections I’ll walk you through writing a customised functions which will address these limitations.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;overcoming-the-limitations&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Overcoming the Limitations&lt;/h2&gt;
+&lt;p&gt;Before we start to building the elaborate function, I’ll start with a basic wrapper function. And then we’ll keep adding additional argumnts to it to overcome the limitations.&lt;/p&gt;
+&lt;p&gt;Here’s how R function skeleton looks like:&lt;/p&gt;
+&lt;pre class=&#34;markdown&#34;&gt;&lt;code&gt; functionName = function(input01, input2){
+                  Logic
+        }&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;You give it a name so that in future you can save the function and reuse it. Inside the function() within parentheses you include the input variable name(s). And you write the logic inside the curly braces.&lt;/p&gt;
+&lt;p&gt;Now let’s write a basic function to wrap the two pieces of codes we have written earlier to get ACS data:&lt;/p&gt;
+&lt;pre class=&#34;markdown&#34;&gt;&lt;code&gt; getAcsIncome = function(names, year, KEY = &amp;#39;YOUR_KEY&amp;#39;){
+        ## setting up API call key
+        census_api_key(apiKey, install = FALSE, overwrite = TRUE)
+        
+        ## calling get_acs()
+        get_acs(state = names, year = year, geography = &amp;#39;tract&amp;#39;, variables = &amp;#39;B19013_001&amp;#39;, 
+                                     geometry = FALSE, survey = &amp;#39;acs5&amp;#39;, show_call = TRUE)
+        }&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;I have saved my API KEY in a separate script. So I have loaded the script and using the KEY from the script to get track level data for IL from 2018 ACS5 survey.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Loading libraries and key
+library(tidycensus)
+source(&amp;#39;KEY.R&amp;#39;)
+
+# Wrapper function
+getAcsIncome = function(names, year, KEY){
+        ## setting up API call key
+        census_api_key(key = API_KEY, install = FALSE, overwrite = TRUE)
+        
+        ## calling get_acs()
+        get_acs(state = names, year = year, geography = &amp;#39;tract&amp;#39;, variables = &amp;#39;B19013_001&amp;#39;, 
+                                     geometry = FALSE, survey = &amp;#39;acs5&amp;#39;, show_call = TRUE)
+}
+
+# Calling the function and display glimpse of result 
+IL_HH_Income = getAcsIncome(names = &amp;#39;IL&amp;#39;, year = 2018, KEY = API_KEY)
+head(IL_HH_Income)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 5
+##   GEOID       NAME                                      variable  estimate   moe
+##   &amp;lt;chr&amp;gt;       &amp;lt;chr&amp;gt;                                     &amp;lt;chr&amp;gt;        &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+## 1 17001000100 Census Tract 1, Adams County, Illinois    B19013_0~    44613  6384
+## 2 17001000201 Census Tract 2.01, Adams County, Illinois B19013_0~    44878  4356
+## 3 17001000202 Census Tract 2.02, Adams County, Illinois B19013_0~    46964 10202
+## 4 17001000400 Census Tract 4, Adams County, Illinois    B19013_0~    33750  7386
+## 5 17001000500 Census Tract 5, Adams County, Illinois    B19013_0~    38526  4846
+## 6 17001000600 Census Tract 6, Adams County, Illinois    B19013_0~    51491 10117&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;making-the-state-name-input-flexible&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Making the state name input flexible&lt;/h3&gt;
+&lt;p&gt;Now we have a operating function, we’ll move to the next steps where we’ll add first set of arguments to it to make the state name input flexible.&lt;/p&gt;
+&lt;p&gt;We’ll use a built-in constant in R namely: state.abb. It includes the 50 state name abbreviations. In our customised wrapper function we’ll add changes to address these following use cases:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;download all states data when input is ‘all’/‘ALL’&lt;/li&gt;
+&lt;li&gt;download selected state(s) data when input is one/multiple state names in abbreviations&lt;/li&gt;
+&lt;li&gt;provide an error message if provided input doesn’t match any of the above two input types&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Wrapper function
+getAcsIncome = function(names, year, KEY){
+        ## setting up API call key
+        census_api_key(key = API_KEY, install = FALSE, overwrite = TRUE)
+        
+        ## setting up blank array to store state names 
+        stateNames = NULL
+        
+        # when all states are required
+        if(names %in% c(&amp;#39;all&amp;#39;, &amp;#39;ALL&amp;#39;)){
+          stateNames = state.abb
+        } 
+        
+        # when specific state or states are mentioned in names
+        else if(names %in% c(state.abb)){
+          stateNames = names
+        }
+        
+        # in any other cases
+        else{
+          print(&amp;quot;Provide a value in stateNames variable. Available options: all/ALL/any of the 50 states (abb.)&amp;quot;)
+        }
+  
+        ## calling get_acs()
+        get_acs(state = stateNames, year = year, geography = &amp;#39;tract&amp;#39;, variables = &amp;#39;B19013_001&amp;#39;, geometry = FALSE, survey = &amp;#39;acs5&amp;#39;, show_call = TRUE)
+}
+
+head(getAcsIncome(names = &amp;#39;all&amp;#39;, year = 2018, KEY = API_KEY))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 5
+##   GEOID       NAME                                      variable  estimate   moe
+##   &amp;lt;chr&amp;gt;       &amp;lt;chr&amp;gt;                                     &amp;lt;chr&amp;gt;        &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+## 1 01001020100 Census Tract 201, Autauga County, Alabama B19013_0~    58625 14777
+## 2 01001020200 Census Tract 202, Autauga County, Alabama B19013_0~    43531  6053
+## 3 01001020300 Census Tract 203, Autauga County, Alabama B19013_0~    51875  8744
+## 4 01001020400 Census Tract 204, Autauga County, Alabama B19013_0~    54050  5166
+## 5 01001020500 Census Tract 205, Autauga County, Alabama B19013_0~    72417 14919
+## 6 01001020600 Census Tract 206, Autauga County, Alabama B19013_0~    46688 13043&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;adding-fall-back-capability-in-the-year-input&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Adding fall back capability in the year input&lt;/h3&gt;
+&lt;p&gt;To add that capability we’ll use a package called &lt;em&gt;tryCatchLog&lt;/em&gt;. The basic sceleton of tryCatch() function that we’ll use is like following:&lt;/p&gt;
+&lt;pre class=&#34;markdown&#34;&gt;&lt;code&gt;
+result = tryCatch({
+    expr
+}, warning = function(w) {
+    warning-handler-code
+}, error = function(e) {
+    error-handler-code
+}, finally = {
+    cleanup-code
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Here inside the curly braces you add the code to evaluate and inside second function, following warning/error, provide the logic to execute if the first code block fails. The above skeleton was copied from this &lt;a href=&#34;http://mazamascience.com/WorkingWithData/?p=912&#34;&gt;article&lt;/a&gt;. That article has a more detailed discussion on how to apply try catch function.&lt;/p&gt;
+&lt;p&gt;In our case we’ll use trycatch function to update a variable. Then we’ll add additional code block that will run based on the value of that variable. Also if the first code block fails, we’ll print out a message where the error message will be printed starting with the date showing which year it tried.&lt;/p&gt;
+&lt;p&gt;The tryCatch block of our code inside the function will look like following:&lt;/p&gt;
+&lt;pre class=&#34;markdown&#34;&gt;&lt;code&gt;
+  # starting with variable: an.error.occured with value of FALSE
+  an.error.occured &amp;lt;- FALSE
+  tryCatch({
+    
+    # trying for current year - 2 
+    year = as.numeric(substr(Sys.Date(), start = 1, stop = 4)) - 2
+    
+    # calling api to get data
+    data = tidycensus::get_acs(state = name, year = year, geography = &amp;#39;tract&amp;#39;, variables = &amp;#39;B19013_001&amp;#39;, geometry = FALSE, survey = &amp;#39;acs5&amp;#39;, show_call = TRUE)
+    }, error = function(e) {
+    
+    # updating the variable
+    an.error.occured &amp;lt;&amp;lt;- TRUE
+    # printing out error message to be stored in log with the 
+    message(paste0(&amp;quot;Year tried: &amp;quot;, year, &amp;quot;/n&amp;quot;, e))})
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In the above block we are capturing if our first try of the code block fails. If it fails we are updating &lt;em&gt;an.error.occured&lt;/em&gt; variable to TRUE. Which will trigger the next block where we’ll use one year older year value.&lt;/p&gt;
+&lt;p&gt;Eventually the final function with the added full trycatch functionality will look like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;getAcsIncome = function(names, year, KEY){
+  
+   ## setting up API call key
+        census_api_key(key = API_KEY, install = FALSE, overwrite = TRUE)
+        
+        ## setting up blank array to store state names 
+        stateNames = NULL
+        
+        # when all states are required
+        if(names %in% c(&amp;#39;all&amp;#39;, &amp;#39;ALL&amp;#39;)){
+          stateNames = state.abb
+        } 
+        
+        # when specific state or states are mentioned in names
+        else if(names %in% c(state.abb)){
+          stateNames = names
+        }
+        
+        # in any other cases
+        else{
+          print(&amp;quot;Provide a value in stateNames variable. Available options: all/ALL/any of the 50 states (abb.)&amp;quot;)
+        }
+  
+  # starting with variable: an.error.occured with value of FALSE
+  an.error.occured &amp;lt;- FALSE
+  tryCatch({
+    
+    # calling api to get data
+    data = tidycensus::get_acs(state = stateNames, year = year, geography = &amp;#39;tract&amp;#39;, variables = &amp;#39;B19013_001&amp;#39;, geometry = FALSE, survey = &amp;#39;acs5&amp;#39;, show_call = TRUE)
+    }, error = function(e) {
+    
+    # updating the variable
+    an.error.occured &amp;lt;&amp;lt;- TRUE
+    # printing out error message to be stored in log
+    message(paste0(&amp;quot;Year tried: &amp;quot;, year, &amp;quot;\n&amp;quot;, e))})
+  
+  
+  #  try for 2 year older data
+  if(an.error.occured == TRUE){
+    year = year - 2
+    
+    # calling api to get data
+    data = tidycensus::get_acs(state = stateNames, year = year, geography = &amp;#39;tract&amp;#39;, variables = &amp;#39;B19013_001&amp;#39;, geometry = FALSE, survey = &amp;#39;acs5&amp;#39;, show_call = TRUE)
+  }
+  
+  ## returning resulting data
+  return(data)
+}
+
+head(getAcsIncome(names = &amp;#39;IL&amp;#39;, year = 2020, KEY = API_KEY))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## To install your API key for use in future sessions, run this function with `install = TRUE`.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Getting data from the 2016-2020 5-year ACS&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Census API call: https://api.census.gov/data/2020/acs/acs5?get=B19013_001E%2CB19013_001M%2CNAME&amp;amp;for=tract%3A%2A&amp;amp;in=state%3A17&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Year tried: 2020
+## Error: Your API call has errors.  The API message returned is &amp;lt;html&amp;gt;&amp;lt;head&amp;gt;&amp;lt;title&amp;gt;Error report&amp;lt;/title&amp;gt;&amp;lt;/head&amp;gt;&amp;lt;body&amp;gt;&amp;lt;h1&amp;gt;HTTP Status 404 - /data/2020/acs/acs5&amp;lt;/h1&amp;gt;&amp;lt;/body&amp;gt;&amp;lt;/html&amp;gt;.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Getting data from the 2014-2018 5-year ACS&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Census API call: https://api.census.gov/data/2018/acs/acs5?get=B19013_001E%2CB19013_001M%2CNAME&amp;amp;for=tract%3A%2A&amp;amp;in=state%3A17&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 5
+##   GEOID       NAME                                      variable  estimate   moe
+##   &amp;lt;chr&amp;gt;       &amp;lt;chr&amp;gt;                                     &amp;lt;chr&amp;gt;        &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+## 1 17001000100 Census Tract 1, Adams County, Illinois    B19013_0~    44613  6384
+## 2 17001000201 Census Tract 2.01, Adams County, Illinois B19013_0~    44878  4356
+## 3 17001000202 Census Tract 2.02, Adams County, Illinois B19013_0~    46964 10202
+## 4 17001000400 Census Tract 4, Adams County, Illinois    B19013_0~    33750  7386
+## 5 17001000500 Census Tract 5, Adams County, Illinois    B19013_0~    38526  4846
+## 6 17001000600 Census Tract 6, Adams County, Illinois    B19013_0~    51491 10117&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Among the messages printed, this following message block shows that our code block inside the trycatch function failed. Then it fell back to 2 year’s older data. The reason is the latest survey data available in ACS5 is for 2018.&lt;/p&gt;
+&lt;pre class=&#34;markdown&#34;&gt;&lt;code&gt;## Year tried: 2020
+## Error: Your API call has errors.  The API message returned is &amp;lt;html&amp;gt;&amp;lt;head&amp;gt;&amp;lt;title&amp;gt;Error report&amp;lt;/title&amp;gt;&amp;lt;/head&amp;gt;&amp;lt;body&amp;gt;&amp;lt;h1&amp;gt;HTTP Status 404 - /data/2020/acs/acs5&amp;lt;/h1&amp;gt;&amp;lt;/body&amp;gt;&amp;lt;/html&amp;gt;.&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Before we move on to adding our next argument block to overcome the final limitation, we need to make one more change. Since our eventual goal is to run this function from a server, let’s make the year input embedded inside the function.&lt;/p&gt;
+&lt;p&gt;We’ll introduce a variable named &lt;em&gt;year&lt;/em&gt; inside the function with a default value of (current year - 2) value and then in the fall back we’ll update that variable to (current year - 3). Which will make sure that whenver we run the code, it’ll ask for the 2 year older data and even if that 2 year data is not available it’ll call for 3 year older data.&lt;/p&gt;
+&lt;p&gt;Here’s the two lines of codes that will be added:&lt;/p&gt;
+&lt;pre class=&#34;markdown&#34;&gt;&lt;code&gt;# creating year variable with default value
+    year = as.numeric(substr(Sys.Date(), start = 1, stop = 4)) - 2
+    
+    #updating year variable
+    year = as.numeric(substr(Sys.Date(), start = 1, stop = 4)) - 3
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;You can see the final code chunk with that year functionality added.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;adding-a-column-for-data-and-time&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Adding a column for data and time&lt;/h3&gt;
+&lt;p&gt;This is the simplest part of this tutorial. Basically we’ll add Sys.time() as an additional column to the already fetched data.&lt;/p&gt;
+&lt;p&gt;Here’s the final code chunk:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;getAcsIncome = function(names, KEY){
+  
+   ## setting up API call key
+        census_api_key(key = API_KEY, install = FALSE, overwrite = TRUE)
+        
+        ## setting up blank array to store state names 
+        stateNames = NULL
+        
+        # when all states are required
+        if(names %in% c(&amp;#39;all&amp;#39;, &amp;#39;ALL&amp;#39;)){
+          stateNames = state.abb
+        } 
+        
+        # when specific state or states are mentioned in names
+        else if(names %in% c(state.abb)){
+          stateNames = names
+        }
+        
+        # in any other cases
+        else{
+          print(&amp;quot;Provide a value in stateNames variable. Available options: all/ALL/any of the 50 states (abb.)&amp;quot;)
+        }
+  
+  # starting with variable: an.error.occured with value of FALSE
+  an.error.occured &amp;lt;- FALSE
+  tryCatch({
+    
+    # creating year variable with default value
+    year = as.numeric(substr(Sys.Date(), start = 1, stop = 4)) - 2
+  
+    # calling api to get data
+    data = tidycensus::get_acs(state = stateNames, year = year, geography = &amp;#39;tract&amp;#39;, variables = &amp;#39;B19013_001&amp;#39;, geometry = FALSE, survey = &amp;#39;acs5&amp;#39;, show_call = TRUE)
+    }, error = function(e) {
+    
+    # updating the variable
+    an.error.occured &amp;lt;&amp;lt;- TRUE
+    # printing out error message to be stored in log
+    message(paste0(&amp;quot;Year tried: &amp;quot;, year, &amp;quot;\n&amp;quot;, e))})
+  
+  
+  #  try for 2 year older data
+  if(an.error.occured == TRUE){
+    
+    #updating year variable
+    year = as.numeric(substr(Sys.Date(), start = 1, stop = 4)) - 3
+    
+    # calling api to get data
+    data = tidycensus::get_acs(state = stateNames, year = year, geography = &amp;#39;tract&amp;#39;, variables = &amp;#39;B19013_001&amp;#39;, geometry = FALSE, survey = &amp;#39;acs5&amp;#39;, show_call = TRUE)
+  }
+  
+  # adding update data to a column
+  data$UPDATE_DATE = Sys.time()
+  
+  ## returning resulting data
+  return(data)
+}
+
+summary(getAcsIncome(names = &amp;#39;all&amp;#39;, KEY = API_KEY))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##     GEOID               NAME             variable            estimate     
+##  Length:72877       Length:72877       Length:72877       Min.   :  2499  
+##  Class :character   Class :character   Class :character   1st Qu.: 42353  
+##  Mode  :character   Mode  :character   Mode  :character   Median : 57099  
+##                                                           Mean   : 64289  
+##                                                           3rd Qu.: 78323  
+##                                                           Max.   :250001  
+##                                                           NA&amp;#39;s   :1013    
+##       moe          UPDATE_DATE                 
+##  Min.   :   550   Min.   :2020-07-10 00:03:33  
+##  1st Qu.:  6051   1st Qu.:2020-07-10 00:03:33  
+##  Median :  8711   Median :2020-07-10 00:03:33  
+##  Mean   : 10212   Mean   :2020-07-10 00:03:33  
+##  3rd Qu.: 12521   3rd Qu.:2020-07-10 00:03:33  
+##  Max.   :126054   Max.   :2020-07-10 00:03:33  
+##  NA&amp;#39;s   :1092&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;whats-next&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;What’s next?&lt;/h2&gt;
+&lt;p&gt;There are two things left now to set this script in a server to be run automatically:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Adding log file. Anytime you want to keep a script running from a server, you should consider adding logging capability to it. It’ll come real handy to debug in case the script fails.&lt;/li&gt;
+&lt;li&gt;Automating this script. One easy way in Windows is to use windows’ task scheduler. You can take a look at my other tutorial[Automate Your Repetitive Reports!]](&lt;a href=&#34;https://curious-joe.net/post/automate-your-repetitive-reports/&#34; class=&#34;uri&#34;&gt;https://curious-joe.net/post/automate-your-repetitive-reports/&lt;/a&gt;) to know detail about how to automate a script using windows task scheduler.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;US Census Bureau is a great source of data on the US population. There are all sorts of interesting data available such as unemployment data, race related data, education related data and so on. All you need to do is to go through the documentation for the variable which I linked earler, here’s &lt;a href=&#34;https://api.census.gov/data/2018/acs/acs5/variables.html&#34;&gt;again&lt;/a&gt;. Hope this tutorial makes your census bureau data exploration journey easier and more useful in case you want to use that data continuously.&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
