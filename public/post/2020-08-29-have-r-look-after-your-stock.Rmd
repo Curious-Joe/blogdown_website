@@ -1,0 +1,167 @@
+---
+title: Have R Look After Your Stocks!
+author: Arafath Hossain
+date: '2020-08-29'
+slug: have-r-look-after-your-stock
+categories:
+  - R
+tags:
+  - Automation
+  - Stock Trading
+subtitle: 'Use R to continuously check stock prices and notify you once you hit a certain profit margin.'
+description: 'If you like to dabble in the stock market as a side kick or just out of sure curiosity, you may have faced the problem of over curiosity to check your stock prices every now and then. This on and off logging in to a trading app or website can be a real attention breaker. Rather you can use R to check your stock prices continuously and set a certain profit margin target at which R will automatically send you a message to notify you!'
+image: 'https://curiousjoe.netlify.app/img/stock-trade.jpg'
+output:
+  blogdown::html_page:
+      toc: TRUE
+---
+
+>“If you don't find a way to make money while you sleep, you will work until you die.” - Warrent Buffet.
+
+If you are like one of the thusands of people who have dabbled in the stock market in the search of an money making alternative, you may have found that one of the toughest job is to be on the constnat look out for the stock price movement. In coding there is a famous priciple called "Rule of Three" that states something along the line of 
+if you have to use something more than three times, you shouldn't copy and paste the codes rather you put them in a procedure (function).
+Checking stock price is also a series of tasks that you repeat everytime you go and check the price. Which very easily can be automated using R!
+
+## Overview
+
+In this tutorial we have two broad pieces: 
+
+1. Checking stock price at a regular interval
+2. Triggering a notification when a certain condition is met (e.g. reaching a certain profit margin)
+
+For the first task we'll use a R library called 'Quantmod". Which can fetch stock price for us.  
+For the second task we'll use R library 'Twilio' which will alow us to send text message to a cell phone using free messaging service from [Twilio](https://www.twilio.com/).
+
+## Preparation
+
+Since we'll use Twilio's free SMS service, we'll first need to open a free account from Twilio's website. It's a very simple procedure. You can follow the instruction from this [article] (https://www.twilio.com/docs/usage/tutorials/how-to-use-your-free-trial-account) to open up your free account and get a free Twilio number. Make sure to get your personal phone number varified by Twilio where you want to have your stock movement notification sent. 
+
+Once you have your account set up, store these two pieces of information from your Twilio account: SID and Token. R will need to use these two pieces of information to conncet to your Twilio account.
+
+### Loading Libraries
+For this project we'll use three libraries: 
+
+- Twilio: to send message
+- Quantmod: to get stock price
+- dplyr: for data processing prcedures
+
+### Setting up Environment VAriables
+
+To use Twilio we need to set up two system environment variables in R: TWILIO_SID and TWILIO_TOKEN.
+
+We'll use Sys.setenv() function to set these environment variables as follows:
+
+>Sys.setenv(TWILIO_SID = "TWILIO_SID_NUMBER")  
+>Sys.setenv(TWILIO_TOKEN = "TWILIO_TOKEN_NUMBER")
+
+```{r}
+# LIBRARIES ----
+library(quantmod)
+library(twilio)
+library(dplyr)
+
+Sys.setenv(TWILIO_SID = 'ACf43caa6608884e01b935971dffce9d54')
+Sys.setenv(TWILIO_TOKEN = '2c68a2e9f06ac668e105f4c806374929')
+Sys.setenv(YOUR_VARIFIED_CELL_NO = "+13095309627")
+Sys.setenv(YOUR_TWILIO_CELL_NO = "+17704673483")
+
+```
+
+## Fetching Stock Price
+The main function that we'll use for our purpose is the _getQuote()_ function from the Quantmod package. For example to get the latest pricing detail about BestBuy's stock you can call the function like this: 
+
+>quantmod::getQuote('BBY') 
+
+```{r}
+quantmod::getQuote('BBY')
+```
+
+The output will show you time of the call, last price, day's opening price, highest and lowest price for the day along other information. 
+
+For our purpose we'll need to make repeated call to this function thus we'll put that _getQuote()_ inside a wrapper function which will repeatedly call this function to get the latest price of our selected stock(s). 
+
+## Sending SMS
+
+We'll use _tw_send_message()_ function from the Twilio package to send our notification message. To check if your Twilio setup is working properly, after loading the libraries and setting up system environment variables, you can call -
+
+>tw_send_message(
+  to = "YOUR_VARIFIED_CELL_NO",
+  from = "YOUR_TWILIO_CELL_NO",
+  body = body
+)
+
+Make sure your use the cell no starting with country code and with no space or special character (e.g. +100756245) in between.
+
+For our purpose, we'll need to modify the message body dynamically for every call thus we'll put this _tw_send_message()_ function inside a customised function too.
+
+## Creating the Wrapper Function
+
+### Wrapper Function for Sending SMS
+
+The following wrapper function _send_msg()_ will allow us to update the body of the message dynamically to show the stock name and updated price information.  
+
+```{r}
+# SEND MESSAGE ----
+send_msg = function(body){
+  tw_send_message(
+  to = Sys.getenv("YOUR_VARIFIED_CELL_NO"),
+  from = Sys.getenv("YOUR_TWILIO_CELL_NO"),
+  body = body
+)
+}
+```
+
+### Wrapper Function for Stock Price Check
+
+This wrapper function _stock_price_check()_ will allow us to automatically run _getQuote()_ function to get stock price detail about our desired stocks. _stock_price_check()_ is basically a while loop which will keep executing on certain intervals untill we stop the loop manually. 
+
+The tasks that will be completed inside _stock_price_check()_ look like this:
+
+> stock_price_check = function(tickers, price, quantity, threshold){  
+  while(logic){  
+  1. FETCH STOCK PRICE  
+  2. CALCULATE PROFIT  
+  3. Print the calculations on the R console  
+  4. Check if the profit meets the set threshold  
+    - If meets threshold: send a SMS  
+    - If doesn't meet threshold: do nothing  
+  5. Wait for a certain interval  
+  6. Repeat steps 1 to 5
+  }
+}
+
+```{r}
+stock_price_check = function(tickers, price, quantity, threshold = 4){
+  
+  i = 0 
+  while(i < 4){ 
+    latest_price = quantmod::getQuote(tickers)
+    latest_price[['Buy']] = c(price)
+    latest_price[["Q"]] = c(quantity)
+    latest_price[["Profit/Loss"]] = c(latest_price[["Last"]] - latest_price[["Buy"]])
+    latest_price[["Total_PL"]] = c(latest_price[["Profit/Loss"]] * latest_price[["Q"]])
+    latest_price[["Total_PL%"]] = c(round(latest_price[["Total_PL"]] / (latest_price[["Buy"]] * latest_price[["Q"]]) * 100, 2))
+    print(latest_price[c('Trade Time', 'Last', 'Buy', 'Total_PL', 'Total_PL%')])
+    cat("\n")
+    
+    df = as.data.frame(latest_price) %>%
+      filter(`Total_PL%` > threshold) 
+    
+    if(nrow(df) > 0){
+      msg = paste0(threshold, "% profit alert!\n",  
+                   paste0(rownames(df), 
+                          ": Profit %: ", df[,"Total_PL%"], 
+                          "| Total Profit: ", round(df[, "Total_PL"]),
+                          collapse = ' ; \n'))
+      send_msg(body = msg)
+      message(msg)
+    }
+      
+  Sys.sleep(300)
+  i = i + 1 # comment out this line when you run. I had to put an increment to make sure the while loop stops after 4 execusions
+  }
+}
+
+stock_price_check(tickers = c("BBY", "HPE"), price = c(114.09, 9.30), quantity = c(14, 645))
+
+```

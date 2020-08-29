@@ -1,0 +1,228 @@
+---
+title: Have R Look After Your Stocks!
+author: Arafath Hossain
+date: '2020-08-29'
+slug: have-r-look-after-your-stock
+categories:
+  - R
+tags:
+  - Automation
+  - Stock Trading
+subtitle: 'Use R to check stock prices for you and notify you.'
+description: 'If you like to dabble in the stock market as a side hustle or just out of sheer curiosity, you may have faced the dilemma of how frequently you should check your stock price. The on and off checking of price can be a real productivity killer. This tutorial will show you how you can do that constant price checking using R and have it send you a message when something interesting happens!'
+image: 'https://curiousjoe.netlify.app/img/stock-trade.jpg'
+output:
+  blogdown::html_page:
+      toc: TRUE
+---
+
+>“If you don't find a way to make money while you sleep, you will work until you die.” - Warrent Buffet.
+
+If you like to dabble in the stock market as a side hustle or just out of sheer curiosity, you may have faced the dilemma of how frequently you should check your stock price. The on and off checking of price can be a real productivity killer. If you are in that struggle bus then this article brings you good news! You can use R to do that boring job of constant checking and inform you when something interesting happens!
+
+ In the coding world, there is a very popular principle called "Rule of Three" that states something along the line of 
+
+>If you have to use something more than three times, you shouldn't copy and paste the codes rather you put them in a procedure (function).
+
+Checking stock price is also a series of tasks that you repeat every time you go and check the price. Which very easily can be automated using R!
+
+## Overview
+
+The problem scenario we are trying to solve has two broad pieces to it:
+
+1. Checking price movement of a set of stocks constantly
+2. Do something (by/sell) once something interesting (profit/loss) happens 
+
+In this tutorial we will get these two pieces done (actually partially doing the second step, since we won't do any automated stock trading) by using the following tools: 
+
+1. Continuous price check: Using getQuote() from Quantmod package,
+2. Triggering a notification to do something: Using tw_send_message() from Twilio package.
+
+
+## Preparation
+
+Since we'll use [Twilio's](https://www.twilio.com/) free SMS service, we'll first need to open a free account from Twilio's website. It's a very simple procedure. You can follow the instruction from this [video](https://www.youtube.com/watch?v=kTdMEc4LkKk#action=share) to set set up your Twilio account and get ready to use it with R. Make sure to get your personal phone number verified by Twilio to which number you want to have your stock movement notification sent.  
+
+Once you have your account set up, store these two pieces of information from your Twilio account: SID and Token. R will need to use these two pieces of information to connect to your Twilio account.
+
+### Libraries Used
+
+For this project we'll use three libraries:  
+
+- Twilio: to send message
+- Quantmod: to get the stock prices
+- dplyr: for data processing prcedures
+
+### Setting up Environment VAriables
+
+To use Twilio we need to set up two system environment variables in R: TWILIO_SID and TWILIO_TOKEN.
+
+We'll use Sys.setenv() function to set these environment variables as follows:
+
+>Sys.setenv(TWILIO_SID = "TWILIO_SID_NUMBER")  
+>Sys.setenv(TWILIO_TOKEN = "TWILIO_TOKEN_NUMBER")
+
+```{r}
+# LIBRARIES ----
+library(quantmod)
+library(twilio)
+library(dplyr)
+
+Sys.setenv(TWILIO_SID = 'ACf43caa6608884e01b935971dffce9d54')
+Sys.setenv(TWILIO_TOKEN = '2c68a2e9f06ac668e105f4c806374929')
+```
+
+```{r include=FALSE}
+Sys.setenv(YOUR_VARIFIED_CELL_NO = "+13095309627")
+Sys.setenv(YOUR_TWILIO_CELL_NO = "+17704673483")
+```
+
+## Fetching Stock Price
+
+The main function that we'll use for our purpose is the _getQuote()_ function from the Quantmod package. For example, to get the latest pricing detail about BestBuy's stock you can call the function like this: 
+
+>quantmod::getQuote('BBY') 
+
+```{r}
+quantmod::getQuote('BBY')
+```
+
+The output will show you the time of the call, last price, day's opening price, highest and lowest price for the day along with other information.
+
+For our purpose we'll need to make a repeated call to this function thus we'll put that _getQuote()_ inside a wrapper function which will repeatedly call this function to get the latest price of our selected stock(s). 
+
+## Sending SMS
+
+We'll use _tw_send_message()_ function from the Twilio package to send our notification message. To check if your Twilio setup is working properly, after loading the libraries and setting up system environment variables, you can call -
+
+>tw_send_message(
+  to = "YOUR_VARIFIED_CELL_NO",
+  from = "YOUR_TWILIO_CELL_NO",
+  body = body
+)
+
+Make sure your use the cell no starting with country code and with no space or special character (e.g. +100756245) in between.
+
+For our purpose, we'll need to modify the message body dynamically for every call thus we'll put this _tw_send_message()_ function inside a customized function too.
+
+## Creating the Wrapper Function
+
+### Wrapper Function for Sending SMS
+
+The following wrapper function _send_msg()_ will allow us to update the body of the message dynamically to show the stock name, updated price and other information.  
+
+```{r}
+# SEND MESSAGE ----
+send_msg = function(body){
+  tw_send_message(
+  to = Sys.getenv("YOUR_VARIFIED_CELL_NO"),
+  from = Sys.getenv("YOUR_TWILIO_CELL_NO"),
+  body = body
+)
+}
+```
+
+### Wrapper Function for Stock Price Check
+
+This wrapper function _stock_price_check()_ will allow us to automatically run _getQuote()_ function to get stock price detail about our desired stocks. _stock_price_check()_ is basically a while loop which will keep executing on certain intervals until the loop is stopped manually. 
+
+The tasks that will be completed inside _stock_price_check()_ look like this:
+
+> stock_price_check = function(tickers, price, quantity, threshold){  
+  while(logic){  
+  1. FETCH STOCK PRICE  
+  2. CALCULATE PROFIT  
+  3. Print the calculations on the R console  
+  4. Check if the profit meets the set threshold  
+    4.1 If meets threshold: send a SMS  
+    4.2 If doesn't meet threshold: do nothing  
+  5. Wait for a certain interval  
+  6. Repeat steps 1 to 5
+  }
+}
+
+
+```{r}
+# Fetch stock price and send SMS
+# @param tickers A String vector of stock tickers 
+# @param price A numeric vector of stock prices. In the same order of tickers
+# @param quantity A numeric vector of stock quantity purchased. In the same order of tickers
+# @param threshold A numeric input that shows the desired profit margin. Defaults to 4%
+
+
+stock_price_check = function(tickers, price, quantity, threshold = 4){
+  
+  # setting up a counter. 
+  i = 0 
+
+  
+  while(i < 2){ 
+    
+    # Step 1. Fetching stock price
+    latest_price = quantmod::getQuote(tickers)
+    
+    # Step 2. Calculating profit
+    latest_price[['Buy']] = c(price)
+    latest_price[["Q"]] = c(quantity)
+    latest_price[["Profit/Loss"]] = c(latest_price[["Last"]] - latest_price[["Buy"]])
+    latest_price[["Total_PL"]] = c(latest_price[["Profit/Loss"]] * latest_price[["Q"]])
+    latest_price[["Total_PL%"]] = c(round(latest_price[["Total_PL"]] / (latest_price[["Buy"]] * latest_price[["Q"]]) * 100, 2))
+    
+    # Stp 3. Printing out calculations in R console
+    print(latest_price[c('Trade Time', 'Last', 'Buy', 'Total_PL', 'Total_PL%')])
+    cat("\n")
+    
+    # Step 4. Checking if the profit meets desired profit threshold
+    df = as.data.frame(latest_price) %>%
+      filter(`Total_PL%` > threshold) 
+    
+    if(nrow(df) > 0){
+      # Step 4.1 Sending SMS if profit meets threshold
+      msg = paste0(threshold, "% profit alert!\n",  
+                   paste0(rownames(df), 
+                          ": Profit %: ", df[,"Total_PL%"], 
+                          "| Total Profit: ", round(df[, "Total_PL"]),
+                          collapse = ' ; \n'))
+      send_msg(body = msg)
+      message(msg)
+    }
+  
+  # Step 5. Waiting for certain interval (60 seconds)
+  Sys.sleep(60)
+
+  # Step Drop: Incrementing counter
+  i = i + 1 # comment out this line when you run. I had to put an increment to make sure the while loop stops after 4 execusions
+  }
+}
+
+```
+
+Now let's assume that we own a mini portfolio of two stocks **Best Buy** (BBY - 14 stocks purchased at $114.09) and HP Enterprise (HPE - 645 stocks purchased at $9.30). And we are interested to set up a reminder that will notify us once any of the stocks in the portfolio reaches to 4% profit margin.
+
+```{r}
+stock_price_check(tickers = c("BBY", "HPE"), price = c(114.09, 9.30), quantity = c(14, 645))
+```
+
+## Setting up an R Job:
+
+Once this function is run _stock_price_check()_ it'll keep running unless stopped. But it'll occupy the R console which may not be ideal for everyone. In case you want to keep it running in the background you can use R Studio's 'Jobs' functionality. Follow the following steps:
+
+- Go to the "Tools" section and select "Start a local job". 
+- For R script, browse to this script's location and select this script 
+- Hit Start!
+
+You should see R Studio will start the job which is basically calling this script and running it. Once it runs you should see the following two outputs: 
+
+- Your portfolio details (Trade time, latest price, your purchase price, total profit $ and profit%) are being printed every minute,
+- The SMS text that was sent to your mobile phone if a stock crossed the threshold profit margin. 
+
+
+## Limitations
+
+This is a very simple script that addresses problems for a very small stock portfolio. Some obvious and some not so obvious limitations are: 
+
+- This stock price call doens't work after hours. Once the official operation is close you'll keep getting the last price during active hours repeatedly,
+- The stock_price_check() function can be made more user friendly by adding the capability of getting portfolio details from a flat file. Which might be make it quite easy for people with larget stock portfolio. 
+
+
+

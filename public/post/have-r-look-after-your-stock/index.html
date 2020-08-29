@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="Curious Joe">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="//img/seagull.jpg">
+    <meta property="twitter:image" content="//img/seagull.jpg" />
+    
+
+    
+    <meta name="title" content="Have R Look After Your Stocks!" />
+    <meta property="og:title" content="Have R Look After Your Stocks!" />
+    <meta property="twitter:title" content="Have R Look After Your Stocks!" />
+    
+
+    
+    <meta name="description" content="If you like to dabble in the stock market as a side kick or just out of sure curiosity, you may have faced the problem of over curiosity to check your stock prices every now and then. This on and off logging in to a trading app or website can be a real attention breaker. Rather you can use R to check your stock prices continuously and set a certain profit margin target at which R will automatically send you a message to notify you!">
+    <meta property="og:description" content="If you like to dabble in the stock market as a side kick or just out of sure curiosity, you may have faced the problem of over curiosity to check your stock prices every now and then. This on and off logging in to a trading app or website can be a real attention breaker. Rather you can use R to check your stock prices continuously and set a certain profit margin target at which R will automatically send you a message to notify you!" />
+    <meta property="twitter:description" content="If you like to dabble in the stock market as a side kick or just out of sure curiosity, you may have faced the problem of over curiosity to check your stock prices every now and then. This on and off logging in to a trading app or website can be a real attention breaker. Rather you can use R to check your stock prices continuously and set a certain profit margin target at which R will automatically send you a message to notify you!" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="R, Python, Docker, Shiny, Statistics, Analysis, Data Cleaning, Programming">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>Have R Look After Your Stocks!-Arafath Hossain | Curious Joe</title>
+
+    <link rel="canonical" href="/post/have-r-look-after-your-stock/">
+
+    <link rel="stylesheet" href="/css/iDisqus.min.css"/>
+	
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+    
+    
+    <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    
+    
+
+    
+    
+    <script src="/js/jquery.min.js"></script>
+    
+    
+    <script src="/js/bootstrap.min.js"></script>
+    
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    
+
+</head>
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Curious Joe</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/r">r</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/top/about/">ABOUT</a></li>
+                    
+
+                    
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('https://curiousjoe.netlify.app/img/stock-trade.jpg')
+    }
+</style>
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/automation" title="Automation">
+                            Automation
+                        </a>
+                        
+                        <a class="tag" href="/tags/stock-trading" title="Stock Trading">
+                            Stock Trading
+                        </a>
+                        
+                    </div>
+                    <h1>Have R Look After Your Stocks!</h1>
+                    <h2 class="subheading">Use R to continuously check stock prices and notify you once you hit a certain profit margin.</h2>
+                    <span class="meta">
+                        Posted by 
+                        
+                            Arafath Hossain
+                         
+                        on 
+                        Saturday, August 29, 2020
+                        
+                        
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-11 col-lg-offset-1
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <header>
+                    <h2>TOC</h2>
+                </header>
+                
+                
+                
+
+<div id="TOC">
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#preparation">Preparation</a><ul>
+<li><a href="#loading-libraries">Loading Libraries</a></li>
+<li><a href="#setting-up-environment-variables">Setting up Environment VAriables</a></li>
+</ul></li>
+<li><a href="#fetching-stock-price">Fetching Stock Price</a></li>
+<li><a href="#sending-sms">Sending SMS</a></li>
+<li><a href="#creating-the-wrapper-function">Creating the Wrapper Function</a><ul>
+<li><a href="#wrapper-function-for-sending-sms">Wrapper Function for Sending SMS</a></li>
+<li><a href="#wrapper-function-for-stock-price-check">Wrapper Function for Stock Price Check</a></li>
+</ul></li>
+</ul>
+</div>
+
+<blockquote>
+<p>“If you don’t find a way to make money while you sleep, you will work until you die.” - Warrent Buffet.</p>
+</blockquote>
+<p>If you are like one of the thusands of people who have dabbled in the stock market in the search of an money making alternative, you may have found that one of the toughest job is to be on the constnat look out for the stock price movement. In coding there is a famous priciple called “Rule of Three” that states something along the line of
+if you have to use something more than three times, you shouldn’t copy and paste the codes rather you put them in a procedure (function).
+Checking stock price is also a series of tasks that you repeat everytime you go and check the price. Which very easily can be automated using R!</p>
+<div id="overview" class="section level2">
+<h2>Overview</h2>
+<p>In this tutorial we have two broad pieces:</p>
+<ol style="list-style-type: decimal">
+<li>Checking stock price at a regular interval</li>
+<li>Triggering a notification when a certain condition is met (e.g. reaching a certain profit margin)</li>
+</ol>
+<p>For the first task we’ll use a R library called ‘Quantmod". Which can fetch stock price for us.<br />
+For the second task we’ll use R library ’Twilio’ which will alow us to send text message to a cell phone using free messaging service from <a href="https://www.twilio.com/">Twilio</a>.</p>
+</div>
+<div id="preparation" class="section level2">
+<h2>Preparation</h2>
+<p>Since we’ll use Twilio’s free SMS service, we’ll first need to open a free account from Twilio’s website. It’s a very simple procedure. You can follow the instruction from this [article] (<a href="https://www.twilio.com/docs/usage/tutorials/how-to-use-your-free-trial-account" class="uri">https://www.twilio.com/docs/usage/tutorials/how-to-use-your-free-trial-account</a>) to open up your free account and get a free Twilio number. Make sure to get your personal phone number varified by Twilio where you want to have your stock movement notification sent.</p>
+<p>Once you have your account set up, store these two pieces of information from your Twilio account: SID and Token. R will need to use these two pieces of information to conncet to your Twilio account.</p>
+<div id="loading-libraries" class="section level3">
+<h3>Loading Libraries</h3>
+<p>For this project we’ll use three libraries:</p>
+<ul>
+<li>Twilio: to send message</li>
+<li>Quantmod: to get stock price</li>
+<li>dplyr: for data processing prcedures</li>
+</ul>
+</div>
+<div id="setting-up-environment-variables" class="section level3">
+<h3>Setting up Environment VAriables</h3>
+<p>To use Twilio we need to set up two system environment variables in R: TWILIO_SID and TWILIO_TOKEN.</p>
+<p>We’ll use Sys.setenv() function to set these environment variables as follows:</p>
+<blockquote>
+<p>Sys.setenv(TWILIO_SID = “TWILIO_SID_NUMBER”)<br />
+Sys.setenv(TWILIO_TOKEN = “TWILIO_TOKEN_NUMBER”)</p>
+</blockquote>
+<pre class="r"><code># LIBRARIES ----
+library(quantmod)</code></pre>
+<pre><code>## Loading required package: xts</code></pre>
+<pre><code>## Loading required package: zoo</code></pre>
+<pre><code>## 
+## Attaching package: &#39;zoo&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     as.Date, as.Date.numeric</code></pre>
+<pre><code>## Loading required package: TTR</code></pre>
+<pre><code>## Registered S3 method overwritten by &#39;quantmod&#39;:
+##   method            from
+##   as.zoo.data.frame zoo</code></pre>
+<pre><code>## Version 0.4-0 included new data defaults. See ?getSymbols.</code></pre>
+<pre class="r"><code>library(twilio)
+library(dplyr)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;dplyr&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:xts&#39;:
+## 
+##     first, last</code></pre>
+<pre><code>## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     filter, lag</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     intersect, setdiff, setequal, union</code></pre>
+<pre class="r"><code>Sys.setenv(TWILIO_SID = &#39;ACf43caa6608884e01b935971dffce9d54&#39;)
+Sys.setenv(TWILIO_TOKEN = &#39;2c68a2e9f06ac668e105f4c806374929&#39;)
+Sys.setenv(YOUR_VARIFIED_CELL_NO = &quot;+13095309627&quot;)
+Sys.setenv(YOUR_TWILIO_CELL_NO = &quot;+17704673483&quot;)</code></pre>
+</div>
+</div>
+<div id="fetching-stock-price" class="section level2">
+<h2>Fetching Stock Price</h2>
+<p>The main function that we’ll use for our purpose is the <em>getQuote()</em> function from the Quantmod package. For example to get the latest pricing detail about BestBuy’s stock you can call the function like this:</p>
+<blockquote>
+<p>quantmod::getQuote(‘BBY’)</p>
+</blockquote>
+<pre class="r"><code>quantmod::getQuote(&#39;BBY&#39;)</code></pre>
+<pre><code>##              Trade Time   Last     Change    % Change   Open  High    Low
+## BBY 2020-08-28 16:00:01 111.23 0.01000214 0.008993109 111.68 111.7 110.11
+##      Volume
+## BBY 2324806</code></pre>
+<p>The output will show you time of the call, last price, day’s opening price, highest and lowest price for the day along other information.</p>
+<p>For our purpose we’ll need to make repeated call to this function thus we’ll put that <em>getQuote()</em> inside a wrapper function which will repeatedly call this function to get the latest price of our selected stock(s).</p>
+</div>
+<div id="sending-sms" class="section level2">
+<h2>Sending SMS</h2>
+<p>We’ll use <em>tw_send_message()</em> function from the Twilio package to send our notification message. To check if your Twilio setup is working properly, after loading the libraries and setting up system environment variables, you can call -</p>
+<blockquote>
+<p>tw_send_message(
+to = “YOUR_VARIFIED_CELL_NO”,
+from = “YOUR_TWILIO_CELL_NO”,
+body = body
+)</p>
+</blockquote>
+<p>Make sure your use the cell no starting with country code and with no space or special character (e.g. +100756245) in between.</p>
+<p>For our purpose, we’ll need to modify the message body dynamically for every call thus we’ll put this <em>tw_send_message()</em> function inside a customised function too.</p>
+</div>
+<div id="creating-the-wrapper-function" class="section level2">
+<h2>Creating the Wrapper Function</h2>
+<div id="wrapper-function-for-sending-sms" class="section level3">
+<h3>Wrapper Function for Sending SMS</h3>
+<p>The following wrapper function <em>send_msg()</em> will allow us to update the body of the message dynamically to show the stock name and updated price information.</p>
+<pre class="r"><code># SEND MESSAGE ----
+send_msg = function(body){
+  tw_send_message(
+  to = Sys.getenv(&quot;YOUR_VARIFIED_CELL_NO&quot;),
+  from = Sys.getenv(&quot;YOUR_TWILIO_CELL_NO&quot;),
+  body = body
+)
+}</code></pre>
+</div>
+<div id="wrapper-function-for-stock-price-check" class="section level3">
+<h3>Wrapper Function for Stock Price Check</h3>
+<p>This wrapper function <em>stock_price_check()</em> will allow us to automatically run <em>getQuote()</em> function to get stock price detail about our desired stocks. <em>stock_price_check()</em> is basically a while loop which will keep executing on certain intervals untill we stop the loop manually.</p>
+<p>The tasks that will be completed inside <em>stock_price_check()</em> look like this:</p>
+<blockquote>
+<p>stock_price_check = function(tickers, price, quantity, threshold){<br />
+while(logic){<br />
+1. FETCH STOCK PRICE<br />
+2. CALCULATE PROFIT<br />
+3. Print the calculations on the R console<br />
+4. Check if the profit meets the set threshold<br />
+- If meets threshold: send a SMS<br />
+- If doesn’t meet threshold: do nothing<br />
+5. Wait for a certain interval<br />
+6. Repeat steps 1 to 5
+}
+}</p>
+</blockquote>
+<pre class="r"><code>stock_price_check = function(tickers, price, quantity, threshold = 4){
+  
+  i = 0 
+  while(i &lt; 4){ 
+    latest_price = quantmod::getQuote(tickers)
+    latest_price[[&#39;Buy&#39;]] = c(price)
+    latest_price[[&quot;Q&quot;]] = c(quantity)
+    latest_price[[&quot;Profit/Loss&quot;]] = c(latest_price[[&quot;Last&quot;]] - latest_price[[&quot;Buy&quot;]])
+    latest_price[[&quot;Total_PL&quot;]] = c(latest_price[[&quot;Profit/Loss&quot;]] * latest_price[[&quot;Q&quot;]])
+    latest_price[[&quot;Total_PL%&quot;]] = c(round(latest_price[[&quot;Total_PL&quot;]] / (latest_price[[&quot;Buy&quot;]] * latest_price[[&quot;Q&quot;]]) * 100, 2))
+    print(latest_price[c(&#39;Trade Time&#39;, &#39;Last&#39;, &#39;Buy&#39;, &#39;Total_PL&#39;, &#39;Total_PL%&#39;)])
+    cat(&quot;\n&quot;)
+    
+    df = as.data.frame(latest_price) %&gt;%
+      filter(`Total_PL%` &gt; threshold) 
+    
+    if(nrow(df) &gt; 0){
+      msg = paste0(threshold, &quot;% profit alert!\n&quot;,  
+                   paste0(rownames(df), 
+                          &quot;: Profit %: &quot;, df[,&quot;Total_PL%&quot;], 
+                          &quot;| Total Profit: &quot;, round(df[, &quot;Total_PL&quot;]),
+                          collapse = &#39; ; \n&#39;))
+      send_msg(body = msg)
+      message(msg)
+    }
+      
+  Sys.sleep(300)
+  i = i + 1 # comment out this line when you run. I had to put an increment to make sure the while loop stops after 4 execusions
+  }
+}
+
+stock_price_check(tickers = c(&quot;BBY&quot;, &quot;HPE&quot;), price = c(114.09, 9.30), quantity = c(14, 645))</code></pre>
+<pre><code>##              Trade Time   Last    Buy Total_PL Total_PL%
+## BBY 2020-08-28 16:00:01 111.23 114.09   -40.04     -2.51
+## HPE 2020-08-28 16:03:43   9.83   9.30   341.85      5.70</code></pre>
+<pre><code>## 4% profit alert!
+## HPE: Profit %: 5.7| Total Profit: 342</code></pre>
+<pre><code>##              Trade Time   Last    Buy Total_PL Total_PL%
+## BBY 2020-08-28 16:00:01 111.23 114.09   -40.04     -2.51
+## HPE 2020-08-28 16:03:43   9.83   9.30   341.85      5.70</code></pre>
+<pre><code>## 4% profit alert!
+## HPE: Profit %: 5.7| Total Profit: 342</code></pre>
+<pre><code>##              Trade Time   Last    Buy Total_PL Total_PL%
+## BBY 2020-08-28 16:00:01 111.23 114.09   -40.04     -2.51
+## HPE 2020-08-28 16:03:43   9.83   9.30   341.85      5.70</code></pre>
+<pre><code>## 4% profit alert!
+## HPE: Profit %: 5.7| Total Profit: 342</code></pre>
+<pre><code>##              Trade Time   Last    Buy Total_PL Total_PL%
+## BBY 2020-08-28 16:00:01 111.23 114.09   -40.04     -2.51
+## HPE 2020-08-28 16:03:43   9.83   9.30   341.85      5.70</code></pre>
+<pre><code>## 4% profit alert!
+## HPE: Profit %: 5.7| Total Profit: 342</code></pre>
+</div>
+</div>
+
+
+                
+
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/post/automatically-build-data-tables-from-us-census-survey/" data-toggle="tooltip" data-placement="top" title="Automatically Build Data Tables from US Census Survey!">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                </ul>
+
+                
+<div id="disqus-comment"></div>
+
+
+
+            </div>
+            
+            <div class="
+                col-lg-11 col-lg-offset-1
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        <a href="/tags/automation" title="automation">
+                            automation
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/tutorial" title="tutorial">
+                            tutorial
+                        </a>
+                        
+                        
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                   
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="Curious Joe" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fa fa-circle fa-stack-2x"></i>
+                               <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+                   
+                    
+                    <li>
+                        <a href="mailto:a.h.fahad90@gmail.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		    
+                    
+                    
+                    
+                    
+
+                    
+		    
+		    
+		    
+                    
+                    
+                    
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://www.linkedin.com/in/arafath-hossain/">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		    
+		    
+    		           
+                   <li>
+                       <a target="_blank" href="https://www.youtube.com/channel/UCF77K-Qu-QoBfu6ccbJM9dA?view_as=subscriber">
+                           <span class="fa-stack fa-lg">
+                               <i class="fa fa-circle fa-stack-2x"></i>
+                               <i class="fa fa-youtube fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+               
+
+		    
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+                </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; Curious Joe 2020
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    async("https://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+</body>
+</html>
