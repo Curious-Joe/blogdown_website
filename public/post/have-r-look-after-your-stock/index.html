@@ -21,9 +21,9 @@
     
 
     
-    <meta name="description" content="If you like to dabble in the stock market as a side kick or just out of sure curiosity, you may have faced the problem of over curiosity to check your stock prices every now and then. This on and off logging in to a trading app or website can be a real attention breaker. Rather you can use R to check your stock prices continuously and set a certain profit margin target at which R will automatically send you a message to notify you!">
-    <meta property="og:description" content="If you like to dabble in the stock market as a side kick or just out of sure curiosity, you may have faced the problem of over curiosity to check your stock prices every now and then. This on and off logging in to a trading app or website can be a real attention breaker. Rather you can use R to check your stock prices continuously and set a certain profit margin target at which R will automatically send you a message to notify you!" />
-    <meta property="twitter:description" content="If you like to dabble in the stock market as a side kick or just out of sure curiosity, you may have faced the problem of over curiosity to check your stock prices every now and then. This on and off logging in to a trading app or website can be a real attention breaker. Rather you can use R to check your stock prices continuously and set a certain profit margin target at which R will automatically send you a message to notify you!" />
+    <meta name="description" content="If you like to dabble in the stock market as a side hustle or just out of sheer curiosity, you may have faced the dilemma of how frequently you should check your stock price. The on and off checking of price can be a real productivity killer. This tutorial will show you how you can do that constant price checking using R and have it send you a message when something interesting happens!">
+    <meta property="og:description" content="If you like to dabble in the stock market as a side hustle or just out of sheer curiosity, you may have faced the dilemma of how frequently you should check your stock price. The on and off checking of price can be a real productivity killer. This tutorial will show you how you can do that constant price checking using R and have it send you a message when something interesting happens!" />
+    <meta property="twitter:description" content="If you like to dabble in the stock market as a side hustle or just out of sheer curiosity, you may have faced the dilemma of how frequently you should check your stock price. The on and off checking of price can be a real productivity killer. This tutorial will show you how you can do that constant price checking using R and have it send you a message when something interesting happens!" />
     
 
     
@@ -167,7 +167,7 @@
                         
                     </div>
                     <h1>Have R Look After Your Stocks!</h1>
-                    <h2 class="subheading">Use R to continuously check stock prices and notify you once you hit a certain profit margin.</h2>
+                    <h2 class="subheading">Use R to check stock prices for you and notify you.</h2>
                     <span class="meta">
                         Posted by 
                         
@@ -210,7 +210,7 @@
 <ul>
 <li><a href="#overview">Overview</a></li>
 <li><a href="#preparation">Preparation</a><ul>
-<li><a href="#loading-libraries">Loading Libraries</a></li>
+<li><a href="#libraries-used">Libraries Used</a></li>
 <li><a href="#setting-up-environment-variables">Setting up Environment VAriables</a></li>
 </ul></li>
 <li><a href="#fetching-stock-price">Fetching Stock Price</a></li>
@@ -219,35 +219,43 @@
 <li><a href="#wrapper-function-for-sending-sms">Wrapper Function for Sending SMS</a></li>
 <li><a href="#wrapper-function-for-stock-price-check">Wrapper Function for Stock Price Check</a></li>
 </ul></li>
+<li><a href="#setting-up-an-r-job">Setting up an R Job:</a></li>
+<li><a href="#limitations">Limitations</a></li>
 </ul>
 </div>
 
 <blockquote>
 <p>“If you don’t find a way to make money while you sleep, you will work until you die.” - Warrent Buffet.</p>
 </blockquote>
-<p>If you are like one of the thusands of people who have dabbled in the stock market in the search of an money making alternative, you may have found that one of the toughest job is to be on the constnat look out for the stock price movement. In coding there is a famous priciple called “Rule of Three” that states something along the line of
-if you have to use something more than three times, you shouldn’t copy and paste the codes rather you put them in a procedure (function).
-Checking stock price is also a series of tasks that you repeat everytime you go and check the price. Which very easily can be automated using R!</p>
+<p>If you like to dabble in the stock market as a side hustle or just out of sheer curiosity, you may have faced the dilemma of how frequently you should check your stock price. The on and off checking of price can be a real productivity killer. If you are in that struggle bus then this article brings you good news! You can use R to do that boring job of constant checking and inform you when something interesting happens!</p>
+<p>In the coding world, there is a very popular principle called “Rule of Three” that states something along the line of</p>
+<blockquote>
+<p>If you have to use something more than three times, you shouldn’t copy and paste the codes rather you put them in a procedure (function).</p>
+</blockquote>
+<p>Checking stock price is also a series of tasks that you repeat every time you go and check the price. Which very easily can be automated using R!</p>
 <div id="overview" class="section level2">
 <h2>Overview</h2>
-<p>In this tutorial we have two broad pieces:</p>
+<p>The problem scenario we are trying to solve has two broad pieces to it:</p>
 <ol style="list-style-type: decimal">
-<li>Checking stock price at a regular interval</li>
-<li>Triggering a notification when a certain condition is met (e.g. reaching a certain profit margin)</li>
+<li>Checking price movement of a set of stocks constantly</li>
+<li>Do something (by/sell) once something interesting (profit/loss) happens</li>
 </ol>
-<p>For the first task we’ll use a R library called ‘Quantmod". Which can fetch stock price for us.<br />
-For the second task we’ll use R library ’Twilio’ which will alow us to send text message to a cell phone using free messaging service from <a href="https://www.twilio.com/">Twilio</a>.</p>
+<p>In this tutorial we will get these two pieces done (actually partially doing the second step, since we won’t do any automated stock trading) by using the following tools:</p>
+<ol style="list-style-type: decimal">
+<li>Continuous price check: Using getQuote() from Quantmod package,</li>
+<li>Triggering a notification to do something: Using tw_send_message() from Twilio package.</li>
+</ol>
 </div>
 <div id="preparation" class="section level2">
 <h2>Preparation</h2>
-<p>Since we’ll use Twilio’s free SMS service, we’ll first need to open a free account from Twilio’s website. It’s a very simple procedure. You can follow the instruction from this [article] (<a href="https://www.twilio.com/docs/usage/tutorials/how-to-use-your-free-trial-account" class="uri">https://www.twilio.com/docs/usage/tutorials/how-to-use-your-free-trial-account</a>) to open up your free account and get a free Twilio number. Make sure to get your personal phone number varified by Twilio where you want to have your stock movement notification sent.</p>
-<p>Once you have your account set up, store these two pieces of information from your Twilio account: SID and Token. R will need to use these two pieces of information to conncet to your Twilio account.</p>
-<div id="loading-libraries" class="section level3">
-<h3>Loading Libraries</h3>
+<p>Since we’ll use <a href="https://www.twilio.com/">Twilio’s</a> free SMS service, we’ll first need to open a free account from Twilio’s website. It’s a very simple procedure. You can follow the instruction from this <a href="https://www.youtube.com/watch?v=kTdMEc4LkKk#action=share">video</a> to set set up your Twilio account and get ready to use it with R. Make sure to get your personal phone number verified by Twilio to which number you want to have your stock movement notification sent.</p>
+<p>Once you have your account set up, store these two pieces of information from your Twilio account: SID and Token. R will need to use these two pieces of information to connect to your Twilio account.</p>
+<div id="libraries-used" class="section level3">
+<h3>Libraries Used</h3>
 <p>For this project we’ll use three libraries:</p>
 <ul>
 <li>Twilio: to send message</li>
-<li>Quantmod: to get stock price</li>
+<li>Quantmod: to get the stock prices</li>
 <li>dplyr: for data processing prcedures</li>
 </ul>
 </div>
@@ -260,41 +268,17 @@ For the second task we’ll use R library ’Twilio’ which will alow us to sen
 Sys.setenv(TWILIO_TOKEN = “TWILIO_TOKEN_NUMBER”)</p>
 </blockquote>
 <pre class="r"><code># LIBRARIES ----
-library(quantmod)</code></pre>
-<pre><code>## Loading required package: xts</code></pre>
-<pre><code>## Loading required package: zoo</code></pre>
-<pre><code>## 
-## Attaching package: &#39;zoo&#39;</code></pre>
-<pre><code>## The following objects are masked from &#39;package:base&#39;:
-## 
-##     as.Date, as.Date.numeric</code></pre>
-<pre><code>## Loading required package: TTR</code></pre>
-<pre><code>## Registered S3 method overwritten by &#39;quantmod&#39;:
-##   method            from
-##   as.zoo.data.frame zoo</code></pre>
-<pre><code>## Version 0.4-0 included new data defaults. See ?getSymbols.</code></pre>
-<pre class="r"><code>library(twilio)
-library(dplyr)</code></pre>
-<pre><code>## 
-## Attaching package: &#39;dplyr&#39;</code></pre>
-<pre><code>## The following objects are masked from &#39;package:xts&#39;:
-## 
-##     first, last</code></pre>
-<pre><code>## The following objects are masked from &#39;package:stats&#39;:
-## 
-##     filter, lag</code></pre>
-<pre><code>## The following objects are masked from &#39;package:base&#39;:
-## 
-##     intersect, setdiff, setequal, union</code></pre>
-<pre class="r"><code>Sys.setenv(TWILIO_SID = &#39;ACf43caa6608884e01b935971dffce9d54&#39;)
-Sys.setenv(TWILIO_TOKEN = &#39;2c68a2e9f06ac668e105f4c806374929&#39;)
-Sys.setenv(YOUR_VARIFIED_CELL_NO = &quot;+13095309627&quot;)
-Sys.setenv(YOUR_TWILIO_CELL_NO = &quot;+17704673483&quot;)</code></pre>
+library(quantmod)
+library(twilio)
+library(dplyr)
+
+Sys.setenv(TWILIO_SID = &#39;ACf43caa6608884e01b935971dffce9d54&#39;)
+Sys.setenv(TWILIO_TOKEN = &#39;2c68a2e9f06ac668e105f4c806374929&#39;)</code></pre>
 </div>
 </div>
 <div id="fetching-stock-price" class="section level2">
 <h2>Fetching Stock Price</h2>
-<p>The main function that we’ll use for our purpose is the <em>getQuote()</em> function from the Quantmod package. For example to get the latest pricing detail about BestBuy’s stock you can call the function like this:</p>
+<p>The main function that we’ll use for our purpose is the <em>getQuote()</em> function from the Quantmod package. For example, to get the latest pricing detail about BestBuy’s stock you can call the function like this:</p>
 <blockquote>
 <p>quantmod::getQuote(‘BBY’)</p>
 </blockquote>
@@ -303,8 +287,8 @@ Sys.setenv(YOUR_TWILIO_CELL_NO = &quot;+17704673483&quot;)</code></pre>
 ## BBY 2020-08-28 16:00:01 111.23 0.01000214 0.008993109 111.68 111.7 110.11
 ##      Volume
 ## BBY 2324806</code></pre>
-<p>The output will show you time of the call, last price, day’s opening price, highest and lowest price for the day along other information.</p>
-<p>For our purpose we’ll need to make repeated call to this function thus we’ll put that <em>getQuote()</em> inside a wrapper function which will repeatedly call this function to get the latest price of our selected stock(s).</p>
+<p>The output will show you the time of the call, last price, day’s opening price, highest and lowest price for the day along with other information.</p>
+<p>For our purpose we’ll need to make a repeated call to this function thus we’ll put that <em>getQuote()</em> inside a wrapper function which will repeatedly call this function to get the latest price of our selected stock(s).</p>
 </div>
 <div id="sending-sms" class="section level2">
 <h2>Sending SMS</h2>
@@ -317,13 +301,13 @@ body = body
 )</p>
 </blockquote>
 <p>Make sure your use the cell no starting with country code and with no space or special character (e.g. +100756245) in between.</p>
-<p>For our purpose, we’ll need to modify the message body dynamically for every call thus we’ll put this <em>tw_send_message()</em> function inside a customised function too.</p>
+<p>For our purpose, we’ll need to modify the message body dynamically for every call thus we’ll put this <em>tw_send_message()</em> function inside a customized function too.</p>
 </div>
 <div id="creating-the-wrapper-function" class="section level2">
 <h2>Creating the Wrapper Function</h2>
 <div id="wrapper-function-for-sending-sms" class="section level3">
 <h3>Wrapper Function for Sending SMS</h3>
-<p>The following wrapper function <em>send_msg()</em> will allow us to update the body of the message dynamically to show the stock name and updated price information.</p>
+<p>The following wrapper function <em>send_msg()</em> will allow us to update the body of the message dynamically to show the stock name, updated price and other information.</p>
 <pre class="r"><code># SEND MESSAGE ----
 send_msg = function(body){
   tw_send_message(
@@ -335,39 +319,57 @@ send_msg = function(body){
 </div>
 <div id="wrapper-function-for-stock-price-check" class="section level3">
 <h3>Wrapper Function for Stock Price Check</h3>
-<p>This wrapper function <em>stock_price_check()</em> will allow us to automatically run <em>getQuote()</em> function to get stock price detail about our desired stocks. <em>stock_price_check()</em> is basically a while loop which will keep executing on certain intervals untill we stop the loop manually.</p>
+<p>This wrapper function <em>stock_price_check()</em> will allow us to automatically run <em>getQuote()</em> function to get stock price detail about our desired stocks. <em>stock_price_check()</em> is basically a while loop which will keep executing on certain intervals until the loop is stopped manually.</p>
 <p>The tasks that will be completed inside <em>stock_price_check()</em> look like this:</p>
 <blockquote>
 <p>stock_price_check = function(tickers, price, quantity, threshold){<br />
 while(logic){<br />
-1. FETCH STOCK PRICE<br />
-2. CALCULATE PROFIT<br />
-3. Print the calculations on the R console<br />
-4. Check if the profit meets the set threshold<br />
-- If meets threshold: send a SMS<br />
-- If doesn’t meet threshold: do nothing<br />
-5. Wait for a certain interval<br />
-6. Repeat steps 1 to 5
+1. Fetch Stock Price<br />
+2. Calculate Profit
+3. Print the Calculations in the R Console<br />
+4. Check if the Profit Meets the Set Threshold<br />
+4.1 If meets threshold: send a SMS<br />
+4.2 If doesn’t meet threshold: do nothing<br />
+5. Wait for a Certain Interval<br />
+6. Repeat Steps 1 to 5
 }
 }</p>
 </blockquote>
-<pre class="r"><code>stock_price_check = function(tickers, price, quantity, threshold = 4){
+<pre class="r"><code># Fetch stock price and send SMS
+# @param tickers A String vector of stock tickers 
+# @param price A numeric vector of stock prices. In the same order of tickers
+# @param quantity A numeric vector of stock quantity purchased. In the same order of tickers
+# @param threshold A numeric input that shows the desired profit margin. Defaults to 4%
+
+
+stock_price_check = function(tickers, price, quantity, threshold = 4){
   
+  # setting up a counter. 
   i = 0 
-  while(i &lt; 4){ 
+
+  
+  while(i &lt; 2){ 
+    
+    # Step 1. Fetching stock price
     latest_price = quantmod::getQuote(tickers)
+    
+    # Step 2. Calculating profit
     latest_price[[&#39;Buy&#39;]] = c(price)
     latest_price[[&quot;Q&quot;]] = c(quantity)
     latest_price[[&quot;Profit/Loss&quot;]] = c(latest_price[[&quot;Last&quot;]] - latest_price[[&quot;Buy&quot;]])
     latest_price[[&quot;Total_PL&quot;]] = c(latest_price[[&quot;Profit/Loss&quot;]] * latest_price[[&quot;Q&quot;]])
     latest_price[[&quot;Total_PL%&quot;]] = c(round(latest_price[[&quot;Total_PL&quot;]] / (latest_price[[&quot;Buy&quot;]] * latest_price[[&quot;Q&quot;]]) * 100, 2))
+    
+    # Stp 3. Printing out calculations in R console
     print(latest_price[c(&#39;Trade Time&#39;, &#39;Last&#39;, &#39;Buy&#39;, &#39;Total_PL&#39;, &#39;Total_PL%&#39;)])
     cat(&quot;\n&quot;)
     
+    # Step 4. Checking if the profit meets desired profit threshold
     df = as.data.frame(latest_price) %&gt;%
       filter(`Total_PL%` &gt; threshold) 
     
     if(nrow(df) &gt; 0){
+      # Step 4.1 Sending SMS if profit meets threshold
       msg = paste0(threshold, &quot;% profit alert!\n&quot;,  
                    paste0(rownames(df), 
                           &quot;: Profit %: &quot;, df[,&quot;Total_PL%&quot;], 
@@ -376,23 +378,17 @@ while(logic){<br />
       send_msg(body = msg)
       message(msg)
     }
-      
-  Sys.sleep(300)
+  
+  # Step 5. Waiting for certain interval (60 seconds)
+  Sys.sleep(60)
+
+  # Step Drop: Incrementing counter
   i = i + 1 # comment out this line when you run. I had to put an increment to make sure the while loop stops after 4 execusions
   }
-}
-
-stock_price_check(tickers = c(&quot;BBY&quot;, &quot;HPE&quot;), price = c(114.09, 9.30), quantity = c(14, 645))</code></pre>
-<pre><code>##              Trade Time   Last    Buy Total_PL Total_PL%
-## BBY 2020-08-28 16:00:01 111.23 114.09   -40.04     -2.51
-## HPE 2020-08-28 16:03:43   9.83   9.30   341.85      5.70</code></pre>
-<pre><code>## 4% profit alert!
-## HPE: Profit %: 5.7| Total Profit: 342</code></pre>
-<pre><code>##              Trade Time   Last    Buy Total_PL Total_PL%
-## BBY 2020-08-28 16:00:01 111.23 114.09   -40.04     -2.51
-## HPE 2020-08-28 16:03:43   9.83   9.30   341.85      5.70</code></pre>
-<pre><code>## 4% profit alert!
-## HPE: Profit %: 5.7| Total Profit: 342</code></pre>
+}</code></pre>
+<p>Now let’s assume that we own a mini portfolio of two stocks <strong>Best Buy</strong> (BBY - 14 stocks purchased at $114.09) and <strong>HP Enterprise</strong> (HPE - 645 stocks purchased at $9.30). And we are interested to set up a reminder that will notify us once any of the stocks in the portfolio reaches to 4% profit margin.</p>
+<p><strong>Note</strong> that I have set the function to run only twice. Make sure the comment out the counter increment inside the function.</p>
+<pre class="r"><code>stock_price_check(tickers = c(&quot;BBY&quot;, &quot;HPE&quot;), price = c(114.09, 9.30), quantity = c(14, 645))</code></pre>
 <pre><code>##              Trade Time   Last    Buy Total_PL Total_PL%
 ## BBY 2020-08-28 16:00:01 111.23 114.09   -40.04     -2.51
 ## HPE 2020-08-28 16:03:43   9.83   9.30   341.85      5.70</code></pre>
@@ -404,6 +400,28 @@ stock_price_check(tickers = c(&quot;BBY&quot;, &quot;HPE&quot;), price = c(114.0
 <pre><code>## 4% profit alert!
 ## HPE: Profit %: 5.7| Total Profit: 342</code></pre>
 </div>
+</div>
+<div id="setting-up-an-r-job" class="section level2">
+<h2>Setting up an R Job:</h2>
+<p>Once this function is run <em>stock_price_check()</em> it’ll keep running unless stopped. But it’ll occupy the R console which may not be ideal for everyone. In case you want to keep it running in the background you can use R Studio’s ‘Jobs’ functionality. Follow the following steps:</p>
+<ul>
+<li>Go to the “Tools” section and select “Start a local job”.</li>
+<li>For R script, browse to this script’s location and select this script</li>
+<li>Hit Start!</li>
+</ul>
+<p>You should see R Studio will start the job which is basically calling this script and running it. Once it runs you should see the following two outputs:</p>
+<ul>
+<li>Your portfolio details (Trade time, latest price, your purchase price, total profit $ and profit%) are being printed every minute,</li>
+<li>The SMS text that was sent to your mobile phone if a stock crossed the threshold profit margin.</li>
+</ul>
+</div>
+<div id="limitations" class="section level2">
+<h2>Limitations</h2>
+<p>This is a very simple script that addresses problems for a very small stock portfolio. Some obvious and some not so obvious limitations are:</p>
+<ul>
+<li>This stock price call doens’t work after hours. Once the official operation is close you’ll keep getting the last price during active hours repeatedly,</li>
+<li>The stock_price_check() function can be made more user friendly by adding the capability of getting portfolio details from a flat file. Which might be make it quite easy for people with larget stock portfolio.</li>
+</ul>
 </div>
 
 

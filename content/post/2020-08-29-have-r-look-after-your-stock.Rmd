@@ -62,7 +62,7 @@ We'll use Sys.setenv() function to set these environment variables as follows:
 >Sys.setenv(TWILIO_SID = "TWILIO_SID_NUMBER")  
 >Sys.setenv(TWILIO_TOKEN = "TWILIO_TOKEN_NUMBER")
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 # LIBRARIES ----
 library(quantmod)
 library(twilio)
@@ -130,14 +130,14 @@ The tasks that will be completed inside _stock_price_check()_ look like this:
 
 > stock_price_check = function(tickers, price, quantity, threshold){  
   while(logic){  
-  1. FETCH STOCK PRICE  
-  2. CALCULATE PROFIT  
-  3. Print the calculations on the R console  
-  4. Check if the profit meets the set threshold  
+  1. Fetch Stock Price  
+  2. Calculate Profit 
+  3. Print the Calculations in the R Console  
+  4. Check if the Profit Meets the Set Threshold  
     4.1 If meets threshold: send a SMS  
     4.2 If doesn't meet threshold: do nothing  
-  5. Wait for a certain interval  
-  6. Repeat steps 1 to 5
+  5. Wait for a Certain Interval  
+  6. Repeat Steps 1 to 5
   }
 }
 
@@ -197,7 +197,9 @@ stock_price_check = function(tickers, price, quantity, threshold = 4){
 
 ```
 
-Now let's assume that we own a mini portfolio of two stocks **Best Buy** (BBY - 14 stocks purchased at $114.09) and HP Enterprise (HPE - 645 stocks purchased at $9.30). And we are interested to set up a reminder that will notify us once any of the stocks in the portfolio reaches to 4% profit margin.
+Now let's assume that we own a mini portfolio of two stocks **Best Buy** (BBY - 14 stocks purchased at $114.09) and **HP Enterprise** (HPE - 645 stocks purchased at $9.30). And we are interested to set up a reminder that will notify us once any of the stocks in the portfolio reaches to 4% profit margin.
+
+**Note** that I have set the function to run only twice. Make sure the comment out the counter increment inside the function.
 
 ```{r}
 stock_price_check(tickers = c("BBY", "HPE"), price = c(114.09, 9.30), quantity = c(14, 645))
