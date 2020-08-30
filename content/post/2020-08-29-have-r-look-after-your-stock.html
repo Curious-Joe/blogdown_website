@@ -8,9 +8,10 @@ categories:
 tags:
   - Automation
   - Stock Trading
+  - Tutorial
 subtitle: 'Use R to check stock prices for you and notify you.'
 description: 'If you like to dabble in the stock market as a side hustle or just out of sheer curiosity, you may have faced the dilemma of how frequently you should check your stock price. The on and off checking of price can be a real productivity killer. This tutorial will show you how you can do that constant price checking using R and have it send you a message when something interesting happens!'
-image: 'https://curiousjoe.netlify.app/img/stock-trade.jpg'
+image: '/img/stock-trade_02.jpg'
 output:
   blogdown::html_page:
       toc: TRUE
@@ -22,7 +23,7 @@ output:
 <li><a href="#overview">Overview</a></li>
 <li><a href="#preparation">Preparation</a><ul>
 <li><a href="#libraries-used">Libraries Used</a></li>
-<li><a href="#setting-up-environment-variables">Setting up Environment VAriables</a></li>
+<li><a href="#setting-up-environment-variables">Setting up Environment Variables</a></li>
 </ul></li>
 <li><a href="#fetching-stock-price">Fetching Stock Price</a></li>
 <li><a href="#sending-sms">Sending SMS</a></li>
@@ -71,7 +72,7 @@ output:
 </ul>
 </div>
 <div id="setting-up-environment-variables" class="section level3">
-<h3>Setting up Environment VAriables</h3>
+<h3>Setting up Environment Variables</h3>
 <p>To use Twilio we need to set up two system environment variables in R: TWILIO_SID and TWILIO_TOKEN.</p>
 <p>We’ll use Sys.setenv() function to set these environment variables as follows:</p>
 <blockquote>

@@ -23,7 +23,7 @@
 &lt;li&gt;&lt;a href=&#34;#overview&#34;&gt;Overview&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#preparation&#34;&gt;Preparation&lt;/a&gt;&lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#libraries-used&#34;&gt;Libraries Used&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#setting-up-environment-variables&#34;&gt;Setting up Environment VAriables&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#setting-up-environment-variables&#34;&gt;Setting up Environment Variables&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#fetching-stock-price&#34;&gt;Fetching Stock Price&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#sending-sms&#34;&gt;Sending SMS&lt;/a&gt;&lt;/li&gt;
@@ -72,7 +72,7 @@
 &lt;/ul&gt;
 &lt;/div&gt;
 &lt;div id=&#34;setting-up-environment-variables&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Setting up Environment VAriables&lt;/h3&gt;
+&lt;h3&gt;Setting up Environment Variables&lt;/h3&gt;
 &lt;p&gt;To use Twilio we need to set up two system environment variables in R: TWILIO_SID and TWILIO_TOKEN.&lt;/p&gt;
 &lt;p&gt;We’ll use Sys.setenv() function to set these environment variables as follows:&lt;/p&gt;
 &lt;blockquote&gt;

@@ -8,9 +8,10 @@ categories:
 tags:
   - Automation
   - Stock Trading
+  - Tutorial
 subtitle: 'Use R to check stock prices for you and notify you.'
 description: 'If you like to dabble in the stock market as a side hustle or just out of sheer curiosity, you may have faced the dilemma of how frequently you should check your stock price. The on and off checking of price can be a real productivity killer. This tutorial will show you how you can do that constant price checking using R and have it send you a message when something interesting happens!'
-image: 'https://curiousjoe.netlify.app/img/stock-trade.jpg'
+image: '/img/stock-trade_02.jpg'
 output:
   blogdown::html_page:
       toc: TRUE
@@ -53,7 +54,7 @@ For this project we'll use three libraries:
 - Quantmod: to get the stock prices
 - dplyr: for data processing prcedures
 
-### Setting up Environment VAriables
+### Setting up Environment Variables
 
 To use Twilio we need to set up two system environment variables in R: TWILIO_SID and TWILIO_TOKEN.
 
