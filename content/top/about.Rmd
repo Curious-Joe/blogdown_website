@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-<img src="/img/profile_pic_3.png" width="250" height='300'/>  
+<img src="/img/PP_UP_MI.jpg" width="250" height='300'/>  
 
 Hi there! Thanks for visiting my blog!  
 

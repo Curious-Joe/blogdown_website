@@ -41,7 +41,7 @@ home = ["HTML", "RSS"]
   # Sidebar settings
   sidebar_about_description = "Data science and technology enthusiast"
   #sidebar_avatar = "img/avatar-zhaohuabing.jpg"      # use absolute URL, seeing it's used in both `/` and `/about/`
-  sidebar_avatar = "img/profile_pic.png"      # use absolute URL, seeing it's used in both `/` and `/about/`
+  sidebar_avatar = "img/PP_UP_MI.jpg"      # use absolute URL, seeing it's used in both `/` and `/about/`
 
   featured_tags = true 
   featured_condition_size = 1 
