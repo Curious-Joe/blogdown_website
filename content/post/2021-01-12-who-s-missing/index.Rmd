@@ -1,0 +1,95 @@
+---
+title: Who's Missing?
+author: Arafath Hossain
+date: '2021-01-12'
+slug: who-s-missing
+categories:
+  - Python
+tags:
+  - Data Wrangling
+  - Python Function
+subtitle: 'Writing a Python utility function to calculate feature wise missing values.'
+description: 'This is mostly a tutorial about how to write utility functions in Python considering finding out missing values as a use case.'
+image: 'https://images.unsplash.com/photo-1586834149001-6268dea43e81?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80'
+output:
+  blogdown::html_page:
+      toc: TRUE
+---
+
+```{r set_up, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, error = FALSE)
+```
+
+
+Finding out what's missing in the data is a typical sad story of every data person's daily life. In data lingo we call them _missing data_. Though you may not miss that missing data, if not pointed out and handled properly those missing data can come and haunt you in the long run!
+
+In Python there is simple one line of code that can point out the missing data `python data.isnull().sum`. But this produces total count of missing values for all feature whether the feature has any missing value or not. Which means, if you work with a dataset that contains bunch of features, this one line of code is going to make your notebook look ugly in no time. 
+
+To overcome that in this tutorial we will see how we can write a simple utility function that will calculate missing values from the features in our dataset and return a data frame with only the features with missing values and their count of missing values. 
+
+```{r library}
+library(reticulate)
+library(tidyverse)
+```
+
+## Data
+
+For demonstration, we will use iris dataset and introduce some _NA_ values (missing values in R's language). 
+
+```{r data}
+data <- iris
+data = data %>% mutate(Sepal.Width = ifelse(Sepal.Length >7, NA, Sepal.Width))
+data = data %>% mutate(Sepal.Length = ifelse(Sepal.Length >7, NA, Sepal.Length))
+```
+
+
+In the code we have removed values for Sepal.Width and Sepal.Length features when Sepal.Length value is larger than 7. Which result in `r sum(is.na(data))` rows with missing values.
+
+## Python Function
+
+```{python libraries, warning = FALSE, message = FALSE}
+import pandas as pd
+```
+
+Inside the function, we will look for null values using _isnull()_ function from _pandas_ library. We will iterate over the features of the dataset. And create a data frame with the feature names and total missing value count from the features that have missing value. In the end, this created dataset will be returned as return value of the function. 
+
+```{python function}
+
+# @ countMissing
+# Fetches columns from the spefied dataset that contains missing values
+# @param dataFrame Name of the dataframe object
+
+def countMissing(dataFrame):
+    colNames = ['colNames', 'missingValue', 'missingValuePerc']
+    df = pd.DataFrame(columns = colNames)
+    for i in dataFrame.columns:
+        p = round((dataFrame[i].isnull().sum()/dataFrame.shape[0]) * 100, 2)
+        q = round(dataFrame[i].isnull().sum(), 0)
+        if p > 0:
+            df.loc[len(df)] = [i, q, p]
+    # creating data frame with the missing value columns and values   
+    df = df.sort_values(['missingValuePerc'], ascending = False).reset_index(drop=True)
+    return(df)
+
+```
+
+## Demo
+
+```{python}
+table = countMissing(r.data)
+```
+
+
+```{r}
+knitr::kable(py$table, caption = "Missing Values", 
+             col.names = c("Featuers", "Missing Value", "Percentage of Missing Value")) %>%
+  kableExtra::kable_styling(full_width = F) %>%
+  kableExtra::kable_classic()
+```
+
+To show what difference this utility function makes compared to using isnull().sum(), here's the output using that:  
+
+```{python}
+r.data.isnull().sum()
+```
+
