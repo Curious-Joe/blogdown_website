@@ -202,7 +202,7 @@ Now let's assume that we own a mini portfolio of two stocks **Best Buy** (BBY - 
 
 **Note** that I have set the function to run only twice. Make sure the comment out the counter increment inside the function.
 
-```{r}
+```{r eval=FALSE}
 stock_price_check(tickers = c("BBY", "HPE"), price = c(114.09, 9.30), quantity = c(14, 645))
 ```
 

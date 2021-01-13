@@ -5,12 +5,14 @@ date: '2021-01-12'
 slug: who-s-missing
 categories:
   - Python
+  - R
 tags:
   - Data Wrangling
   - Python Function
+  - Reticulate
 subtitle: 'Writing a Python utility function to calculate feature wise missing values.'
-description: 'This is mostly a tutorial about how to write utility functions in Python considering finding out missing values as a use case.'
-image: 'https://images.unsplash.com/photo-1586834149001-6268dea43e81?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80'
+description: 'This is mostly a tutorial about how to write utility functions in Python. We will use finding out missing values as a use case. Also I will use RStudio as the IDE to demonstrate Python codes. So I will leverage Reticulate package to use both Python and R.'
+image: 'https://images.unsplash.com/photo-1545208767-1c4204d57650?ixid=MXwxMjA3fDB8MHxzZWFyY2h8Mjd8fG1pc3Npbmd8ZW58MHx8MHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=60'
 output:
   blogdown::html_page:
       toc: TRUE
@@ -22,36 +24,73 @@ output:
 
 <div id="TOC">
 <ul>
-<li><a href="#data">Data</a></li>
+<li><a href="#motivation">Motivation</a></li>
+<li><a href="#preparation">Preparation</a>
+<ul>
+<li><a href="#tools-and-libraries">Tools and Libraries</a></li>
+</ul></li>
 <li><a href="#python-function">Python Function</a></li>
-<li><a href="#demo">Demo</a></li>
+<li><a href="#demo">Demo</a>
+<ul>
+<li><a href="#data">Data</a></li>
+<li><a href="#application">Application</a></li>
+</ul></li>
+<li><a href="#what-did-we-improve">What Did We Improve?</a></li>
 </ul>
 </div>
 
-<p>Finding out what’s missing in the data is a typical sad story of every data person’s daily life. In data lingo we call them <em>missing data</em>. Though you may not miss that missing data, if not pointed out and handled properly those missing data can come and haunt you in the long run!</p>
-<p>In Python there is simple one line of code that can point out the missing data <code>python data.isnull().sum</code>. But this produces total count of missing values for all feature whether the feature has any missing value or not. Which means, if you work with a dataset that contains bunch of features, this one line of code is going to make your notebook look ugly in no time.</p>
-<p>To overcome that in this tutorial we will see how we can write a simple utility function that will calculate missing values from the features in our dataset and return a data frame with only the features with missing values and their count of missing values.</p>
-<pre class="r"><code>library(reticulate)
-library(tidyverse)</code></pre>
-<div id="data" class="section level2">
-<h2>Data</h2>
-<p>For demonstration, we will use iris dataset and introduce some <em>NA</em> values (missing values in R’s language).</p>
-<pre class="r"><code>data &lt;- iris
-data = data %&gt;% mutate(Sepal.Width = ifelse(Sepal.Length &gt;7, NA, Sepal.Width))
-data = data %&gt;% mutate(Sepal.Length = ifelse(Sepal.Length &gt;7, NA, Sepal.Length))</code></pre>
-<p>In the code we have removed values for Sepal.Width and Sepal.Length features when Sepal.Length value is larger than 7. Which result in 24 rows with missing values.</p>
+<p>Finding out what’s missing in the data is one of those grinding data wrangling tasks of data science. Though they are missing data, if not pointed out and handled properly they can come back and haunt you in the long run!</p>
+<p>While working in a project using Python, I found finding missing data is easy but presenting it nicely in a Notebook can be messy. Hence this is my effort to make missing data exploration a bit easier and more useful.</p>
+<div id="motivation" class="section level2">
+<h2>Motivation</h2>
+<p>In Python we can use this simple one line of code <code>data.isnull().sum</code> to list down missing data in a data set. But the problem lies in how this function produces a whole list containing all the feature names whether they have any missing value or not. Which can look very messy in a Notebook when the data set in question is a large one with lots of features in it.</p>
+<p>To overcome that in this tutorial we will see how we can write a simple utility function that will calculate missing values for only the features with missing observations and store it in a data frame which can later be used to report or visualize.</p>
+</div>
+<div id="preparation" class="section level2">
+<h2>Preparation</h2>
+<div id="tools-and-libraries" class="section level3">
+<h3>Tools and Libraries</h3>
+<p>In this tutorial I will be using RStudio as the IDE. Thus I will use R package <a href="https://rstudio.github.io/reticulate/">Reticulate</a> to run Python codes.</p>
+<p>I will be using a <em>Mini Conda</em> virtual environment, <em>curious-joe</em> in the back-end as the Python environment. To be able to reproduce this tutorial you may want to create your own virtual environment in Conda and use the name of that in the <code>reticulte::use_condaenv()</code> function. To learn detail about creating and managing Conda environment you can visit this <a href="https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html">document</a>.</p>
+<pre class="r"><code># loading libraries
+
+library(reticulate)
+library(dplyr)
+library(kableExtra)
+library(knitr)
+
+# setting up virtual python environment
+reticulate::use_condaenv(&quot;curious-joe&quot;)</code></pre>
+</div>
 </div>
 <div id="python-function" class="section level2">
 <h2>Python Function</h2>
-<pre class="python"><code>import pandas as pd</code></pre>
-<p>Inside the function, we will look for null values using <em>isnull()</em> function from <em>pandas</em> library. We will iterate over the features of the dataset. And create a data frame with the feature names and total missing value count from the features that have missing value. In the end, this created dataset will be returned as return value of the function.</p>
-<pre class="python"><code>
+<p>The function we will see depends on the Python library <em>Pandas</em>, a library commonly used for data wrangling and analysis.</p>
+<p>The function simple enough to understand as you will read through it. But for people brand new to Python programming here is a breakdown of how the functionality flows inside the function:</p>
+<ol style="list-style-type: decimal">
+<li>Creates a list, <em>colNames</em> of string values to store column names,</li>
+<li>Creates a blank data frame <em>df</em> with the values from <em>colNames</em> as column names,</li>
+<li>Runs a for loop to iterate over each column of the input data frame and performs following series of tasks:</li>
+</ol>
+<ul>
+<li>Calculates percentage of missing values in a column and saves the output in an object called <em>p</em>,</li>
+<li>Calculates total count of missing values in a column and saves the output in an object called <em>q</em>,</li>
+<li>Runs a check if <em>p</em>, percent of missing value, is larger than zero and if it is populates the empty data frame <em>df</em> with the column name and its corresponding count and percentage of missing values.</li>
+<li>Sorts the <em>df</em>, the result data frame on descending order,</li>
+</ul>
+<ol start="4" style="list-style-type: decimal">
+<li>Returns <em>df</em>, the data frame with names and missing count of the features with missing values.</li>
+</ol>
+<pre class="python"><code># pyhton library
+import pandas as pd
+
 # @ countMissing
 # Fetches columns from the spefied dataset that contains missing values
 # @param dataFrame Name of the dataframe object
 
 def countMissing(dataFrame):
-    colNames = [&#39;colNames&#39;, &#39;missingValue&#39;, &#39;missingValuePerc&#39;]
+    # colNames = [&#39;colNames&#39;, &#39;missingValue&#39;, &#39;missingValuePerc&#39;]
+    colNames = [&#39;Featuers&#39;, &#39;Missing_Value&#39;, &#39;Percentage_Missing&#39;]
     df = pd.DataFrame(columns = colNames)
     for i in dataFrame.columns:
         p = round((dataFrame[i].isnull().sum()/dataFrame.shape[0]) * 100, 2)
@@ -59,17 +98,33 @@ def countMissing(dataFrame):
         if p &gt; 0:
             df.loc[len(df)] = [i, q, p]
     # creating data frame with the missing value columns and values   
-    df = df.sort_values([&#39;missingValuePerc&#39;], ascending = False).reset_index(drop=True)
+    df = df.sort_values([&#39;Percentage_Missing&#39;], ascending = False).reset_index(drop=True)
     return(df)</code></pre>
 </div>
 <div id="demo" class="section level2">
 <h2>Demo</h2>
-<pre class="python"><code>table = countMissing(r.data)</code></pre>
-<pre class="r"><code>knitr::kable(py$table, caption = &quot;Missing Values&quot;, 
-             col.names = c(&quot;Featuers&quot;, &quot;Missing Value&quot;, &quot;Percentage of Missing Value&quot;)) %&gt;%
-  kableExtra::kable_styling(full_width = F) %&gt;%
-  kableExtra::kable_classic()</code></pre>
-<table class="table lightable-classic" style="width: auto !important; margin-left: auto; margin-right: auto; font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; margin-left: auto; margin-right: auto;">
+<div id="data" class="section level3">
+<h3>Data</h3>
+<p>To demonstrate how the function will work I will use <em>iris</em> data set and introduce some <em>NA</em> values (missing values in R’s language) in the data.</p>
+<pre class="r"><code># preparing data
+data &lt;- iris
+data = data %&gt;% mutate(Sepal.Width = ifelse(Sepal.Length &gt;7, NA, Sepal.Width))
+data = data %&gt;% mutate(Sepal.Length = ifelse(Sepal.Length &gt;7, NA, Sepal.Length))</code></pre>
+<p>In the code we have removed values for Sepal.Width and Sepal.Length features when Sepal.Length value is larger than 7. Which result in 24 rows with missing values.</p>
+</div>
+<div id="application" class="section level3">
+<h3>Application</h3>
+<p>The following code chunk applies <em>countMissing()</em>, the function that we have just created and prints out the output data frame.</p>
+<pre class="python"><code># calculating missing value using countMissing()
+table = countMissing(r.data)
+table</code></pre>
+<pre><code>##        Featuers Missing_Value  Percentage_Missing
+## 0  Sepal.Length            12                 8.0
+## 1   Sepal.Width            12                 8.0</code></pre>
+<p>Let’s use some R markdown packages to make the output look nicer!</p>
+<pre class="r"><code>knitr::kable(py$table, caption = &quot;Missing Values&quot;) %&gt;%
+  kable_classic(full_width = F, html_font = &quot;Cambria&quot;)</code></pre>
+<table class=" lightable-classic" style="font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;">
 <caption>
 <span id="tab:unnamed-chunk-2">Table 1: </span>Missing Values
 </caption>
@@ -79,10 +134,10 @@ def countMissing(dataFrame):
 Featuers
 </th>
 <th style="text-align:left;">
-Missing Value
+Missing_Value
 </th>
 <th style="text-align:right;">
-Percentage of Missing Value
+Percentage_Missing
 </th>
 </tr>
 </thead>
@@ -111,7 +166,11 @@ Sepal.Width
 </tr>
 </tbody>
 </table>
-<p>To show what difference this utility function makes compared to using isnull().sum(), here’s the output using that:</p>
+</div>
+</div>
+<div id="what-did-we-improve" class="section level2">
+<h2>What Did We Improve?</h2>
+<p>If you look inside the <em>countMissing()</em> function you will see that we are using <em>isnull().sum()</em> inside, the same function that we could use to get the missing count. The only reason we created <em>countMissing()</em> was to make sure that the missing count is produced in a more presentable and usable way. Though the difference is more obvious when they are run on wider data set, the following code chunk shows how the outputs from these two approaches differ.</p>
 <pre class="python"><code>r.data.isnull().sum()</code></pre>
 <pre><code>## Sepal.Length    12
 ## Sepal.Width     12
@@ -119,4 +178,69 @@ Sepal.Width
 ## Petal.Width      0
 ## Species          0
 ## dtype: int64</code></pre>
+<center>
+<strong>VS</strong>
+</center>
+<pre class="python"><code>countMissing(r.data)</code></pre>
+<pre><code>##        Featuers Missing_Value  Percentage_Missing
+## 0  Sepal.Length            12                 8.0
+## 1   Sepal.Width            12                 8.0</code></pre>
+<center>
+<strong>Or Even Better</strong>
+</center>
+<pre class="r"><code>knitr::kable(py$table, caption = &quot;Missing Values&quot;) %&gt;%
+  kable_classic(full_width = F, html_font = &quot;Cambria&quot;)</code></pre>
+<table class=" lightable-classic" style="font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:unnamed-chunk-5">Table 2: </span>Missing Values
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+Featuers
+</th>
+<th style="text-align:left;">
+Missing_Value
+</th>
+<th style="text-align:right;">
+Percentage_Missing
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Sepal.Length
+</td>
+<td style="text-align:left;">
+12
+</td>
+<td style="text-align:right;">
+8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Sepal.Width
+</td>
+<td style="text-align:left;">
+12
+</td>
+<td style="text-align:right;">
+8
+</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p>In this tutorial we basically had an introduction to writing functions in Python. We learned how we can write our own little utility functions to solve our unique problems.</p>
+<center>
+***
+</center>
+<center>
+<blockquote>
+<p><strong>Thank you for reading so far!</strong><br />
+If you enjoyed this, please feel free to browse through my blog or you may also follow me on <a href="https://medium.com/@curious-joe">Medium</a> or connect with me on <a href="https://www.linkedin.com/in/arafath-hossain/">Linked in</a>.</p>
+</blockquote>
+</center>
 </div>

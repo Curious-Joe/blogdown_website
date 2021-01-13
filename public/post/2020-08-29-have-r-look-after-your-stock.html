@@ -1,23 +1,4 @@
----
-title: Have R Look After Your Stocks!
-author: Arafath Hossain
-date: '2020-08-29'
-slug: have-r-look-after-your-stock
-categories:
-  - R
-tags:
-  - Automation
-  - Stock Trading
-  - Tutorial
-subtitle: 'Use R to check stock prices for you and notify you.'
-description: 'If you like to dabble in the stock market as a side hustle or just out of sheer curiosity, you may have faced the dilemma of how frequently you should check your stock price. The on and off checking of price can be a real productivity killer. This tutorial will show you how you can do that constant price checking using R and have it send you a message when something interesting happens!'
-image: '/img/stock-trade_02.jpg'
-output:
-  blogdown::html_page:
-      toc: TRUE
----
-
-<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<script src="2020-08-29-have-r-look-after-your-stock_files/header-attrs-2.6/header-attrs.js"></script>
 
 <div id="TOC">
 <ul>
@@ -98,10 +79,10 @@ Sys.setenv(TWILIO_TOKEN = &#39;2c68a2e9f06ac668e105f4c806374929&#39;)</code></pr
 <p>quantmod::getQuote(‘BBY’)</p>
 </blockquote>
 <pre class="r"><code>quantmod::getQuote(&#39;BBY&#39;)</code></pre>
-<pre><code>##              Trade Time     Last     Change   % Change   Open   High    Low
-## BBY 2021-01-13 12:40:05 113.8673 -0.8426971 -0.7346327 114.42 115.07 113.46
+<pre><code>##              Trade Time  Last     Change   % Change   Open   High    Low
+## BBY 2021-01-13 12:36:10 113.9 -0.8099976 -0.7061264 114.42 115.07 113.46
 ##      Volume
-## BBY 1069133</code></pre>
+## BBY 1055356</code></pre>
 <p>The output will show you the time of the call, last price, day’s opening price, highest and lowest price for the day along with other information.</p>
 <p>For our purpose we’ll need to make a repeated call to this function thus we’ll put that <em>getQuote()</em> inside a wrapper function which will repeatedly call this function to get the latest price of our selected stock(s).</p>
 </div>
@@ -204,6 +185,16 @@ stock_price_check = function(tickers, price, quantity, threshold = 4){
 <p>Now let’s assume that we own a mini portfolio of two stocks <strong>Best Buy</strong> (BBY - 14 stocks purchased at $114.09) and <strong>HP Enterprise</strong> (HPE - 645 stocks purchased at $9.30). And we are interested to set up a reminder that will notify us once any of the stocks in the portfolio reaches to 4% profit margin.</p>
 <p><strong>Note</strong> that I have set the function to run only twice. Make sure the comment out the counter increment inside the function.</p>
 <pre class="r"><code>stock_price_check(tickers = c(&quot;BBY&quot;, &quot;HPE&quot;), price = c(114.09, 9.30), quantity = c(14, 645))</code></pre>
+<pre><code>##              Trade Time     Last    Buy Total_PL Total_PL%
+## BBY 2021-01-13 12:36:10 113.9000 114.09   -2.660     -0.17
+## HPE 2021-01-13 12:36:33  12.0792   9.30 1792.584     29.88</code></pre>
+<pre><code>## 4% profit alert!
+## HPE: Profit %: 29.88| Total Profit: 1793</code></pre>
+<pre><code>##              Trade Time    Last    Buy Total_PL Total_PL%
+## BBY 2021-01-13 12:37:06 113.950 114.09   -1.960     -0.12
+## HPE 2021-01-13 12:37:22  12.071   9.30 1787.295     29.80</code></pre>
+<pre><code>## 4% profit alert!
+## HPE: Profit %: 29.8| Total Profit: 1787</code></pre>
 </div>
 </div>
 <div id="setting-up-an-r-job" class="section level2">

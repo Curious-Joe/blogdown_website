@@ -90,6 +90,9 @@ home = ["HTML", "RSS"]
   [[params.friend_link]]
   title = "RBloggers"
   href =  "https://www.r-bloggers.com"
+  [[params.friend_link]]
+  title = "Python-bloggers"
+  href = "https://python-bloggers.com/"
 
   #[[params.bookmark_link]]
   #title =  "Martin Fowler"
