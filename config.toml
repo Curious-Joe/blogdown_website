@@ -20,7 +20,7 @@ home = ["HTML", "RSS"]
   description = "A blog to log my data journey"
   keyword = "R, Python, Docker, Shiny, Statistics, Analysis, Data Cleaning, Programming"
   slogan = "Blog of Arafath Hossain"
-  showtoc = true
+  showtoc = false
 
 
   image_404 = "img/404-bg.jpg"

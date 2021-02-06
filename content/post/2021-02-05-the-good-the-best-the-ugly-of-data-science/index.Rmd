@@ -1,0 +1,89 @@
+---
+title: The Good, the Best, the Ugly of Data Science
+author: Arafath Hossain
+date: '2021-02-05'
+slug: []
+output:
+  blogdown::html_page:
+      toc: true
+categories:
+  - Python
+  - R
+tags:
+  - Data Science
+subtitle: 'What to expect in a Data Scientist role.'
+description: 'Data Science has been one of the most talked-about job positions out there, yet it is one of the most illusory ones among the job seekers; honestly, to some recruiters too! Looking back to my pre-job self and talking to many in the same shoes, I thought I would take a shot at it and try to debunk some myths or maybe validate some!.'
+image: 'https://images.unsplash.com/photo-1578904246279-6958ccad2a32?ixid=MXwxMjA3fDB8MHxzZWFyY2h8MXx8eWluJTIwYW5kJTIweWFuZ3xlbnwwfHwwfA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=60'
+---
+
+As a student, when I was starting to seriously consider Data Science (DS) as a career option, the first thing that came to mind was where I should start or even before that, what I should learn first! Like many others, I too started with an online course from John Hopkins University. The course introduced me to R for the first time. Then I started taking analytics courses offered at my university. Eventually, my learning path consists of in-person, and online university courses, and a whole bunch of personal projects. Also, I dabbled into Kaggle for a while. Why I didn't do it more, that probably a discussion for another day but in short I found it difficult to get any tangible benefit out of Kaggle with the time I had in my hand. Gradually I grew interest in making predictive models useful to the users. I got introduced to the world of web applications! 
+
+In this article, I will walk you through what I was thinking at different phases of my journey of learning DS and share what I think now about them. 
+
+## Disclaimer
+Before going further, I think it's important to clarify one crucial piece of assumption here. 
+
+In my view very very broadly there are two kinds of data scientist roles out there:
+
+* Research:
+  + Inventing new algorithms and packaging them,
+* Applied:
+  + Data scientist who mostly work on visualization, statistical and predictive modeling,
+  + Data Scientists who focus mostly on deep learning, building AI systems (think Alpha go), and so on.
+  
+These roles are by no means mutually exclusive, meaning one doing one set of works cannot perform the other set. It's mostly based on where they spend most of their time as a data scientist.
+
+In this article, what I will discuss will very closely relate to the first type of applied data scientist roles. Also, like any other opinion piece, these are all  from my personal experience so it shouldn't be considered as **the truth**.
+
+Enough of the disclaimer now let's take a walk with me in my past!
+
+## The Era of Data Science = Coding 
+In the very early days of my DS learning journey, I thought DS is all about learning a programming tool. You learn to program, you become a data scientist! But how true is this?
+
+**Not entirely true.** 
+
+As a data scientist, knowing how to code is a blessing but when it comes to the question of "how much?" then it's up for discussion. If you are hired, as *really* a data scientist not as a software engineer cum data scientist, you would be expected to be an expert in data analysis and insight extractor. In doing so, coding languages such as R/Python are your best friends. So learn to code! **But** when you learn it's imperative that you remember your objective; which is **using the tool to analyze data** not *~~learning the tool, then using it for DS~~*. For example, Python is a general programming language that happens to have very rich ML and DL libraries. If your Python learning journey starts with a hope to learn Python A-Z, then using it to solve DS problems I would say it's not the smartest idea. Rather get a dataset, start exploring and analyzing it using Python. In the process learn whatever you need to learn to **explore the data**, **build the model**, and **explore the model**.
+
+## The Era of Data Science = Research
+When I started taking those university analytics courses, I gradually started seeing the overlaps between quantitative social science research and what we know as data science. I started growing a belief that data science is just a fancy re-branding of research and statistics.
+
+**Almost true.**
+
+As a data scientist, as you work on testing hypotheses you apply your statistical and research knowledge to design the experiments and run the analyses. Understanding statistical concepts will make you stand out from the code junky data scientists. But, one caveat here is that often you will be confined within the scope that your available data. So the scope of experimentation is not as broad as you would expect as a social science researcher. Moreover, once your projects are on predictive modeling, you can't leverage much from your learning from traditional statistical or econometrics courses since they usually don't prepare you for predictive modeling. 
+
+So what to do? Learn statistical concepts as thoroughly as possible but don't lose your focus from the **application, and explanation** parts. For application, when you take any statistics/econometrics course, make sure you do the projects using R/Python. For explanation, think about how to communicate statistical jargon in laymen's terms and connect your causal inference understanding to predictive performance. Here's a topic for you to ponder over that I have seen puzzling people often: "Does lower p-value mean the variable is also predictively powerful?". Think about how you would explain this to someone without much statistical knowledge using your knowledge about statistics.
+
+## The Era of Data Science = Ability to Write Algorithm from Scratch
+
+This phase was quite an interesting one. As I started to dig deeper into data science, I started feeling that I need to learn to write my ML algorithms to work as a data scientist! 
+
+**Not true** unless you are aiming for a research position or a specialized industry with high restriction. 
+
+In the applied data science areas, it's not expected that a data science candidate would know to write his/her ML algorithm package. And honestly, even if you can, unless you have years of expertise in ML, it probably would be a better idea to use already established and validated packages since they would give you a much faster and efficient implementation of the algorithms. If you are really into coding, by all means, write your package for an algorithm but making it a priority would probably not be the best idea.
+
+## Data Science Project = Get the Data --> Providing Predictions
+
+From all the courses I took, I saw the final output of a data science project is a report. We get/collect the data, explore the data, train models, tune the models, validate them, test the models, predict, and then end our project by documenting it. But does a real data science project look like this?
+
+**Not exactly.**
+
+The project starts a long before getting the data. It often starts from understanding the business users' needs. Unlike a Kaggle problem or a class project, a real-life data science problem comes as a business problem. The business users wouldn't know how to translate a business problem into a data science problem. For example, if you are lucky you may have easy discussions where they may tell you that they are trying to understand why some customers don't come back or who they should expect as potential customers. Then it's your job to translate that problem into a testing hypothesis or building a predictive model project. More often the trickiest part though is deciding which data is already available that you can use to solve the problem or if not how to get that data necessary for the solution. And as a surprise often you would find yourself trying to find data definitions of multiple SQL tables, then trying to figure out how to joining them, or calling API and struggling to perse the data, or scraping websites to get the necessary data which, in larger firms with mature data science teams, would be part of a data engineer's job responsibility. In situations like these, your coding skills will come to the rescue! 
+ 
+So how to learn these skills unless you have a course dedicated to a database query or data engineering? Try personal projects where you would need to scrape a website or call an API and parsing to get the data you need.
+
+
+## A Predictive Model Ends with the Prediction
+
+- You may need to automate the data acquisition part,
+- Serve the model to users
+    + To be used by other applications e,g, serving as API
+    + To be used by the end users e.g. web application
+    
+
+## Data Scientist doesn't need Salesmanship
+
+
+
+
+
+
