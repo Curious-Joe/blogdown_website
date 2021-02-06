@@ -8,8 +8,6 @@ output:
   blogdown::html_page:
       toc: true
 categories:
-  - Python
-  - R
 tags:
   - Data Science
 subtitle: 'What to expect in a Data Scientist role.'
