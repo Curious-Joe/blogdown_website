@@ -18,7 +18,7 @@ home = ["HTML", "RSS"]
   header_image = "img/seagull.jpg"
   SEOTitle = "Arafath Hossain | Curious Joe"
   description = "A blog to log my data journey"
-  keyword = "R, Python, Docker, Shiny, Statistics, Analysis, Data Cleaning, Programming"
+  keyword = "R, Python, Notes, Shiny, Statistics, Analysis, Data Cleaning, Programming"
   slogan = "Blog of Arafath Hossain"
   showtoc = false
 

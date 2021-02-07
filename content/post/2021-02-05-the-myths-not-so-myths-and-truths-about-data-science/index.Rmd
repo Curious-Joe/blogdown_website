@@ -8,6 +8,9 @@ output:
   blogdown::html_page:
       toc: true
 categories:
+  - Python
+  - R
+  - Notes
 tags:
   - Data Science
 subtitle: 'What to stay out of and look out for in your Data Science learning journey.'
