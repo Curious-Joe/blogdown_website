@@ -2,13 +2,16 @@
 title: "Yet One More Plot to Show US's Race Inequality!"
 author: Arafath Hossain
 date: '2021-02-13'
-slug: []
-draft: true
+slug: [animated-r-plot-racial-inequality]
+draft: false
 categories:
   - R
 tags:
   - Data Viz
   - TidyTuesday
+output:
+  blogdown::html_page:
+      toc: true
 subtitle: 'A short tutorial that shows the growing difference in student debt among the major three races in the US.'
 description: 'Animated plot is a great way to show a trend. In this tutorial I looked into the students debt data that came from TidyTuesday. Using an animated line graph I will show how student loan has grown disproportionately among the three major three races in the US.'
 image: 'https://images.unsplash.com/photo-1610316881910-0aac60da16b2?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80'
@@ -18,11 +21,25 @@ image: 'https://images.unsplash.com/photo-1610316881910-0aac60da16b2?ixid=MXwxMj
 <script src="{{< blogdown/postref >}}index_files/kePrint/kePrint.js"></script>
 <link href="{{< blogdown/postref >}}index_files/lightable/lightable.css" rel="stylesheet" />
 
+<div id="TOC">
+<ul>
+<li><a href="#background">Background</a></li>
+<li><a href="#data">Data</a></li>
+<li><a href="#making-an-animated-plot-one-plot-at-a-time">Making an Animated Plot <small>One plot at a time</small></a>
+<ul>
+<li><a href="#a-static-line-plot">A static line plot</a></li>
+<li><a href="#a-plot-with-additional-insight">A plot with additional insight</a></li>
+<li><a href="#making-it-visually-appealing">Making it visually appealing</a></li>
+<li><a href="#lets-make-the-plot-move">Let’s make the plot move!</a></li>
+</ul></li>
+<li><a href="#final-visual">Final Visual</a></li>
+</ul>
+</div>
 
 <div id="background" class="section level2">
 <h2>Background</h2>
-<p>This week’s <a href="https://github.com/rfordatascience/tidytuesday/">TidyTuesday</a> was all about wealth inequality in the United States. Since I work for a university, I have seen how students’ success varies among races. Looking back at their socio-economic backgrounds makes it quite obvious that there is a widening wealth gap among different races. Which makes the student debt data an interesting case for me to look at.</p>
-<p>So here’s the outcome of that. An animated graph that will show how America’s races have historically been different in their student debt accumulation and how it’s getting worse increasingly.</p>
+<p>Last week’s <a href="https://github.com/rfordatascience/tidytuesday/">TidyTuesday</a> was all about wealth inequality in the United States. Since I work for a university, I have seen how students’ success varies among races. Looking back at their socio-economic backgrounds makes it quite obvious that wealth, hidden behind their races, plays its role in their success. That makes the student debt data an interesting case for me to look into.</p>
+<p>So here’s the outcome of that: an animated graph that will show you how America’s races have historically been different in their student debt accumulation and how it’s getting worse increasingly.</p>
 </div>
 <div id="data" class="section level2">
 <h2>Data</h2>
@@ -138,7 +155,7 @@ Black
 </tr>
 </tbody>
 </table>
-<p>Great thing about this data is it’s been already cleaned! To know more about the cleaning steps feel free to go to the documentation <a href="https://github.com/rfordatascience/tidytuesday/blob/master/data/2021/2021-02-09/readme.md">here</a>. Here’s a short description of the data:</p>
+<p>One great thing about this data is it’s already cleaned! To know more about the cleaning steps, feel free to go to the documentation <a href="https://github.com/rfordatascience/tidytuesday/blob/master/data/2021/2021-02-09/readme.md">here</a>. Here’s a short description of the data:</p>
 <table>
 <caption>Data Description</caption>
 <thead>
@@ -177,7 +194,7 @@ Black
 <p>I will use <code>gganimate</code> package to plot the plot. Before using <code>gganimate</code> we will first make a plot that we like using <code>ggplot</code>, the mighty data viz package from R. In the following code blocks and subsequent paragraphs I will walk you through step by step on how to do that.</p>
 <div id="a-static-line-plot" class="section level3">
 <h3>A static line plot</h3>
-<p>Let’s start with a very simple line graph that will show yearly trend of student debt in different races. This plot will work as the skeleton on top of which we’ll keep adding new layers and additional bells and whistles to make it nicer and meaningful.</p>
+<p>Let’s start with a very simple line graph that will show the yearly trend of student debt in different races. This plot will work as the skeleton on top of which we’ll keep adding new layers and additional bells and whistles to make it nicer and meaningful.</p>
 <pre class="r"><code>
 student_debt %&gt;%
   ggplot(
@@ -190,7 +207,8 @@ student_debt %&gt;%
 <p>Some immediate improvement points are:</p>
 <ul>
 <li>Adding a title and labeling the axis,</li>
-<li>The default values shown in x and y axis are not very meaningful. Breaking down the x and y axis values might make them clearer.</li>
+<li>Separating lines with distinct colors,</li>
+<li>The default values on the x and y axes are not very meaningful. Breaking down the x and y axes values might make them more meaningful.</li>
 </ul>
 <pre class="r"><code>student_debt %&gt;%
   ggplot(
@@ -205,11 +223,11 @@ student_debt %&gt;%
   labs(title=&quot;Average Family Student Loan&quot;,
          x = NULL, color = NULL, y = &quot;Average Loan Debt&quot;)</code></pre>
 <p><img src="{{< blogdown/postref >}}index_files/figure-html/plot2-1.png" width="672" /></p>
-<p>That already looks quite better!</p>
+<p>Quite an improvement!</p>
 </div>
 <div id="a-plot-with-additional-insight" class="section level3">
 <h3>A plot with additional insight</h3>
-<p>We have an unused but very crucial data available to us: <code>loan_debt_pct</code>, percent of families with student loan debt. We can add that insight in our plot by using the newly added points!</p>
+<p>We have one yet unused but very crucial piece of data available to us - <code>loan_debt_pct</code>: percent of families with student loan debt. We can add that insight to our plot by using the newly added points!</p>
 <pre class="r"><code>
 student_debt %&gt;%
   ggplot(
@@ -231,14 +249,14 @@ student_debt %&gt;%
   labs(title=&quot;Average Family Student Loan&quot;,
          color = NULL,
          x = NULL, y = &quot;Average Loan Debt&quot;,
-         subtitle =&quot;Point sizes represent % of families with loans&quot;)</code></pre>
+         subtitle =&quot;Point sizes represent % of families with student loans&quot;)</code></pre>
 <p><img src="{{< blogdown/postref >}}index_files/figure-html/plot3-1.png" width="672" /></p>
 <p>Now let’s make some more improvements:</p>
 <ul>
-<li>The color of the points on different lines represent the corresponding races. Let’s make that clear by having them same color as the lines,</li>
-<li>The color more representative to the corresponding races e.g. black for Blacks, white for Whites and brown for Hispanics,</li>
-<li>The legend for races are also not aligned with the sequence of the lines on the graph, let’s rearrange the legends too,</li>
-<li>The size legend also needs some reworking. Since it’s tough to measure size of circles just from a view, let’s take those legends out and rather call out actual percents on the plot.</li>
+<li>The color of the points on different lines represents the corresponding race. Let’s make that clear by having the same color as the lines,</li>
+<li>While doing that, let’s also change the colors from auto-generated <code>ggplot</code> colors to our custom colors (e.g. black for Blacks, white for Whites, and brown for Hispanics),</li>
+<li>The sequence of the legends for the race variable is also not aligned with the sequence of the lines on the graph. Let’s rearrange the legends too,</li>
+<li>The size legend also needs some reworking. Since it’s tough to measure the size of circles just from a view, let’s take those legends out and rather call out actual percents on the plot.</li>
 </ul>
 <pre class="r"><code>student_debt %&gt;%
   mutate(race = fct_relevel(race, &quot;Black&quot;, &quot;White&quot;, &quot;Hispanic&quot;)) %&gt;%
@@ -269,17 +287,17 @@ student_debt %&gt;%
   labs(title=&quot;Average Family Student Loan&quot;,
          color = NULL,
          x = NULL, y = &quot;Average Loan Debt&quot;,
-         subtitle =&quot;Point sizes represent % of families with loans&quot;)</code></pre>
+         subtitle =&quot;Point sizes represent % of families with student loans&quot;)</code></pre>
 <p><img src="{{< blogdown/postref >}}index_files/figure-html/plot4-1.png" width="672" /></p>
 </div>
-<div id="making-it-more-visually-appealing" class="section level3">
-<h3>Making it more visually appealing</h3>
-<p>Our chart is almost ready content wise. But visually it can be much better. The colors are not blending well on the default ggplot background. To make it better I modified <code>theme_dark()</code> from ggplot and created a customized these for this plot. Since this tutorial is not about ggplot theme, I’ll not discuss about the theme here. That will be part of another tutorial in the future. But in case you are interested to play with ggplot theme here’s a good <a href="https://rpubs.com/mclaire19/ggplot2-custom-themes">tutorial</a> that I found.</p>
-<p>In the iteration of the plot we’ll make following changes:</p>
+<div id="making-it-visually-appealing" class="section level3">
+<h3>Making it visually appealing</h3>
+<p>Our chart is almost ready; content-wise. But visually it can be much better. The colors are not blending well on the default ggplot background. To make it better I modified <code>theme_dark()</code> from ggplot and created a customized these for this plot. Since this tutorial is not about ggplot theme, I’ll not discuss much on the theme here. That will be part of another tutorial in the future. But in case you are interested to play with ggplot theme here’s a good <a href="https://rpubs.com/mclaire19/ggplot2-custom-themes">tutorial</a> that I recommend.</p>
+<p>In the iteration of the plot we’ll make the following changes:</p>
 <ul>
-<li>Change the default theme to dark theme,</li>
+<li>Change the default theme to a darker theme,</li>
 <li>Adjust line style to match the dark theme,</li>
-<li>To make the percent point texts less cluttered, let’s also make theme appear only for the last three years.</li>
+<li>To make the percent point texts less cluttered, let’s also make them appear only for the last three years.</li>
 </ul>
 <pre class="r"><code>student_debt %&gt;%
   mutate(race = fct_relevel(race, &quot;Black&quot;, &quot;White&quot;, &quot;Hispanic&quot;)) %&gt;%
@@ -317,12 +335,12 @@ student_debt %&gt;%
   labs(title=&quot;Average Family Student Loan&quot;,
          color = NULL,
          x = NULL, y = &quot;Average Loan Debt&quot;,
-         subtitle =&quot;Point sizes represent % of families with loans&quot;)</code></pre>
+         subtitle =&quot;Point sizes represent % of families with student loans&quot;)</code></pre>
 <p><img src="{{< blogdown/postref >}}index_files/figure-html/plot5-1.png" width="672" /></p>
 </div>
 <div id="lets-make-the-plot-move" class="section level3">
 <h3>Let’s make the plot move!</h3>
-<p>I think we are at a good enough state to move on to making the plot animated. Animating the plot is pretty easy. We will add ~2 lines of codes to make it.</p>
+<p>I think we are in a good enough state to move on to making the plot animated. Animating the graph is pretty easy using <code>gganimate</code>. We will add ~2 lines of codes to make it.</p>
 <pre class="r"><code>student_debt %&gt;%
   mutate(race = fct_relevel(race, &quot;Black&quot;, &quot;White&quot;, &quot;Hispanic&quot;)) %&gt;%
   ggplot(
@@ -361,13 +379,14 @@ student_debt %&gt;%
   labs(title=&quot;Average Family Student Loan&quot;,
          color = NULL,
          x = NULL, y = &quot;Average Loan Debt&quot;,
-         subtitle =&quot;Point sizes represent % of families with loans&quot;)</code></pre>
+         subtitle =&quot;Point sizes represent % of families with student loans&quot;)</code></pre>
 <p><img src="{{< blogdown/postref >}}index_files/figure-html/animation1-1.gif" /><!-- --></p>
-<p>In our animation there are two areas that need improvement to make the visual more reader friendly:</p>
+<p>In our animation, two areas need improvements to make the visual more reader-friendly:</p>
 <ul>
 <li>The points and texts are disappearing as soon as the new data point is populated. Let’s make them stay,</li>
+<li>The animation is running and recycling too fast. Let’s slow it a bit and make it take a longer pause after it’s finished one cycle,</li>
 <li>Let’s add a counter on top of the chart that will show the current year as the plot moves,</li>
-<li>And as a final brush up let’s also add some more clarity for the labels and add a source credit.</li>
+<li>And as a final brush up, let’s also add some more clarity for the labels and add a source credit.</li>
 </ul>
 <pre class="r"><code>student_debt %&gt;%
   mutate(race = fct_relevel(race, &quot;Black&quot;, &quot;White&quot;, &quot;Hispanic&quot;)) %&gt;%
@@ -409,13 +428,15 @@ student_debt %&gt;%
        x = NULL, color = NULL,
        y = &quot;Average Loan Debt \n($ normalized to 2016 dollars)&quot;, 
        caption = &quot;Source: Urban Institute, and the US Census,\n2017 | Arafath Hossain&quot;,
-       subtitle =&quot;Point sizes represent % of families with loans \nYear: {frame_along}&quot;) -&gt; plot</code></pre>
+       subtitle =&quot;Point sizes represent % of families with student loans \nYear: {frame_along}&quot;) -&gt; plot</code></pre>
 </div>
 </div>
 <div id="final-visual" class="section level2">
 <h2>Final Visual</h2>
-<p>So here’s our final visual.</p>
+<p>So, after all those updates, here’s our final visual that takes us on a journey to one perpetuating aspect of the racial inequality in the US.</p>
 <pre class="r"><code>plot %&gt;% 
   animate(fps = 8, end_pause = 12, height = 6, width = 10, units = &quot;in&quot;, res = 150)</code></pre>
 <p><img src="{{< blogdown/postref >}}index_files/figure-html/final_plot-1.gif" /><!-- --></p>
+<hr />
+<p>Plot animation can be a nice tool to convey your message when it comes about calling out a specific trend over time. I had fun working on this plot and hope you find it fun and useful too in your projects!</p>
 </div>
