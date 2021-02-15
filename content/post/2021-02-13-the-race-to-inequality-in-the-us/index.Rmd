@@ -1,7 +1,7 @@
 ---
 title: "Yet One More Plot to Show US's Race Inequality!"
 author: Arafath Hossain
-date: '2021-02-13'
+date: '2021-02-15'
 slug: [animated-r-plot-racial-inequality]
 draft: false
 categories:
