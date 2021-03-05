@@ -87,8 +87,8 @@ library(quantmod)
 library(twilio)
 library(dplyr)
 
-Sys.setenv(TWILIO_SID = &#39;ACf43caa6608884e01b935971dffce9d54&#39;)
-Sys.setenv(TWILIO_TOKEN = &#39;2c68a2e9f06ac668e105f4c806374929&#39;)</code></pre>
+Sys.setenv(TWILIO_SID = &#39;&lt;sid&gt;&#39;)
+Sys.setenv(TWILIO_TOKEN = &#39;token&#39;)</code></pre>
 </div>
 </div>
 <div id="fetching-stock-price" class="section level2">
@@ -98,10 +98,11 @@ Sys.setenv(TWILIO_TOKEN = &#39;2c68a2e9f06ac668e105f4c806374929&#39;)</code></pr
 <p>quantmod::getQuote(‘BBY’)</p>
 </blockquote>
 <pre class="r"><code>quantmod::getQuote(&#39;BBY&#39;)</code></pre>
-<pre><code>##              Trade Time     Last     Change   % Change   Open   High    Low
-## BBY 2021-01-13 12:40:05 113.8673 -0.8426971 -0.7346327 114.42 115.07 113.46
-##      Volume
-## BBY 1069133</code></pre>
+<pre><code>## Registered S3 method overwritten by &#39;quantmod&#39;:
+##   method            from
+##   as.zoo.data.frame zoo</code></pre>
+<pre><code>##              Trade Time   Last Change % Change  Open  High   Low  Volume
+## BBY 2021-03-05 16:00:02 102.85   4.61  4.69259 99.61 103.2 97.32 5078411</code></pre>
 <p>The output will show you the time of the call, last price, day’s opening price, highest and lowest price for the day along with other information.</p>
 <p>For our purpose we’ll need to make a repeated call to this function thus we’ll put that <em>getQuote()</em> inside a wrapper function which will repeatedly call this function to get the latest price of our selected stock(s).</p>
 </div>

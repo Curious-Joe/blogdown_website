@@ -63,19 +63,19 @@ We'll use Sys.setenv() function to set these environment variables as follows:
 >Sys.setenv(TWILIO_SID = "TWILIO_SID_NUMBER")  
 >Sys.setenv(TWILIO_TOKEN = "TWILIO_TOKEN_NUMBER")
 
-```{r warning=FALSE, message=FALSE}
+```{r warning=FALSE, message=FALSE, eval=FALSE}
 # LIBRARIES ----
 library(quantmod)
 library(twilio)
 library(dplyr)
 
-Sys.setenv(TWILIO_SID = 'ACf43caa6608884e01b935971dffce9d54')
-Sys.setenv(TWILIO_TOKEN = '2c68a2e9f06ac668e105f4c806374929')
+Sys.setenv(TWILIO_SID = '<sid>')
+Sys.setenv(TWILIO_TOKEN = 'token')
 ```
 
 ```{r include=FALSE}
-Sys.setenv(YOUR_VARIFIED_CELL_NO = "+13095309627")
-Sys.setenv(YOUR_TWILIO_CELL_NO = "+17704673483")
+Sys.setenv(YOUR_VARIFIED_CELL_NO = "<your cell no>")
+Sys.setenv(YOUR_TWILIO_CELL_NO = "<twilio cell no>")
 ```
 
 ## Fetching Stock Price
