@@ -1,0 +1,17 @@
+---
+title: ' '
+author: Arafath Hossain
+date: '2021-03-28'
+output: html_document
+---
+
+```{css, echo=FALSE}
+h1, h2, h3 {
+  text-align: center;
+}
+
+```
+
+### Using K Nearest Neighbor to Understand Hollywood Movies
+
+[![](/img/shiny_hollywood_movie.jpg "Shiny App: Hollywood Movies"){width="492"}](https://curiousjoe.shinyapps.io/HollywoodMovies2/)
