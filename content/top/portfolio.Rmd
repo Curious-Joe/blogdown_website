@@ -1,15 +1,18 @@
 ---
-title: ' '
-author: Arafath Hossain
+title: ''
+author: "Arafath Hossain"
 date: '2021-03-28'
 output: html_document
 ---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
 
 ```{css, echo=FALSE}
 h1, h2, h3 {
   text-align: center;
 }
-
 ```
 
 ### Using K Nearest Neighbor to Understand Hollywood Movies
