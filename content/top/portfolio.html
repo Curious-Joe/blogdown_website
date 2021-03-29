@@ -9,11 +9,59 @@ output: html_document
 
 
 <style type="text/css">
-h1, h2, h3 {
+/* center aligning text */
+h1, h2, h3, p {
   text-align: center;
 }
+
+# * {
+#   text-align: center;
+# }
+
+/* styling buttons */
+.button {
+  background-color: white;
+  border: 2px solid black;
+  color: black;
+  padding: 5px 15px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  transition-duration: 0.4s;
+}
+.button:hover {
+  background-color: #c2c1bc; 
+  color: white;
+}
 </style>
-<div id="using-k-nearest-neighbor-to-understand-hollywood-movies" class="section level3">
+<!--- First Row -->
+<div class="row">
+<!--- Hollywood movie app -->
+<div class="col-sm-6">
+<div id="using-k-nearest-neighbor-to-understand-hollywood-movies" class="section level3 well">
 <h3>Using K Nearest Neighbor to Understand Hollywood Movies</h3>
-<p><a href="https://curiousjoe.shinyapps.io/HollywoodMovies2/"><img src="/img/shiny_hollywood_movie.jpg" title="Shiny App: Hollywood Movies" width="492" /></a></p>
+<p>A Shiny app that has been built as an R package using <code>golem</code> framework. The primary goal of this application is to help users:</p>
+<ol style="list-style-type: decimal">
+<li>Interactively explore the data, and</li>
+<li>Use an algorithm: K-Nearest Neighbors (KNN) to cluster the observations for a deeper understanding of both the data and model.</li>
+</ol>
+<p><a href="https://curiousjoe.shinyapps.io/HollywoodMovies2/" class="button">Live App</a>
+<a href="https://github.com/Curious-Joe/HollywoodApp2.0" class="button">Git Code</a></p>
+<p><img src="/img/shiny_hollywood_movie.jpg" title="Shiny App: Hollywood Movies" width="492" /></p>
 </div>
+</div>
+<!--- end hollywood app -->
+<!--- fastEda package -->
+<div class="col-sm-6">
+<div id="fasteda" class="section level2 well">
+<h2>fastEda</h2>
+<p><code>fastEda</code> is an R package intended to make repeated plotting tasks performed during the exploratory data analysis phase easier and faster. Using this package users will be able to quickly create plots for multiple variables.</p>
+<p><a href="https://github.com/Curious-Joe/fastEda" class="button">Git Code</a></p>
+</div>
+</div>
+<!--- end fastEda package -->
+</div>
+<!--- First row ends -->
