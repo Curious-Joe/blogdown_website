@@ -42,8 +42,8 @@ h1, h2, h3, p {
 }
 
 .well {
-  min-height: 250px;
-  max-height: 250px;
+  min-height: 350px;
+  max-height: 350px;
   overflow-y: scroll;
 }
 
