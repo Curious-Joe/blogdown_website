@@ -1,0 +1,578 @@
+---
+title: Text Analysis on Youtube Videos Posted About ‘Bangladesh’
+author: Arafath Hossain
+date: '2021-03-30'
+slug: [nlp-youtube-bangladesh]
+output:
+  blogdown::html_page:
+      toc: true
+categories:
+  - R
+tags:
+  - Text Mining
+  - NLP
+  - Sentiment Analysis
+subtitle: 'What do the Youtube video titles tell us?'
+description: 'This analysis was part of an ongoing exploratory study about the contents related to Bangladesh, a south asian country, in different online social media platforms. In a previous analysis tweets that contained Bangladesh were analyzed to understand the most common areas that people tweeted about Bangladesh and how public sentiments were reflected. In this article a similar study was conducted on the videos shared on Youtube that had Bangladesh in their titles. '
+image: 'https://images.unsplash.com/photo-1540655037529-dec987208707?ixid=MXwxMjA3fDB8MHxzZWFyY2h8Nnx8eW91dHViZXxlbnwwfHwwfA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=60'
+---
+
+<script src="{{< blogdown/postref >}}index_files/header-attrs/header-attrs.js"></script>
+
+<div id="TOC">
+<ul>
+<li><a href="#part-01-background-about-this-project">Part 01: Background about this project</a></li>
+<li><a href="#part-02-data-collection">Part 02: Data collection</a></li>
+<li><a href="#part-03-data-cleaning">Part 03: Data cleaning</a></li>
+<li><a href="#part-04-data-analysis">Part 04: Data analysis</a></li>
+<li><a href="#part-05-ending">Part 05: Ending</a></li>
+</ul>
+</div>
+
+<div id="part-01-background-about-this-project" class="section level2">
+<h2>Part 01: Background about this project</h2>
+<p>This analysis is part of an ongoing exploratory study about the contents related to <a href="https://en.wikipedia.org/wiki/Bangladesh">Bangladesh</a> in different online social media platforms. In the last <a href="https://rpubs.com/arafath/twitter_analysis">article</a> tweets that containing <em>Bangladesh</em> were analyzed to understand the most common areas that people tweeted about Bangladesh and how public sentiments were reflected. In this article a similar study will be conducted on the videos shared on Youtube that have <em>Bangladesh</em> in their titles. To collect the data YouTube’s publicly available API will be used. Along with the video stats, comments posted by viewers will also be fetched and analyzed.</p>
+<p>The analysis is segmented broadly into two phases:</p>
+<ol style="list-style-type: decimal">
+<li>Extracting insights from the overall statistics of the videos and</li>
+<li>Extracting insights from the unstructured data (e.g. comments) by applying different text analytics techniques.</li>
+</ol>
+<p>Some of the key goals of this analysis are to see:</p>
+<ul>
+<li>What kind of videos are posted?</li>
+<li>Is there any trend in the number of video posted with the time when they are posted?</li>
+<li>What kind of videos are mostly liked and disliked?</li>
+<li>Which videos get most traction with their viewers?</li>
+<li>Videos around which topics are mostly posted?</li>
+<li>Do the trend of video posting vary based on different types of videos?</li>
+<li>How do people react or express their sentiment in the comment section?</li>
+<li>Do sentiment change over the time?</li>
+</ul>
+</div>
+<div id="part-02-data-collection" class="section level2">
+<h2>Part 02: Data collection</h2>
+<p>The required data for this analysis has been scraped using public API provided by YouTube. Time line considered is the whole year (2017-2018). Scraping YouTube produced a pool of 585 unique videos which have <em>Bangladesh</em> mentioned in their titles. These videos were posted from total 377 different channels. An easy to follow step by step process of how to connect with YouTube using <strong>tuber</strong> package can be found in this link: <a href="https://www.youtube.com/watch?v=NEh5N3OZCXc" class="uri">https://www.youtube.com/watch?v=NEh5N3OZCXc</a> and the codes used to scrape data for this project can be seen by un-hiding the following code chunk.</p>
+<pre class="r"><code># credentials 
+app_id = &#39;Your_app_id&#39;
+app_secret = &#39;your_app_secret&#39;
+# establishing connecting with YouTube
+yt_oauth(app_id = app_id, app_secret = app_secret)
+
+# ---fetching YouTube videos with &#39;bangladesh&#39; in the title---
+# searching for videos that have &#39;Bangladesh&#39; in the title
+videos_year &lt;- yt_search(&quot;Bangladesh&quot;, published_after = &quot;2017-6-01T00:00:00Z&quot;, published_before = &quot;2018-1-1T00:00:00Z&quot;)
+# fetching video statistics for all videos (2017-2018)
+videostats = lapply(as.character(videos_year$video_id), function(x){
+  get_stats(video_id = x)
+})
+df = ldply(videostats, data.frame)
+
+# merging videos stats with the main file:  videos_year
+colnames(df)[1] = &#39;video_id&#39; # renaming &#39;id&#39; as video_id so that it matches same coluimn in main table
+videos_year = videos_year %&gt;% left_join(df, by = &#39;video_id&#39;)
+
+# correcting data type
+videos_year[,c(&#39;viewCount&#39;, &#39;likeCount&#39;, &#39;dislikeCount&#39;, &#39;favoriteCount&#39;, &#39;commentCount&#39;)]=apply(videos_year[,c(&#39;viewCount&#39;, &#39;likeCount&#39;, &#39;dislikeCount&#39;, &#39;favoriteCount&#39;, &#39;commentCount&#39;)],2,as.numeric)
+# write.csv(videos_year,&#39;youtube_video_raw+stat_2017-2018.csv&#39;, row.names = FALSE)</code></pre>
+</div>
+<div id="part-03-data-cleaning" class="section level2">
+<h2>Part 03: Data cleaning</h2>
+<p>In the last part we have collected video specific statistics and compiled all in a single file named <strong>videos_year</strong>. A look into the file reveals that it contains 589 observations/rows and 21 variables/columns. Or in other words we have 21 different attributes collected for each of the videos. To look at the variables some basic summary codes have been run and the results are shown below:</p>
+<pre class="r"><code>videos_year = read.csv(&#39;../../../source_files/youtube_video_raw+stat_2017-2018.csv&#39;)
+dim(videos_year)</code></pre>
+<pre><code>## [1] 589  21</code></pre>
+<pre class="r"><code>names(videos_year)</code></pre>
+<pre><code>##  [1] &quot;video_id&quot;                  &quot;publishedAt&quot;              
+##  [3] &quot;channelId&quot;                 &quot;title&quot;                    
+##  [5] &quot;description&quot;               &quot;thumbnails.default.url&quot;   
+##  [7] &quot;thumbnails.default.width&quot;  &quot;thumbnails.default.height&quot;
+##  [9] &quot;thumbnails.medium.url&quot;     &quot;thumbnails.medium.width&quot;  
+## [11] &quot;thumbnails.medium.height&quot;  &quot;thumbnails.high.url&quot;      
+## [13] &quot;thumbnails.high.width&quot;     &quot;thumbnails.high.height&quot;   
+## [15] &quot;channelTitle&quot;              &quot;liveBroadcastContent&quot;     
+## [17] &quot;viewCount&quot;                 &quot;likeCount&quot;                
+## [19] &quot;dislikeCount&quot;              &quot;favoriteCount&quot;            
+## [21] &quot;commentCount&quot;</code></pre>
+<p>From the variable names we can see that there are data (e.g. thumbnails related data) that are out of scope of this analysis. We can take a look at the summary statistics of the other variables to have an idea about the necessary data cleaning.</p>
+<pre class="r"><code>str(videos_year[c(&#39;publishedAt&#39;,&#39;channelId&#39;,&#39;title&#39;,&#39;description&#39;,&#39;channelTitle&#39;,
+                  &#39;liveBroadcastContent&#39;,&#39;viewCount&#39;,&#39;likeCount&#39;,&#39;dislikeCount&#39;, &#39;favoriteCount&#39;,&#39;commentCount&#39;)])</code></pre>
+<pre><code>## &#39;data.frame&#39;:    589 obs. of  11 variables:
+##  $ publishedAt         : chr  &quot;2017-07-27T22:21:56.000Z&quot; &quot;2017-10-27T15:37:33.000Z&quot; &quot;2017-11-22T14:59:50.000Z&quot; &quot;2017-07-04T06:18:32.000Z&quot; ...
+##  $ channelId           : chr  &quot;UCNye-wNBqNL5ZzHSJj3l8Bg&quot; &quot;UCXulruMI7BHj3kGyosNa0jA&quot; &quot;UCXulruMI7BHj3kGyosNa0jA&quot; &quot;UCqlc8Q5Rixjp_zTePTI_mRg&quot; ...
+##  $ title               : chr  &quot;&lt;f0&gt;&lt;U+009F&gt;&lt;U+0087&gt;&lt;U+00A7&gt;&lt;f0&gt;&lt;U+009F&gt;&lt;U+0087&gt;&lt;U+00A9&gt; Bangladesh&#39;s Biggest Brothel | 101 East | &lt;U+092C&gt;&lt;U+0&quot;| __truncated__ &quot;HELLO BANGLADESH. DHAKA IS CRAZY.&quot; &quot;HOW EXPENSIVE IS BANGLADESH? &lt;f0&gt;&lt;U+009F&gt;&lt;U+0092&gt;&lt;U+00B0&gt;&lt;f0&gt;&lt;U+009F&gt;&lt;U+0087&gt;&lt;U+00A7&gt;&lt;f0&gt;&lt;U+009F&gt;&lt;U+0087&gt;&lt;U+00A9&gt;&quot; &quot;Bangladesh Biman With  CG For Sefty&quot; ...
+##  $ description         : chr  &quot;The biggest brothel in Bangladesh - and possibly the world. The town of Daulatdia is home to 1500 prostitutes, &quot;| __truncated__ &quot;VLOG #146. Let me know your thoughts in the comments section PATREON: https://www.patreon.com/indigotraveller o&quot;| __truncated__ &quot;INSTAGRAM - https://www.goo.gl/hvrnHZ FACEBOOK - https://www.goo.gl/98tqkZ VLOG #156. Let me know your thoughts&quot;| __truncated__ &quot;&quot; ...
+##  $ channelTitle        : chr  &quot;Al Jazeera English&quot; &quot;Indigo Traveller&quot; &quot;Indigo Traveller&quot; &quot;Bhaishob Media&quot; ...
+##  $ liveBroadcastContent: chr  &quot;none&quot; &quot;none&quot; &quot;none&quot; &quot;none&quot; ...
+##  $ viewCount           : int  10456088 297082 400570 2867726 1098161 745213 901613 586726 17040399 249231 ...
+##  $ likeCount           : int  21569 6862 12307 13686 7964 16885 6824 2551 67524 2696 ...
+##  $ dislikeCount        : int  5862 463 361 1553 732 521 747 560 10818 482 ...
+##  $ favoriteCount       : int  0 0 0 0 0 0 0 0 0 0 ...
+##  $ commentCount        : int  5478 3530 3446 432 342 4243 2024 133 2978 392 ...</code></pre>
+<p>Looking at summary stat of other variabes we can identify these issues:
+1. Variable <em>publishedA</em>’ contains date data in a wrong format. Which needs to be changed into date format for convenience of future analysis.
+2. Variables containing text data ( <em>title</em> and <em>description</em>) need text cleaning since they have HTML codes which don’t have any value in terms of generating meaningful insight
+In the next three code chunks, these two issues will be fixed.</p>
+<pre class="r"><code># converting into data type &#39;date&#39;
+videos_year$publishedAt = as.Date(videos_year$publishedAt)
+str(videos_year$publishedAt)</code></pre>
+<pre><code>##  Date[1:589], format: &quot;2017-07-27&quot; &quot;2017-10-27&quot; &quot;2017-11-22&quot; &quot;2017-07-04&quot; &quot;2017-08-24&quot; ...</code></pre>
+<pre class="r"><code># creating new variables &#39;year&#39; and &#39;month&#39;
+videos_year = videos_year %&gt;% mutate(month = month(publishedAt)) %&gt;% mutate(year = year(publishedAt))</code></pre>
+<p>From above results we can see that data type of variabled named <em>publishedAt</em> has been converted to ‘date’. Two new variables named <em>year</em> and <em>month</em> have been created from the <em>publishedAt</em> variable to use in future analysis. Now we will move on to cleaning the text values in <em>title</em> variable.</p>
+<pre class="r"><code>head(videos_year$title,5)</code></pre>
+<pre><code>## [1] &quot;&lt;f0&gt;&lt;U+009F&gt;&lt;U+0087&gt;&lt;U+00A7&gt;&lt;f0&gt;&lt;U+009F&gt;&lt;U+0087&gt;&lt;U+00A9&gt; Bangladesh&#39;s Biggest Brothel | 101 East | &lt;U+092C&gt;&lt;U+093E&gt;&lt;U+0902&gt;&lt;U+0917&gt;&lt;U+094D&gt;&lt;U+0932&gt;&lt;U+093E&gt;&lt;U+0926&gt;&lt;U+0947&gt;&lt;U+0936&gt; &lt;U+0915&gt;&lt;U+0940&gt; &lt;U+0938&gt;&lt;U+092C&gt;&lt;U+0938&gt;&lt;U+0947&gt; &lt;U+092C&gt;&lt;U+0921&gt;&lt;U+093C&gt;&lt;U+0940&gt; &lt;U+0935&gt;&lt;U+0947&gt;&lt;U+0936&gt;&lt;U+094D&gt;&lt;U+092F&gt;&lt;U+093E&gt;&lt;U+0932&gt;&lt;U+092F&gt;&quot;
+## [2] &quot;HELLO BANGLADESH. DHAKA IS CRAZY.&quot;                                                                                                                                                                                                                                                                                                      
+## [3] &quot;HOW EXPENSIVE IS BANGLADESH? &lt;f0&gt;&lt;U+009F&gt;&lt;U+0092&gt;&lt;U+00B0&gt;&lt;f0&gt;&lt;U+009F&gt;&lt;U+0087&gt;&lt;U+00A7&gt;&lt;f0&gt;&lt;U+009F&gt;&lt;U+0087&gt;&lt;U+00A9&gt;&quot;                                                                                                                                                                                                                      
+## [4] &quot;Bangladesh Biman With  CG For Sefty&quot;                                                                                                                                                                                                                                                                                                    
+## [5] &quot;Bangladesh Beats West Indies all out for 61 runs (Lowest Score ever)&quot;</code></pre>
+<p>The first 10 titles shown above show the uncleaned raw labels or video titles that exist now in the dataset. And the 5 titles shown below are the cleaned titles after cleaning the raw titles using different regular expressions.</p>
+<pre class="r"><code># cleaning video titles
+videos_year$title= gsub(&quot;&lt;.*?&gt;&quot;,&quot;&quot;, videos_year$title) #removing html tags
+videos_year$title= gsub(&quot;[[:punct:]]&quot;, &quot; &quot;, videos_year$title) #removing html tags
+videos_year$title = gsub(&quot;[ |\t]{2,}&quot;, &quot; &quot;, videos_year$title)  # Remove tabs
+videos_year$title = gsub(&quot;^ &quot;, &quot;&quot;, videos_year$title)  # Leading blanks
+videos_year$title = gsub(&quot; $&quot;, &quot;&quot;, videos_year$title)  # Lagging blanks
+videos_year$title = gsub(&quot; +&quot;, &quot; &quot;, videos_year$title) # General spaces 
+videos_year$title = tolower(videos_year$title) # lowering all letters
+head(videos_year$title,5)</code></pre>
+<pre><code>## [1] &quot;bangladesh s biggest brothel 101 east&quot;                             
+## [2] &quot;hello bangladesh dhaka is crazy&quot;                                   
+## [3] &quot;how expensive is bangladesh&quot;                                       
+## [4] &quot;bangladesh biman with cg for sefty&quot;                                
+## [5] &quot;bangladesh beats west indies all out for 61 runs lowest score ever&quot;</code></pre>
+<p>At this stage, before enterign into the data analysis we’ll create three more variables that contain the ratios of likes, dislikes and comments against the total views of respective video. Having this ratios will help us in future to extract insights without bias by considering ratios rather than the absolute numbers.</p>
+<pre class="r"><code># creating like, dislike, comment ratio
+videos_year = videos_year %&gt;%
+  mutate(like_ratio = likeCount/viewCount) %&gt;% 
+  mutate(dislike_ratio = dislikeCount/viewCount) %&gt;%
+  mutate(comment_ratio = commentCount/viewCount) %&gt;% 
+  mutate(ratio_to_total = viewCount/sum(viewCount, na.rm = TRUE))
+
+# names(videos_year)</code></pre>
+</div>
+<div id="part-04-data-analysis" class="section level2">
+<h2>Part 04: Data analysis</h2>
+<p>To start off, we can look at some basic statistics such as monthly video posting frequency, most viewed, liked, disliked and commented videos and so on.</p>
+<pre class="r"><code>#month wise video posting (data = videos_year)
+videos_year %&gt;%
+  group_by(factor(month)) %&gt;%
+  mutate(total = n()) %&gt;%
+  ungroup() %&gt;%
+  ggplot(aes(x = month, y = total)) + 
+  geom_line(color = &quot;#27408b&quot;) + 
+  geom_point(shape=21,fill=&quot;white&quot;,color=&quot;#27408b&quot;,size=3,stroke=1.1) + 
+  scale_x_continuous(breaks = seq(1,12,1), labels = c(&quot;Jan&quot;,&quot;Feb&quot;,&quot;Mar&quot;,&quot;Apr&quot;,&quot;May&quot;,
+                                                      &quot;Jun&quot;,&quot;Jul&quot;,&quot;Aug&quot;,&quot;Sep&quot;,&quot;Oct&quot;,
+                                                      &quot;Nov&quot;,&quot;Dec&quot;)) +
+  labs(x=&quot;Month&quot;,y=&quot;Number of videos&quot;,
+       title=&quot;Month wise frequency of video posting&quot;,
+       subtitle=&quot;subtitle = &#39;Year 2017 to 2018&#39;&quot;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>From above chart we can see that there was a growing trend starting from August which reached at its peak in October and then again gradually fell. Other than August the other two months with unusual spikes are March and June. Now let’s look at the most viewed videos and also see in which month they were posted.</p>
+<pre class="r"><code># most viewed videos
+videos_year %&gt;% arrange(desc(viewCount)) %&gt;% head(20) %&gt;%
+  mutate(title = strtrim(title, 25)) %&gt;%
+  mutate(title = reorder(title,viewCount)) %&gt;% top_n(20) %&gt;% 
+  ggplot(aes(as.factor(title), (viewCount/1000000), fill = factor(month))) + 
+  geom_col()  + 
+  scale_x_discrete() +
+  coord_flip() +
+  ggtitle(label = &#39;Top 20 most viewed videos&#39;) + 
+  xlab(label = &#39;Video title&#39;) + 
+  ylab(label = &#39;Number of views (in millions)&#39;) +
+  labs(fill = &#39;Month&#39;, caption = &#39;* Video titles have been truncated&#39;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>From the abundance of paste and green color in the above plot we can immediately tell that most of the most viewed viewed videos were posted during the month of June and July. In addition to that some other observations can also be made from this plot:</p>
+<ul>
+<li>There is a wide dispersion among the videos in terms of count ofviews. The highest viewed video has a quite a large gap from the second most viewed video. And a similar gap is observed between the other videos too. Which means the ratio variables created earlier during data cleaning and feature engineering stage will come handy in further analysis by helping us overcome the imbalance in the absolute numbers.</li>
+<li>Similar to what we have seen during the analysis of tweets regarding Bangladesh, there are multiple videos related to Cricket in this list of top 20 most viewed videos.</li>
+<li>But unlike the last analysis there are multiple videos, including two out of the top five, about brothel in Bangladesh. To understand the reason a manual inspection of the related videos reveals that all the three videos in the top 20 videos are about a specific brothel situated in a small town called <em>Doulatdia</em> in the southern part of Bangladesh. But why would that brothel be a center of attraction for YouTubes? The answer can be found from a closer look at the top three viewed videos. <a href="https://www.aljazeera.com/">Aljazeera</a>, a middle eastern news channel published a documentary in June, which is the fifth most viewed video on this brothel. The rest of the two videos were posted from another channel with no credible record like Aljazeera.</li>
+</ul>
+<p>So what are the other videos about? We already have got a basic understanding on what the top viewed videos were about. Now to have a deeper understanding about the common discussion areas of all the videos, we will use different key word extraction techniques for this purpose.</p>
+<p>As a first step, let’s transform our text data into a matrix, more precisely a ‘Document Term Matrix’. Where each word in the text corpus is separated and columns are created for each of these words. Then each sentence is plotted as a row and the columns containing words that are in each docs/sentece get a score of 1 and others 0. Which eventually creates a sparse matrix with lots of zeros. In our case the sparsity is really high (very close to 100%) meaning that there are lots of zeros or in other words there is a wide variety in the titles of the videos.</p>
+<pre class="r"><code>videos_year$title = removeWords(as.character(videos_year$title), stopwords(&#39;english&#39;))
+videos_year_title &lt;- enc2utf8(videos_year$title)
+corpus = Corpus(VectorSource(videos_year_title))
+
+dtm = DocumentTermMatrix(corpus)
+dtm</code></pre>
+<pre><code>## &lt;&lt;DocumentTermMatrix (documents: 589, terms: 1552)&gt;&gt;
+## Non-/sparse entries: 3715/910413
+## Sparsity           : 100%
+## Maximal term length: 23
+## Weighting          : term frequency (tf)</code></pre>
+<pre class="r"><code>doc.length = apply(dtm, 1, sum)
+dtm = dtm[doc.length &gt; 0,]
+inspect(dtm[10:11,])</code></pre>
+<pre><code>## &lt;&lt;DocumentTermMatrix (documents: 2, terms: 1552)&gt;&gt;
+## Non-/sparse entries: 13/3091
+## Sparsity           : 100%
+## Maximal term length: 23
+## Weighting          : term frequency (tf)
+## Sample             :
+##     Terms
+## Docs aprilia bangladesh bikes border dhaka eskaton expensive ktm new road
+##   10       1          1     1      0     1       1         1   1   1    1
+##   11       0          1     0      1     0       0         0   0   0    0</code></pre>
+<p>From above we can see a summary of our document term matrix. Which shows sparsity of 100% (which should be very close to 100 not exactly 100). We can take a look at some of the sentences in from the matrix. Above 10th and 11th sentences have been fetched as example. We can see that 10th sentence contains all the words except ‘border’ while 11th sentence contains only two words ‘bangladesh’ and ‘border’ from the columns that were fetched as an example.</p>
+<p>Now let’s take a look at the most frequently used words.</p>
+<pre class="r"><code>freq = colSums(as.matrix(dtm))
+length(freq)</code></pre>
+<pre><code>## [1] 1552</code></pre>
+<pre class="r"><code>ord = order(freq, decreasing = TRUE)
+freq[head(ord, n = 20)]</code></pre>
+<pre><code>##  bangladesh        2017       dhaka       india         top     company 
+##         614         106          45          44          39          39 
+##    skydance       dance    rohingya performance     wedding       match 
+##          38          36          34          32          30          29 
+##       world         new      bangla        army     myanmar        news 
+##          25          23          19          19          18          17 
+##       price       video 
+##          15          14</code></pre>
+<p>Bangladesh and 2017 are the top two most frequent words for obvious reason. The third most frequent word is Dhaka, the capital of Bangladesh. Interestingly we see a similar trend here as we have seen in the our last analysis about tweets, there are quite an interest about the neighboring countries. In this case we see videos that have mentions of India and Myanmar. Also we see <em>rohingya</em> is one of the most frequent words here too. There is a seemingly unusual prevalence of dance related words can be observed among the most frequent words. Looking at the words correlation may give us a better understanding.</p>
+<pre class="r"><code>#library &#39;tibble&#39; provides the rowname_to_columns to name row names column
+df1=as.data.frame(findAssocs(dtm,&#39;rohingya&#39;,.24)) %&gt;% rownames_to_column(&quot;words&quot;)
+df2=as.data.frame(findAssocs(dtm,&#39;dhaka&#39;,.24)) %&gt;% rownames_to_column(&quot;words&quot;)
+df3=as.data.frame(findAssocs(dtm,&#39;dance&#39;,.30)) %&gt;% rownames_to_column(&quot;words&quot;)
+df4=as.data.frame(findAssocs(dtm,&#39;india&#39;,.28)) %&gt;% rownames_to_column(&quot;words&quot;)
+df5=as.data.frame(findAssocs(dtm,&#39;myanmar&#39;,.24)) %&gt;% rownames_to_column(&quot;words&quot;)
+df6=as.data.frame(findAssocs(dtm,&#39;match&#39;,.40)) %&gt;% rownames_to_column(&quot;words&quot;)
+
+#correlation values have been varied intentionally to restrict the number of outputs
+
+df = df1 %&gt;% full_join(df2, by = &#39;words&#39;) %&gt;% full_join(df3, by = &#39;words&#39;) %&gt;% full_join(df4, by = &#39;words&#39;) %&gt;% full_join(df5, by = &#39;words&#39;)  %&gt;% full_join(df6, by = &#39;words&#39;)
+df = gather(df, &quot;key&quot;,&#39;n&#39;,2:7)
+df %&gt;% ggplot(aes(words, n, fill = factor(key))) + geom_col() + coord_flip() + 
+  labs(x = &quot;Counts&quot;, y = &quot;Words&quot;, fill = &quot;Topic&quot;, title = &quot;Topic wise most frequent words&quot;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p>We have used different levels of correlations randing from 0.24 to 0.40 to restrict our correlated words less than 10 for each key word. Now we have a clearer picture of how our most frequent words relate with other words. Myanmar has come into the scenario mostly because of the issue of <a href="https://www.cnn.com/specials/asia/rohingya">Rohingya crisis</a> and discussions related to India were related to border issues and cricket. Dhaka’s, the capital of Bangladesh, correlation with words relatd to area and parks may mean that the videos are mostly about the rcreational areas around Dhaka.</p>
+<p>We can also see that these words: <em>skydance</em>, <em>company</em>, <em>wedding</em>, <em>performance</em> very highly correlate (above 0.90) with <em>dance</em>. Which reveals that the videos are most likely about wedding dance from some group called Skydance. Let’s look at the names of the channels that have posted most numbers of videos which may give us some new insight.</p>
+<pre class="r"><code>videos_year %&gt;% count(channelTitle) %&gt;% arrange(desc(n)) %&gt;%
+  mutate(channelTitle = reorder(channelTitle, n)) %&gt;% head(10) %&gt;%
+  ggplot(aes(channelTitle, n)) + 
+  geom_col()  + 
+  scale_x_discrete() +
+  coord_flip() +
+  ggtitle(label = &#39;Top 10 chennels with most video uploads&#39;) + 
+  xlab(label = &#39;Channel name&#39;) + 
+  ylab(label = &#39;Number of videos&#39;) +
+  labs(fill = &#39;Ratio to the total video posted&#39;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p>As we have assumed before, we can see that the channel named ‘Skydance company’ posted the highest number of videos (more than 30) and their high number of videos on wedding program has pushed the the words ‘dancing’, ‘wedding’, ‘performance’ to the list of most frequent words.</p>
+<p>Among the other top video posters, presence of two news channels (Al Jazeera and Daily Star, a local one) shows that Bangladesh has got quite a good coverage from the news agencies. It would have been nice to see how Bangladesh is represented in these news videos but in this analysis we won’t focus on news. Maybe this can be a future project to work on!
+But before moving further into the text mining area we will take a look into the numbers of likes, dislikes and comments to find answers to some of the questions that we asked at the beginning of our analysis:
+- What are the most liked videos?
+- What are the most disliked videos?
+- And which videos got most traction with the viewers through comments?</p>
+<pre class="r"><code>library(grid)
+library(gridExtra)</code></pre>
+<pre><code>## Warning: package &#39;gridExtra&#39; was built under R version 4.0.3</code></pre>
+<pre class="r"><code>p1=videos_year %&gt;% arrange(desc(likeCount)) %&gt;% head(10) %&gt;%
+    mutate(title = strtrim(title, 25)) %&gt;%
+  mutate(title = reorder(title,likeCount)) %&gt;%
+  ggplot(aes(title, likeCount)) + geom_col()+ xlab(label=&quot;&quot;)+ ggtitle(label = &#39;Top 10 most liked videos&#39;) +  theme(axis.text.x=element_text(angle=45,hjust=1))
+
+p2=videos_year %&gt;% arrange(desc(dislikeCount)) %&gt;% head(10) %&gt;% 
+    mutate(title = strtrim(title, 25)) %&gt;%
+  mutate(title = reorder(title,dislikeCount)) %&gt;%
+  ggplot(aes(title, dislikeCount)) + geom_col()  +  xlab(label = &quot;&quot;)+ ggtitle(label = &#39;Top 10 most disliked videos&#39;) + theme(axis.text.x=element_text(angle=45,hjust=1)) + 
+  labs(caption = &#39;* Video titles have been truncated&#39;)
+  
+grid.arrange(p1,p2, ncol = 2)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p>Interrestingly enough, looking at the lists of 10 most liked and disliked videos we can see some common names! Four out of the ten videos are in the both list of highest liked and disliked videos. Another interesting finding is that the videos with most likes and disliked in the list are made in language other than <em>Bangla</em>, national language of Bangladesh. From that it can be safely assumed that the videos were created by non-Bangladeshi people.</p>
+<p>Let’s dig deeper into the relationship between likes and dislikes. We can look at the correlationship between likes and dislikes from a scatter plot.</p>
+<pre class="r"><code>p1=videos_year %&gt;%
+  ggplot(aes(likeCount,dislikeCount)) +
+  geom_jitter(alpha = 0.4, shape = 1) + 
+  labs(subtitle = &#39;All records&#39;) +  
+  xlab(label = &#39;Count of likes&#39;) + ylab(label = &#39;Count of dislikes&#39;)
+
+quantile(videos_year$likeCount, na.rm = TRUE)</code></pre>
+<pre><code>##      0%     25%     50%     75%    100% 
+##     0.0    43.5   268.0  1241.0 78914.0</code></pre>
+<pre class="r"><code>quantile(videos_year$dislikeCount, na.rm = TRUE)</code></pre>
+<pre><code>##      0%     25%     50%     75%    100% 
+##     0.0     4.0    32.0   136.5 11703.0</code></pre>
+<pre class="r"><code>p2=videos_year %&gt;% filter(likeCount &lt;= 1241 &amp; likeCount &gt;= 44 &amp; dislikeCount &lt;= 137  &amp; dislikeCount &gt;= 4) %&gt;%
+  ggplot(aes(likeCount,dislikeCount)) +
+  geom_jitter(alpha = 0.4, shape = 1) + 
+  labs(subtitle = &#39;Both lowest and highest quantile values removed&#39;) +  
+  xlab(label = &#39;Count of likes&#39;) + ylab(label = &#39;Count of dislikes&#39;)
+
+grid.arrange(p1,p2, ncol = 2, top = &#39;Likes vs Dislikes&#39;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p>The left chart above represents all the videos. From the high density in the bottom left corner, we can clearly see the high degree of skewness in the data. Which means that there is high level of disparity among the videos in terms of the number of likes and dislikes. Which is similar to what we have observed in case of number of views.</p>
+<p>So to overcome this clutter and derive more meaningful insight extreme values from both the lowest and highest extremes (lowest and highest quantile values) were considered only. Looking at the scatter plot in right now we can observe a somewhat linearity can assumed between number of likes and dislikes.Statistically which can be seen from their correlation of 0.64. Which means in 64% of the cases high number of likes co-occur with the high number of dislikes and vice versa.</p>
+<p>Now let’s look at the number of comments.</p>
+<pre class="r"><code>videos_year %&gt;% arrange(desc(commentCount)) %&gt;% head(10) %&gt;%
+    mutate(title = strtrim(title, 25)) %&gt;%
+  mutate(title = reorder(title, commentCount)) %&gt;%
+  ggplot(aes(title, commentCount)) + geom_col()+ ggtitle(label = &#39;Top 10 most commented videos&#39;) +xlab(label=&quot;&quot;)+ coord_flip() + 
+   theme(plot.title = element_text(hjust = -0.45, vjust=2.12)) +
+  labs(caption = &#39;* Video titles have been truncated&#39;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<p>Looking at the most commented videos, as expected we can see some common names from the previous charts on most viewed, liked and disliked videos. But how does the relationship between comments and like or dislike look like? Do people comment more when they like the video or it’s opposite? To get an idea we will create consider ratio of like versus dislike and plot it on top of comment chart.</p>
+<pre class="r"><code>videos_year = videos_year %&gt;% mutate(like_dislike = round(likeCount/dislikeCount),2) 
+videos_year %&gt;% arrange(desc(commentCount)) %&gt;% head(10) %&gt;%
+    mutate(title = strtrim(title, 25)) %&gt;%
+  mutate(title = reorder(title, commentCount)) %&gt;%
+  ggplot(aes(title, commentCount, fill = like_dislike)) + geom_col()+ xlab(label=&quot;&quot;)+ coord_flip() + ggtitle(label = &#39;Top 10 most commented videos with likes/dislike ratio&#39;) + 
+  scale_fill_continuous(&quot;Likes to Dislikes&quot;) + 
+  labs(caption = &#39;* Video titles have been truncated&#39;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<p>We can now immediately see the prevalence of extreme colors from both end (dark or very light blue). Which means that majority of the top most commented videos are either highly liked or extremely disliked (extremely dark or extremely light blue color).</p>
+<p>Let’s now check both likes and dislikes and their relationship with the number of comments. To do that we will plot like and dislikes on a scatter plot and color code count of comments categorized.</p>
+<pre class="r"><code>videos_year %&gt;% filter(dislikeCount &lt;3000 &amp; likeCount &lt;20000) %&gt;%
+  mutate(comment_cat = ifelse(commentCount &lt;= 1000, &#39;&lt; or = 1000&#39;, 
+                              ifelse(commentCount &lt;= 2000, &#39;1000 to 2000&#39;,
+                                     ifelse(commentCount &lt;= 3000, &#39;2000 to 3000&#39;, &#39;above 3000&#39;)))) %&gt;% drop_na() %&gt;%
+  ggplot(aes(likeCount, dislikeCount, color = comment_cat)) + 
+  geom_point(size = 3,alpha = 0.4)  + 
+  ggtitle(label = &#39;Likes vs Dislikes&#39;, subtitle = &#39;Videos with upper extreme values in likes and dislikes not considered&#39;) + 
+  scale_fill_discrete(name = &#39;Comment count category&#39;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<p>From the abundance of light red color on the above plot, we can immediately see that there are not a lot of videos that could generate more than 1000 comments. Anone take away from the plot is that videos with higher likes compared to dislikes generates most number of comments, above 3,000 (violet clor), while the videos with higher dislikes compared to likes have total comments of no more than 1000. Moreover, videos with both higher likes and dislikes generate moderately high number of comments, 1,000 to 2,000 (light green). Higher correlation between likes count and comment count (0.73) versus the lower correlation between dislike count and comment count (0.58) also reflects the possibility that video with higher likes tend to have higher number of comments too.</p>
+<pre class="r"><code>cor(videos_year$likeCount, videos_year$commentCount, use = &#39;complete&#39;)</code></pre>
+<pre><code>## [1] 0.7320702</code></pre>
+<pre class="r"><code>cor(videos_year$dislikeCount, videos_year$commentCount, use = &#39;complete&#39;)</code></pre>
+<pre><code>## [1] 0.5827611</code></pre>
+<p>At this stage of our analysis we can move onto analyzing the comments a bit further. But due to restriction of the Youtube API on number of records that can be collected, the comments will be collected for only the selective videos. From our initial study on the video titles we have already seen some common areas topics or areas were frequntly presented such as <em>dhaka</em>, <em>india</em>, <em>rohingya</em>, <em>cricket</em> and <em>dance</em>. In the next phase of our analysis we’ll look into these areas except the videos related to <em>dance</em>, since we have already seen that these videos were mostly posted by one channel with insignificant and also didn’t gather much view.</p>
+<p>To fetch comments of these selected topics, first of all all the videos in our list have been classified under these four cateogories: cricket, india, regugee, dhaka and dance. To do that total dataset has been subseted using words those have high correlation with the ‘key words’ which are rohingya, india, dhaka, cricket and dance in this case. In the next phase comments will be collected for the videos under these categoris and sentiment analysis will be conducted to draw insight about general sentiments expressed by the audiences around those topics.</p>
+<pre class="r"><code>videos_year=videos_year %&gt;% 
+  mutate(labels = ifelse(grepl(paste(c(&quot;rohingya&quot;,&#39;refugee&#39;,&#39;flee&#39;,&#39;myanmar&#39;), collapse = &#39;|&#39;),title), &#39;rohingya&#39;,
+                         (ifelse(grepl(&quot;dhaka&quot;,title), &#39;dhaka&#39;,
+                                 (ifelse(grepl(&#39;skydance&#39;,title), &#39;dance&#39;,
+                                      (ifelse(grepl(paste(c(&quot;india&quot;,&#39;border&#39;,&#39;kolkata&#39;),collapse = &#39;|&#39;),title), &#39;india&#39;,
+                                              ifelse(grepl(paste(c(&#39;cricket&#39;,&#39;press&#39;,&#39;post&#39;,&#39;conference&#39;), collapse = &quot;|&quot;), title),&#39;cricket&#39;,NA )))))))))
+
+videos_year=videos_year %&gt;% 
+  mutate(labels = ifelse(grepl(paste(df1$words, collapse = &#39;|&#39;),title), &#39;rohingya&#39;,
+                         (ifelse(grepl(paste(df2$words, collapse = &#39;|&#39;),title), &#39;dhaka&#39;,
+                                 (ifelse(grepl(&#39;skydance&#39;,title), &#39;dance&#39;,
+                                      (ifelse(grepl(paste(df4$words,collapse = &#39;|&#39;),title), &#39;india&#39;,
+                                              ifelse(grepl(paste(df6$words, collapse = &quot;|&quot;), title),&#39;cricket&#39;,NA )))))))))
+
+summary(factor(videos_year$labels))</code></pre>
+<pre><code>##  cricket    dance    dhaka    india rohingya     NA&#39;s 
+##       23       38       15       22       36      455</code></pre>
+<p>Among our total 589 videos from our initial videos, we could make a rough classification of 56 videos. We will further restrict the number of videos to be considered for analysis by taking only the top 10 commented videos from each topic. So that we can still be within the quota of the Youtube API.</p>
+<pre class="r"><code># function to fetch comments of specific cateogry of video
+fetchComments = function(dataset, keyword){
+  df = dataset %&gt;% filter(labels == keyword) %&gt;% 
+    arrange(desc(commentCount)) %&gt;% head(10)
+  comments = lapply(as.character(df$video_id), function(x){
+    get_comment_threads(c(video_id = x), text_format = &#39;plainText&#39;)
+  })
+  comments = ldply(comments, data.frame) %&gt;% select(videoId, textDisplay, likeCount, publishedAt)
+  comments$textDisplay = as.character(comments$textDisplay)
+  comments$label = keyword
+
+  return(comments)
+  
+}
+
+
+comment_rohingya = fetchComments(videos_year, &#39;rohingya&#39;)
+comment_cricket = fetchComments(videos_year, &#39;cricket&#39;)
+comment_dhaka = fetchComments(videos_year, &#39;dhaka&#39;)
+comment_india = fetchComments(videos_year, &#39;india&#39;)
+
+video_comments = rbind(comment_rohingya,comment_india,comment_dhaka,comment_cricket)
+# write.csv(video_comments,&#39;video_comments_top10videos_four_categories.csv&#39;, row.names = FALSE)</code></pre>
+<pre class="r"><code>video_comments=read.csv(&#39;../../../source_files/video_comments_top10videos_four_categories.csv&#39;)
+summary(video_comments$label)</code></pre>
+<pre><code>##    Length     Class      Mode 
+##      1990 character character</code></pre>
+<p>We can see that there are total 1,990 comments collected where most comment generating video topics are rohingya, dhaka, cricket and india in descending order. As we did with our previous dataset of <strong>videos_year</strong>, we will follow similar steps to clean the date and text variables.</p>
+<pre class="r"><code>video_comments$publishedAt = as.Date(video_comments$publishedAt) 
+video_comments= video_comments %&gt;% mutate(tidy_date = floor_date(publishedAt, unit = &quot;month&quot;))
+summary(video_comments$tidy_date)</code></pre>
+<pre><code>##         Min.      1st Qu.       Median         Mean      3rd Qu.         Max. 
+## &quot;2017-02-01&quot; &quot;2017-09-01&quot; &quot;2017-11-01&quot; &quot;2017-11-25&quot; &quot;2018-03-01&quot; &quot;2018-07-01&quot;</code></pre>
+<p>In this case in addition to converting the date column, <em>publishedAt</em>, into proper date category, a new column of date has also been creted by converting the date values in <em>publisheAt</em>. The new column <strong>tidy_date</strong> contains date values grouped into 12 groups containing all dates clubbed under their respective month. For example, videos posted on Feb-01, Feb-19 have been clubbed under Feb-01 and so on. From the summary of this new variable above, we can see that we have records from as early as February 2017 and as late as July 2018.</p>
+<pre class="r"><code># cleaning comments
+head(video_comments$textDisplay,5)</code></pre>
+<pre><code>## [1] &quot;Thank god for Aung San Suu Kyi for doing this.  I live in Yangon and I am so fed up with muslims acting like they own the world.  They are cowards who need to stop their terrorist attacks, or else more of this will happen.&quot;
+## [2] &quot;You know west is weak, when even the budhists show more balls dealing with islam.&quot;                                                                                                                                             
+## [3] &quot;Look out people. Evil George soros is using canadian government bob ray to make sure the slaughter continues&quot;                                                                                                                  
+## [4] &quot;Humanity has no religion! Bhutanese cruel king n Indian Govt. sent more then 6 hundred thousand refugees to nepal in during 90s they r still in nepal . \nWelcome to nepal rohingya brothers n sister!!&quot;                       
+## [5] &quot;George Soros is involved somewhere,i can smell his MO.  If you want real news go to UK Column news.(yt)&quot;</code></pre>
+<pre class="r"><code>video_comments$textDisplay &lt;- iconv(video_comments$textDisplay, to = &quot;ASCII&quot;, sub = &quot; &quot;) # convert to ASCII characters to remove any text written using anything other than plain english letter e.g. bengali words
+video_comments$textDisplay= gsub(&quot;&lt;.*?&gt;&quot;,&quot;&quot;, video_comments$textDisplay) #removing html tags
+video_comments$textDisplay= gsub(&quot;[[:punct:]]&quot;, &quot; &quot;, video_comments$textDisplay) #removing html tags
+video_comments$textDisplay = gsub(&quot;[ |\t]{2,}&quot;, &quot; &quot;, video_comments$textDisplay)  # Remove tabs
+video_comments$textDisplay = gsub(&quot;^ &quot;, &quot;&quot;, video_comments$textDisplay)  # Leading blanks
+video_comments$textDisplay = gsub(&quot; $&quot;, &quot;&quot;, video_comments$textDisplay)  # Lagging blanks
+video_comments$textDisplay = gsub(&quot; +&quot;, &quot; &quot;, video_comments$textDisplay) # General spaces 
+video_comments$textDisplay = tolower(video_comments$textDisplay) # lowering all letters
+head(video_comments$textDisplay,5)</code></pre>
+<pre><code>## [1] &quot;thank god for aung san suu kyi for doing this i live in yangon and i am so fed up with muslims acting like they own the world they are cowards who need to stop their terrorist attacks or else more of this will happen&quot;
+## [2] &quot;you know west is weak when even the budhists show more balls dealing with islam&quot;                                                                                                                                         
+## [3] &quot;look out people evil george soros is using canadian government bob ray to make sure the slaughter continues&quot;                                                                                                             
+## [4] &quot;humanity has no religion bhutanese cruel king n indian govt sent more then 6 hundred thousand refugees to nepal in during 90s they r still in nepal \nwelcome to nepal rohingya brothers n sister&quot;                       
+## [5] &quot;george soros is involved somewhere i can smell his mo if you want real news go to uk column news yt&quot;</code></pre>
+<pre class="r"><code># write.csv(video_comments,&#39;cleaned_video_comments_top10videos_four_categories.csv&#39;, row.names = FALSE)</code></pre>
+<p>Now moving onto the text cleaning step for the <em>textDisplay</em> column we have cleaned the html tags, lowered all letters, removed punctuation marks. Above we can see sample of texts before the transformation and after the transformation. The first five sentences in the above list shows the text before cleaning steps applied and last five shows the transforemd text after cleaning. Now we’ll calculate sentiment score for each of the sentences using different lexicon libraries. For the purpose, <em>tidytext</em> package will be used which offers the commonly used lexicon libraries (bing, afinn, nrc).</p>
+<p>Before moving into the analysis of sentiment scores we’ll take a look at the trend of video posting. Naturally we expect to see videos in different topics being posted at different rate over the period of months.</p>
+<pre class="r"><code># calculating labelwise trend of video posting
+video_comments %&gt;%
+  group_by(tidy_date) %&gt;%
+  mutate(total_videos_month = n()) %&gt;%
+  ungroup() %&gt;%
+  count(tidy_date, label, total_videos_month) %&gt;% 
+  mutate(percent_video_label = n/total_videos_month) %&gt;%
+  ggplot(aes(tidy_date, percent_video_label, color = label, group = 1)) +         facet_wrap(~label)+ geom_line(size = 1) +
+  scale_x_date(date_labels=&quot;%b %y&quot;,date_breaks  =&quot;2 month&quot;) +    
+  theme(axis.text.x=element_text(angle=45,hjust=1))+
+  ggtitle(label = &#39;Month wise frequency of comments&#39;) + 
+  xlab(label = &#39;Month&#39;) + 
+  ylab(label = &#39;Percentage&#39;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
+<pre class="r"><code>video_comments %&gt;%
+  group_by(tidy_date) %&gt;%
+  mutate(total_videos_month = n()) %&gt;% # each row of video represent a single comment
+  ungroup() %&gt;%
+  count(tidy_date, label, total_videos_month) %&gt;% 
+  mutate(percent_video_label = n/total_videos_month) %&gt;%
+  ggplot(aes(tidy_date, percent_video_label, color = label)) +         facet_wrap(~label)+ 
+  geom_point(shape = 21, fill = &quot;white&quot;, color = &quot;#27408b&quot;, size = 2, stroke = 1.1)+
+  geom_line(color=&quot;#27408b&quot;) +
+  scale_x_date(date_labels=&quot;%b %y&quot;,date_breaks  =&quot;2 month&quot;) +    
+  theme(axis.text.x=element_text(angle=45,hjust=1))+
+  ggtitle(label = &#39;Month wise frequency of comments&#39;) + 
+  xlab(label = &#39;Month&#39;) + 
+  ylab(label = &#39;Percentage&#39;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-24-2.png" width="672" /></p>
+<pre class="r"><code># video_comments %&gt;% filter(tidy_date == &#39;2017-06-01&#39; &amp; label == &#39;india&#39;) %&gt;% select(videoId) %&gt;% unique()</code></pre>
+<p>One nice thing about the plot above is that, it captures the trend how social media activities spikes and then flattens with the time. For example, the videos posted about <em>rohingya</em> topic had the highest traction on September 2017 around the time when the crisis started. But gradually comments have slowed down since November 2017. On the other hand comments on videos about <em>cricket</em> and <em>india</em> show somewhat resemblance. Till September 2017 both the topics experienced spikes or in other words higher number of comments posted. Later on, the trend has slowed down. We may now look at the trend from the perspective of age of the videos. How did the sentiment of audiences of these videos changed over the life time of the videos? Or does sentiment change as the videos grow old?</p>
+<pre class="r"><code># fetching video poblishing date from the old dataset
+video_comments = video_comments %&gt;% left_join(videos_year[,c(&#39;video_id&#39;,&#39;publishedAt&#39;)], by = c(&#39;videoId&#39; = &#39;video_id&#39;), suffix = c(&#39;_comment&#39;,&#39;_video&#39;)) 
+# creating new variable with the difference between video posting date and comment posting date
+video_comments = video_comments %&gt;% 
+  mutate(post_comm_gap = publishedAt_comment - publishedAt_video)
+
+p1=video_comments %&gt;%
+  group_by(post_comm_gap) %&gt;%
+  mutate(total_videos = n()) %&gt;%
+  ungroup() %&gt;% 
+  ggplot(aes(post_comm_gap, total_videos)) +         
+  facet_wrap(~label)+ geom_jitter() +
+  theme(axis.text.x=element_text(angle=45,hjust=1))+
+  labs(subtitle = &#39;All comments&#39;) + 
+  xlab(label = &#39;Age of comment&#39;) + 
+  ylab(label = &#39;Count&#39;)
+
+p2=video_comments %&gt;%
+  group_by(post_comm_gap) %&gt;%
+  mutate(total_videos = n()) %&gt;%
+  ungroup() %&gt;% 
+  filter(total_videos &lt; 20) %&gt;%
+  ggplot(aes(post_comm_gap, total_videos)) +         
+  facet_wrap(~label)+ geom_jitter() +
+  theme(axis.text.x=element_text(angle=45,hjust=1))+
+  labs(subtitle = &#39;Less than 20 total comments&#39;) + 
+  xlab(label = &#39;Age of comment&#39;) + 
+  ylab(label = &#39;Count&#39;)
+
+library(gridExtra)
+grid.arrange(p1,p2, ncol = 2, top = &#39;Count of comments vs when they are posted&#39;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
+<p>From left plot above, we can see that the highest number of comments are posted right after videos are posted (where age of video is ‘zero’ meaning video posted and comment posted dates are same). But since we can’t really make much sense out of the graphs because of the extremely skewed data on y axis, we can consider only the lower values to check if there is any specific trend. Doing that we ended up with the plot on right. Where y axis with less than 20 values were considered.</p>
+<p>From the right plot above, we can see that on an average number of comments tend to slow down after 350 days from the date video posted but comments on videos about <em>India</em> seemingly can keep this traction going on further. While the videos about <em>Rohingya</em> issue doesn’t have any comments after 300th days. Which largely because that the oldest video considered here about <em>Rohingya</em> was posted on August 2017. Which barely gives a life span of slightly more than 300 days While in other topics there are videos from the very first month of 2007. But from the trend of comments in other topics we can assume that the comments under the existing videos about rohingya crisis may also take a gradual down turn soon!</p>
+<p>Now moving on to the sentiment analysis, we’ll use lexicon based approach. To do that we will look at the comments that viweres left below these videos. We will calculate sentiment score using lexicon library <a href="http://saifmohammad.com/WebPages/NRC-Emotion-Lexicon.htm"><em>NRC</em></a>. To explain briefly what a lexicon is, lexicon libraries are stock of words that are prelabeled with the sentiment that they carry. For example: <em>happy</em> would be labeled as positive sentiment while <em>cry</em> as negative sentiment. In The bing lexicon categorizes words in a binary fashion into positive and negative categories.</p>
+<pre class="r"><code># creating a new column with the words
+video_comments$textDisplay = as.character(video_comments$textDisplay)
+token = video_comments %&gt;% 
+  unnest_tokens(word, textDisplay, token = &#39;words&#39;, drop = FALSE) 
+
+token %&gt;% select(label, tidy_date, word) %&gt;%
+  inner_join(get_sentiments(&#39;nrc&#39;), by = &#39;word&#39;) %&gt;% 
+  group_by(label,tidy_date) %&gt;% 
+  mutate(label_month_total = n()) %&gt;%
+  ungroup() %&gt;%
+  group_by(label,sentiment,tidy_date) %&gt;%
+  mutate(label_month_senti_total = n()) %&gt;%
+  ungroup() %&gt;%
+  mutate(percent_sentiment = label_month_senti_total/label_month_total) %&gt;% select(label, tidy_date, sentiment, percent_sentiment) %&gt;% unique() %&gt;% 
+  ggplot(aes(tidy_date, percent_sentiment, color = factor(sentiment))) + geom_line(size = 1) + facet_wrap(~label) + theme(axis.text.x=element_text(angle=45,hjust=1)) + 
+  labs(title = &#39;Different sentiment trending over the time&#39;, x = &#39;Date&#39;, y = &#39;Percentage&#39;, colour = &quot;Sentiments&quot;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-26-1.png" width="672" /></p>
+<pre class="r"><code># nrc = get_sentiments(&#39;nrc&#39;)
+# summary(factor(nrc$sentiment))</code></pre>
+<p>The plots above shows all the sentiments available in the <em>NRC lexicon</em>, which presents an immediate challenge: too cluttered lines to interprete. To make it legible we can club the negative and positive sentiments and plot separtely. But before we do that, if we look back to the plot and try to interprete the lines, we immediately see that there is a prevalence of positive sentiment. Which is because of the nature of the lexicon library. Majority of the words are classified or labeled as positive words which is reflected in the above plot too.</p>
+<pre class="r"><code>p1 = token %&gt;% select(label, tidy_date, word) %&gt;%
+  inner_join(get_sentiments(&#39;nrc&#39;), by = &#39;word&#39;) %&gt;% 
+  filter(sentiment %in% c(&#39;anger&#39;,&#39;disgust&#39;,&#39;fear&#39;,&#39;sadness&#39;,&#39;negative&#39;)) %&gt;%
+  group_by(label,tidy_date) %&gt;% 
+  mutate(label_month_total = n()) %&gt;%
+  ungroup() %&gt;%
+  group_by(label,sentiment,tidy_date) %&gt;%
+  mutate(label_month_senti_total = n()) %&gt;%
+  ungroup() %&gt;%
+  mutate(percent_sentiment = label_month_senti_total/label_month_total) %&gt;% select(label, tidy_date, sentiment, percent_sentiment) %&gt;% unique() %&gt;% 
+  ggplot(aes(tidy_date, percent_sentiment, color = factor(sentiment))) + geom_line(size = 1) + facet_wrap(~label) + theme(axis.text.x=element_text(angle=45,hjust=1)) + 
+  labs(title = &#39;Negative sentiments trending over the time&#39;, x = &#39;Date&#39;, y = &#39;Percentage&#39;, colour = &quot;Sentiments&quot;) +
+  scale_x_date(date_labels=&quot;%b %y&quot;,date_breaks  =&quot;2 month&quot;) 
+
+p2 = token %&gt;% select(label, tidy_date, word) %&gt;%
+  inner_join(get_sentiments(&#39;nrc&#39;), by = &#39;word&#39;) %&gt;% 
+  filter(!sentiment %in% c(&#39;anger&#39;,&#39;disgust&#39;,&#39;fear&#39;,&#39;sadness&#39;,&#39;negative&#39;)) %&gt;%
+  group_by(label,tidy_date) %&gt;% 
+  mutate(label_month_total = n()) %&gt;%
+  ungroup() %&gt;%
+  group_by(label,sentiment,tidy_date) %&gt;%
+  mutate(label_month_senti_total = n()) %&gt;%
+  ungroup() %&gt;%
+  mutate(percent_sentiment = label_month_senti_total/label_month_total) %&gt;% select(label, tidy_date, sentiment, percent_sentiment) %&gt;% unique() %&gt;% 
+  ggplot(aes(tidy_date, percent_sentiment, color = factor(sentiment))) + geom_line(size = 1) + facet_wrap(~label) + theme(axis.text.x=element_text(angle=45,hjust=1)) + 
+  labs(title = &#39;Positive sentiments trending over the time&#39;, x = &#39;Date&#39;, y = &#39;Percentage&#39;, colour = &quot;Sentiments&quot;)+
+  scale_x_date(date_labels=&quot;%b %y&quot;,date_breaks  =&quot;2 month&quot;) 
+
+grid.arrange(p1,p2, ncol = 2)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-27-1.png" width="960" /></p>
+<p>Looking at the left plot two interesting trends can be spotted:
+* About India there has been a sudden growth of <em>anger</em> during the months of June and July 2018.
+* On the other hand surprisingly negative sentiment about the Rohingya issue is growing on the months of June and July 2018.</p>
+<p>Plot on the right kind of reflects the sentiments expressed on the left plot. Where we see a hightened positivity about Dhaka and Rohingya on April 2018.</p>
+<p>We are at the very end of our analysis. We will wrap it up with network charts, created with the most frequent words (noun and adjectives), on the comments about India and Rohingya in recent times (after June 2018). From these plots we will try to make a sense about the areas where the unusual spike of negative sentiments were expressed.</p>
+<pre class="r"><code>#key words extraction from the advising notes
+ud_model = udpipe_download_model(language = &#39;english&#39;)
+ud_model = udpipe_load_model(ud_model$file_model)
+
+net_plot = function(dataset,label_name,sg) {
+  text = dataset %&gt;% filter(label == label_name)
+  text = text %&gt;% filter(publishedAt_comment &gt; &quot;2018-06-01&quot;)
+  text = udpipe_annotate(ud_model, x = text$textDisplay)
+  text = as.data.frame(text)
+  text$lemma = removeWords(text$lemma, stopwords(&#39;english&#39;)) 
+  text$lemma = removePunctuation(text$lemma) 
+  text = text %&gt;% filter(lemma != &quot;&quot;)
+  stat = cooccurrence(x = subset(text, upos %in% c(&#39;NOUN&#39;,&#39;ADJ&#39;)), term = &#39;lemma&#39;,
+                      group = c(&quot;doc_id&quot;, &quot;paragraph_id&quot;, &quot;sentence_id&quot;), skipgram = sg)
+  wordnetwork &lt;- head(stat,50)
+  wordnetwork &lt;- graph_from_data_frame(wordnetwork)
+  plot = ggraph(wordnetwork, layout = &quot;fr&quot;) +
+    geom_edge_link(aes(width = cooc, edge_alpha = cooc), edge_colour = &#39;red&#39;) +
+    geom_node_text(aes(label = name), col = &quot;darkgreen&quot;, size = 4) +
+    theme_graph(base_family = &quot;Arial Narrow&quot;) +
+    theme(legend.position = &quot;none&quot;) +
+    labs(title = &#39;Cooccurrent Nouns and Adjectives&#39;, 
+         subtitle = label_name)
+  return(plot)
+}
+
+# net_plot(video_comments, &#39;dhaka&#39;,2)
+# net_plot(video_comments, &#39;cricket&#39;,2)
+ 
+p1=net_plot(video_comments, &#39;rohingya&#39;,2)
+p2=net_plot(video_comments, &#39;india&#39;,1)
+
+grid.arrange(p1,p2,ncol = 2, top = &#39;Word networks&#39;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-28-1.png" width="1152" /></p>
+<p>From the word network on left we observe that some most frequent phrases are related to muslim such as muslim criminal, muslim burmese and so on. From which it can be assumed that the negativity related to rohingya issue is mostly about the plight of them which may have been triggered by their muslim majority. On the other hand, most frequent phrases around the topic of India are bangladesh border, bangladesh people and so on. Where aparently no specific indication is present from which we can make any assumption about the sudden increase of anger.</p>
+</div>
+<div id="part-05-ending" class="section level1">
+<h1>Part 05: Ending</h1>
+<p>From our overall analysis, we have seen that videos with high number of views tend to be about issues that evoke some sort of controverysy (e.g. prank video and videos about brothel in top 20 videos). Interestingly videos that generates higher number of likes also generates higher shares of dislikes too (correlation of 0.6). And when we consider comments as a matrix of viewer traction, most commented videos tend to be on the extremes of likes or dislikes. But most liked videos tend to have higher number of comments compared to the videos with higher number of dislikes. Further we have observed that the videos posted were mostly about some specific areas. From which we picked four topics to explore further. The number of comments vary following different trends in each of the topic areas. Where we have seen that videos realted to <em>India</em> had the longest traction or kept generating comments over a longer period of time. But overall videos seem to reach their end of customer traction at around 350 to 400 days from the day when they are first posted. In the end we looked at the sentiment expressed in the comments by the viewers. Overall, we saw uneven distribution of sentiments over the time. But for some reason we have seen a prevalence of <em>anger</em> about the topic India and <em>negativity</em> about the topic Rohingya in comments in recent time. And as a possible source of recent increase in negative sentiment aroun rohingya topic we indentified the plight of rohingya muslims.</p>
+</div>

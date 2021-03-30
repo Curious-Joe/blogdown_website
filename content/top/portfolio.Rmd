@@ -37,6 +37,12 @@ h1, h2, h3, p {
   background-color: #c2c1bc; 
   color: white;
 }
+
+.well {
+  min-height: 250px;
+  max-height: 250px;
+  overflow-y: scroll;
+}
 ```
 
 <!--- First Row -->
@@ -77,6 +83,24 @@ A Shiny app that has been built as an R package using `golem` framework. The pri
 </div>
 <!--- end fastEda package -->
 
+<!-- Text Analytics Youtube -->
+
+<div class="col-sm-6">
+<div class="well">
+
+## Text Analysis on Youtube Videos
+
+This analysis is part of an ongoing exploratory study about how Bangladesh is presented through contents shared on different internet platforms. In the last [article](https://curious-joe.net/post/twitter-topic-modeling-sentiment-analysis/) tweets that containing Bangladesh were analyzed to understand the most common areas that people tweeted about Bangladesh and how public sentiments were reflected. In this article, a similar study will be conducted on the videos shared on Youtube that have Bangladesh in their titles. 
+
+<a href="https://github.com/Curious-Joe/Text_Analytics_Youtube" class="button">Git Code</a>
+
+<a href="https://curious-joe.net/post/2021-03-30-text-analysis-on-youtube-videos-posted-about-bangladesh/" class="button">Blog Post</a>
+
+</div>
+</div>
+<!--- end text analytics youtube -->
+
 </div>
 
 <!--- First row ends -->
+
