@@ -2,7 +2,10 @@
 title: ''
 author: "Arafath Hossain"
 date: '2021-03-28'
-output: html_document
+output: 
+    html_document:
+        theme: 
+            version: 4
 ---
 
 ```{r setup, include=FALSE}
@@ -43,64 +46,64 @@ h1, h2, h3, p {
   max-height: 250px;
   overflow-y: scroll;
 }
+
 ```
 
 <!--- First Row -->
 
-<div class="row">
-
+::: {.row}
 <!--- Hollywood movie app -->
-<div class="col-sm-6">
-<div class="well">
+
+::: {.col-sm-6}
+::: {.well}
 ### Using K Nearest Neighbor to Understand Hollywood Movies
+
+🎫R 🎫Web App 🎫ML 🎫Data Viz
 
 A Shiny app that has been built as an R package using `golem` framework. The primary goal of this application is to help users:
 
-1) Interactively explore the data, and
-2) Use an algorithm: K-Nearest Neighbors (KNN) to cluster the observations for a deeper understanding of both the data and model.
+1)  Interactively explore the data, and
+2)  Use an algorithm: K-Nearest Neighbors (KNN) to cluster the observations for a deeper understanding of both the data and model.
 
-<a href="https://curiousjoe.shinyapps.io/HollywoodMovies2/" class="button">Live App</a>
-<a href="https://github.com/Curious-Joe/HollywoodApp2.0" class="button">Git Code</a>
-
+<a href="https://curiousjoe.shinyapps.io/HollywoodMovies2/" class="button">Live App</a> <a href="https://github.com/Curious-Joe/HollywoodApp2.0" class="button">Git Code</a>
 
 ![](/img/shiny_hollywood_movie.jpg "Shiny App: Hollywood Movies"){width="492"}
+:::
+:::
 
-</div>
-</div>
 <!--- end hollywood app -->
 
 <!--- fastEda package -->
-<div class="col-sm-6">
-<div class="well">
 
-## fastEda
+::: {.col-sm-6}
+::: {.well}
+### fastEda
 
-`fastEda` is an R package intended to make repeated plotting tasks performed during the exploratory data analysis phase easier and faster. Using this package users will be able to quickly create plots for multiple variables.
+🎫R Package
+
+`fastEda` is an R package intended to make visual exploratory data analysis easier and faster. Using this package users will be able to quickly create plots to visualize uni-variate and bi-variate relations.
 
 <a href="https://github.com/Curious-Joe/fastEda" class="button">Git Code</a>
+:::
+:::
 
-</div>
-</div>
 <!--- end fastEda package -->
 
 <!-- Text Analytics Youtube -->
 
-<div class="col-sm-6">
-<div class="well">
+::: {.col-sm-6}
+::: {.well}
+### Text Analysis on Youtube Videos
 
-## Text Analysis on Youtube Videos
+🎫R 🎫NLP
 
-This analysis is part of an ongoing exploratory study about how Bangladesh is presented through contents shared on different internet platforms. In the last [article](https://curious-joe.net/post/twitter-topic-modeling-sentiment-analysis/) tweets that containing Bangladesh were analyzed to understand the most common areas that people tweeted about Bangladesh and how public sentiments were reflected. In this article, a similar study will be conducted on the videos shared on Youtube that have Bangladesh in their titles. 
+This analysis was part of an ongoing exploratory study about how Bangladesh was presented through contents shared on different internet platforms. In a previous [article](https://curious-joe.net/post/twitter-topic-modeling-sentiment-analysis/) tweets that contained 'Bangladesh', a South Asian country, were analyzed to understand the most common areas that people tweeted about Bangladesh and what kind of sentiments were reflected. In this article, a similar analysis was conducted on the videos shared on Youtube that had Bangladesh in their titles.
 
-<a href="https://github.com/Curious-Joe/Text_Analytics_Youtube" class="button">Git Code</a>
+<a href="https://github.com/Curious-Joe/Text_Analytics_Youtube" class="button">Git Code</a> <a href="https://curious-joe.net/post/2021-03-30-text-analysis-on-youtube-videos-posted-about-bangladesh/" class="button">Blog Post</a>
+:::
+:::
 
-<a href="https://curious-joe.net/post/2021-03-30-text-analysis-on-youtube-videos-posted-about-bangladesh/" class="button">Blog Post</a>
-
-</div>
-</div>
 <!--- end text analytics youtube -->
-
-</div>
+:::
 
 <!--- First row ends -->
-
