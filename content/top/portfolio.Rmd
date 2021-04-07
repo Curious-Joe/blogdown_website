@@ -60,7 +60,7 @@ h1, h2, h3, p {
 
 🎫R 🎫Web App 🎫ML 🎫Data Viz
 
-A Shiny app that has been built as an R package using `golem` framework. The primary goal of this application is to help users:
+A Shiny app built as an R package using `golem` framework. The primary goal of this application is to help users:
 
 1)  Interactively explore the data, and
 2)  Use an algorithm: K-Nearest Neighbors (KNN) to cluster the observations for a deeper understanding of both the data and model.
@@ -130,7 +130,7 @@ This `Tableau` dashboard visualizes a [Gallup](https://www.gallup.com/home.aspx)
 ::: {.well}
 ### Will that Admitted Student Actually Enroll?
 
-🎫Python 🎫Predictive Modeling 🎫Data Analysis
+🎫Python 🎫Machine Learning 🎫Data Analysis
 
 This project is about analyzing historic data about the admitted students, and building a predictive model to calculate probability of enrollment for the admitted students.
 
