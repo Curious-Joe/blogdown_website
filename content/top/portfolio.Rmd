@@ -101,8 +101,6 @@ This analysis was part of an ongoing exploratory study about how Bangladesh was 
 
 <a href="https://github.com/Curious-Joe/Text_Analytics_Youtube" class="button">Git Code</a> <a href="https://curious-joe.net/post/2021-03-30-text-analysis-on-youtube-videos-posted-about-bangladesh/" class="button">Blog Post</a>
 
-![](/img/worried_americans.png "Shiny App: Hollywood Movies"){width="492"}
-
 :::
 :::
 
@@ -119,6 +117,8 @@ This analysis was part of an ongoing exploratory study about how Bangladesh was 
 This `Tableau` dashboard visualizes a [Gallup](https://www.gallup.com/home.aspx) survey measuring anxiety levels of Americans across all the continental states. This interactive dashboard allows users to have a quick comparative overview of different states in terms of the residents' anxiety level.
 
 <a href="https://public.tableau.com/profile/curious.joe#!/vizhome/HowworriedareAmericans/ComparisonwithSelectedState" class="button">Live Dashboard</a> 
+
+![](/img/worried_americans.png "Shiny App: Hollywood Movies"){width="492"}
 :::
 :::
 
