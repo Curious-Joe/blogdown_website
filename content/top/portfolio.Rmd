@@ -123,6 +123,23 @@ This `Tableau` dashboard visualizes a [Gallup](https://www.gallup.com/home.aspx)
 :::
 
 <!--- end tableau: worried americans -->
+
+<!-- Python: enrollment prediction -->
+
+::: {.col-sm-6}
+::: {.well}
+### Will that Admitted Student Actually Enroll?
+
+🎫Python 🎫Predictive Modeling 🎫Data Analysis
+
+This project is about analyzing historic data about the admitted students, and building a predictive model to calculate probability of enrollment for the admitted students.
+
+<a href="https://github.com/Curious-Joe/Enrollment_Prediction_Model/blob/master/Notebook/Enrollment%20Prediction%20Model.ipynb" class="button">Git Code</a> 
+
+:::
+:::
+
+<!--- end tableau: worried americans -->
 :::
 
 <!--- First row ends -->
