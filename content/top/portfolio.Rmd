@@ -49,11 +49,28 @@ h1, h2, h3, p {
 
 ```
 
+<!--- fastEda package -->
+
+::: {.col-sm-6}
+::: {.well}
+### fastEda
+
+🎫R Package
+
+<a href="https://github.com/Curious-Joe/fastEda" class="button">Git Code</a>
+
+`fastEda` is an R package intended to make visual exploratory data analysis easier and faster. Using this package users will be able to quickly create plots to visualize uni-variate and bi-variate relations.
+:::
+:::
+
+<!--- end fastEda package -->
+
+
 <!--- Hollywood movie app -->
 
 ::: {.col-sm-6}
 ::: {.well}
-### Using K Nearest Neighbor to Understand Hollywood Movies
+### Using Clustering to Understand Hollywood Movies
 
 🎫R 🎫Web App 🎫ML 🎫Data Viz
 
@@ -85,22 +102,6 @@ This project is about analyzing historic data about the admitted students, and b
 :::
 
 <!--- end tableau: worried americans -->
-
-<!--- fastEda package -->
-
-::: {.col-sm-6}
-::: {.well}
-### fastEda
-
-🎫R Package
-
-<a href="https://github.com/Curious-Joe/fastEda" class="button">Git Code</a>
-
-`fastEda` is an R package intended to make visual exploratory data analysis easier and faster. Using this package users will be able to quickly create plots to visualize uni-variate and bi-variate relations.
-:::
-:::
-
-<!--- end fastEda package -->
 
 <!-- Text Analytics Youtube -->
 
