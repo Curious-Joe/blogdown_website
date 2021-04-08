@@ -143,7 +143,7 @@ This `Tableau` dashboard visualizes a [Gallup](https://www.gallup.com/home.aspx)
 
 🎫Tableau 🎫Data Viz
 
-<a href="https://public.tableau.com/profile/curious.joe#!/vizhome/PellGrant/Dashboard1" class="button">Live Dashboard</a>
+<a href="https://public.tableau.com/profile/curious.joe#!/vizhome/Pellv02/Dashboard1" class="button">Live Dashboard</a>
 
 This `Tableau` dashboard visualizes data on [Pell Grant](https://studentaid.gov/understand-aid/types/grants/pell) recipients as shared by the U.S. Department of Education. It shows a comparison among the states in terms of the total number of Pell Grant recipients. It also allows users to see highest Pell recipient receiving institutions, and how their positions change over the years. 
 
