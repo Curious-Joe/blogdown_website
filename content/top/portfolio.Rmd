@@ -49,6 +49,24 @@ h1, h2, h3, p {
 
 ```
 
+<!--- Financial aid app -->
+::: {.col-sm-6}
+::: {.well}
+
+## Financial Aid App
+
+🎫Web App 🎫ML
+
+```{r, eval=TRUE, echo=FALSE}
+blogdown::shortcode("youtube", "Us32_Pu0W_Y")
+```
+
+A web application that runs Extreme Gradient Boosting behind the scene to predict students' enrollment probability, and help users decide on financial aid amount by observing the change in prediction based on different aid amounts.
+:::
+:::
+
+<!--- End: finaid app -->
+
 <!--- fastEda package -->
 
 ::: {.col-sm-6}
