@@ -42,8 +42,8 @@ h1, h2, h3, p {
 }
 
 .well {
-  min-height: 350px;
-  max-height: 350px;
+  min-height: 450px;
+  max-height: 450px;
   overflow-y: scroll;
 }
 
@@ -83,7 +83,6 @@ A web application that runs Extreme Gradient Boosting behind the scene to predic
 
 <!--- end fastEda package -->
 
-
 <!--- Hollywood movie app -->
 
 ::: {.col-sm-6}
@@ -94,12 +93,8 @@ A web application that runs Extreme Gradient Boosting behind the scene to predic
 
 <a href="https://curiousjoe.shinyapps.io/HollywoodMovies2/" class="button">Live App</a> <a href="https://github.com/Curious-Joe/HollywoodApp2.0" class="button">GitHub Repo</a>
 
-A Shiny app built as an R package using `golem` framework. The primary goal of this application is to help users:
+A Shiny app built as an R package using `golem` framework. This interactive application helps users to explore the data, and use K-Nearest Neighbors (KNN) to cluster the movies for a deeper understanding of both the data and model.
 
-1)  Interactively explore the data, and
-2)  Use an algorithm: K-Nearest Neighbors (KNN) to cluster the observations for a deeper understanding of both the data and model.
-
-![](/img/shiny_hollywood_movie.jpg "Shiny App: Hollywood Movies"){width="492"}
 :::
 :::
 
@@ -131,7 +126,7 @@ This project is about analyzing historic data about the admitted students, and b
 
 <a href="https://github.com/Curious-Joe/Text_Analytics_Youtube" class="button">GitHub Repo</a> <a href="https://curious-joe.net/post/2021-03-30-text-analysis-on-youtube-videos-posted-about-bangladesh/" class="button">Blog Post</a>
 
-This analysis was part of an ongoing exploratory study about how Bangladesh, a south Asian country, was presented through contents shared on different internet platforms. In a previous [article](https://curious-joe.net/post/twitter-topic-modeling-sentiment-analysis/) tweets that contained 'Bangladesh' were analyzed to understand the most common areas that people tweeted about Bangladesh and what kind of sentiments were reflected. In this article, a similar analysis was conducted on the videos shared on Youtube that had Bangladesh in their titles.
+In this analysis different text analytics techniques such as topic modeling, sentiment analysis were used to analyze the Youtube video titles that contained 'Bangladesh', a south Asian country. The goal was to understand which areas were highlighted about Bangladesh, and what kind of sentiments were reflected. 
 :::
 :::
 
