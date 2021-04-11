@@ -53,7 +53,7 @@ h1, h2, h3, p {
 ::: {.col-sm-6}
 ::: {.well}
 
-## Financial Aid App
+### Financial Aid App
 
 🎫R 🎫Web App 🎫ML
 
