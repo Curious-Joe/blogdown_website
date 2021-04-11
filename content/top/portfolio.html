@@ -3,19 +3,17 @@ title: ''
 author: "Arafath Hossain"
 date: '2021-03-28'
 output: 
-    html_document:
-        theme: 
-            version: 4
+    html-document
 ---
 
 <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 
 <style type="text/css">
-/* center aligning text */
-h1, h2, h3, p {
-  text-align: center;
-}
+# /* center aligning text */
+# h1, h2, h3, p {
+#   text-align: center;
+# }
 
 # * {
 #   text-align: center;
@@ -41,79 +39,134 @@ h1, h2, h3, p {
 }
 
 .well {
-  min-height: 450px;
+  # min-height: 450px;
   max-height: 450px;
   overflow-y: scroll;
 }
 
+.proj-img {
+    width: 75%;
+    object-fit: cover;
+}
 </style>
 <!--- Financial aid app -->
-<div class="col-sm-6">
-<div id="financial-aid-app" class="section level3 well">
-<h3>Financial Aid App</h3>
-<p>🎫R 🎫Web App 🎫ML</p>
-<p>{{% youtube "Us32_Pu0W_Y" %}}</p>
-<p>A web application that runs Extreme Gradient Boosting behind the scene to predict students’ enrollment probability, and help users decide on financial aid amount by observing the change in prediction based on different aid amounts.</p>
+<div class="well">
+<div class="card">
+<div class="card-body">
+<h4 class="card-title">
+Financial Aid App
+</h4>
+🎫R 🎫Web App 🎫ML<br />
+
+<p class="card-text">
+A web application built using <code>Shiny</code>, an R package, to help financial aid administrators decide non-federal financial aid allocation for students. This app uses <code>Extreme Gradient Boosting</code> behind the scene to predict students’ enrollment probability. This app helps the administrators allocate $200,000 as financial aid among approximately 3,000 students enrolled each year.
+</p>
+</div>
+<p><img class="proj-img" src="/img/Finaid_App_Diagram03.png" alt="Card image cap"></p>
 </div>
 </div>
 <!--- End: finaid app -->
+<!--- enrollment prediction -->
+<div class="well">
+<div class="card">
+<div class="card-body">
+<h4 class="card-title">
+Retention Prediction
+</h4>
+🎫Python 🎫Machine Learning 🎫Data Analysis
+<p class="card-text">
+Predictive model to calculate probability of whether an enrolled student will stay after the end of the Freshman year. There are in total 5 predictive models that run at different cut-off times to update predictions as the students progress through the semester and new information is gathered. Together these models help student advisers target students, and design interventions more specifically.
+</p>
+</div>
+</div>
+</div>
+<!--- End: enrollment prediction -->
 <!--- fastEda package -->
-<div class="col-sm-6">
-<div id="fasteda" class="section level3 well">
-<h3>fastEda</h3>
-<p>🎫R Package</p>
-<p><a href="https://github.com/Curious-Joe/fastEda" class="button">GitHub Repo</a></p>
-<p><code>fastEda</code> is an R package intended to make visual exploratory data analysis easier and faster. Using this package users will be able to quickly create plots to visualize uni-variate and bi-variate relations.</p>
+<div class="well">
+<div class="card">
+<div class="card-body">
+<h4 class="card-title">
+fastEda
+</h4>
+🎫R Package
+<a href="https://github.com/Curious-Joe/fastEda" class="button">GitHub Repo</a>
+<p class="card-text">
+<code>fastEda</code> is an R package to make visual exploratory data analysis easier and faster. Using this package users can quickly create multiple plots to visualize uni-variate and bi-variate relations.
+</p>
+</div>
+<p><img class="proj-img" src="/img/fastEda_demo.gif"/></p>
 </div>
 </div>
-<!--- end fastEda package -->
+<!--- End: fastEda package -->
 <!--- Hollywood movie app -->
-<div class="col-sm-6">
-<div id="using-clustering-to-understand-hollywood-movies" class="section level3 well">
-<h3>Using Clustering to Understand Hollywood Movies</h3>
-<p>🎫R 🎫Web App 🎫ML 🎫Data Viz</p>
-<p><a href="https://curiousjoe.shinyapps.io/HollywoodMovies2/" class="button">Live App</a> <a href="https://github.com/Curious-Joe/HollywoodApp2.0" class="button">GitHub Repo</a></p>
-<p>A Shiny app built as an R package using <code>golem</code> framework. This interactive application helps users to explore the data, and use K-Nearest Neighbors (KNN) to cluster the movies for a deeper understanding of both the data and model.</p>
+<div class="well">
+<div class="card">
+<div class="card-body">
+<h4 class="card-title">
+Using Clustering to Understand Hollywood Movies
+</h4>
+🎫R 🎫Web App 🎫ML 🎫Data Viz
+<a href="https://curiousjoe.shinyapps.io/HollywoodMovies2/" class="button">Live App</a> <a href="https://github.com/Curious-Joe/HollywoodApp2.0" class="button">GitHub Repo</a>
+<p class="card-text">
+A Shiny app built as an R package using <code>golem</code> framework. This interactive application helps users to explore the data, and use K-Nearest Neighbors (KNN) to cluster the movies for a deeper understanding of both the data and model.
+</p>
+</div>
+<iframe seamless frameborder="0" src="https://curiousjoe.shinyapps.io/HollywoodMovies2/" width="100%" height="800" scrolling="yes">
+</iframe>
 </div>
 </div>
-<!--- end hollywood app -->
-<!-- Python: enrollment prediction -->
-<div class="col-sm-6">
-<div id="will-that-admitted-student-actually-enroll" class="section level3 well">
-<h3>Will that Admitted Student Actually Enroll?</h3>
-<p>🎫Python 🎫Machine Learning 🎫Data Analysis</p>
-<p><a href="https://github.com/Curious-Joe/Enrollment_Prediction_Model/blob/master/Notebook/Enrollment%20Prediction%20Model.ipynb" class="button">GitHub Repo</a></p>
-<p>This project is about analyzing historic data about the admitted students, and building a predictive model to calculate probability of enrollment for the admitted students.</p>
+<!--- End: hollywood app -->
+<!--- Text Analytics Youtube -->
+<div class="well">
+<div class="card">
+<div class="card-body">
+<h4 class="card-title">
+Text Analysis on Youtube Videos
+</h4>
+🎫R 🎫NLP
+<a href="https://github.com/Curious-Joe/Text_Analytics_Youtube" class="button">GitHub Repo</a> <a href="https://curious-joe.net/post/2021-03-30-text-analysis-on-youtube-videos-posted-about-bangladesh/" class="button">Blog Post</a>
+<p class="card-text">
+In this analysis different text analytics techniques such as topic modeling, sentiment analysis were used to analyze the Youtube video titles that contained ‘Bangladesh’, a south Asian country. The goal was to understand which areas were highlighted about Bangladesh, and what kind of sentiments were reflected.
+</p>
+</div>
+<p><img class="proj-img" src="/img/nlp_youtube.png"/></p>
 </div>
 </div>
-<!--- end tableau: worried americans -->
-<!-- Text Analytics Youtube -->
-<div class="col-sm-6">
-<div id="text-analysis-on-youtube-videos" class="section level3 well">
-<h3>Text Analysis on Youtube Videos</h3>
-<p>🎫R 🎫NLP</p>
-<p><a href="https://github.com/Curious-Joe/Text_Analytics_Youtube" class="button">GitHub Repo</a> <a href="https://curious-joe.net/post/2021-03-30-text-analysis-on-youtube-videos-posted-about-bangladesh/" class="button">Blog Post</a></p>
-<p>In this analysis different text analytics techniques such as topic modeling, sentiment analysis were used to analyze the Youtube video titles that contained ‘Bangladesh’, a south Asian country. The goal was to understand which areas were highlighted about Bangladesh, and what kind of sentiments were reflected.</p>
-</div>
-</div>
+<!--- End: Text Analytics Youtube -->
 <!--- end text analytics youtube -->
 <!-- tableau: worried americans -->
-<div class="col-sm-6">
-<div id="how-worried-are-americans" class="section level3 well">
-<h3>How Worried are Americans?</h3>
-<p>🎫Tableau 🎫Data Viz</p>
-<p><a href="https://public.tableau.com/profile/curious.joe#!/vizhome/HowworriedareAmericans/ComparisonwithSelectedState" class="button">Live Dashboard</a></p>
-<p>This <code>Tableau</code> dashboard visualizes a <a href="https://www.gallup.com/home.aspx">Gallup</a> survey measuring anxiety levels of Americans across all the continental states. This interactive dashboard allows users to have a quick comparative overview of different states in terms of the residents’ anxiety level.</p>
+<div class="well">
+<div class="card">
+<div class="card-body">
+<h4 class="card-title">
+How Worried are Americans?
+</h4>
+🎫Tableau 🎫Data Viz
+<a href="https://public.tableau.com/profile/curious.joe#!/vizhome/HowworriedareAmericans/ComparisonwithSelectedState" class="button">Live Dashboard</a>
+<p class="card-text">
+This <code>Tableau</code> dashboard visualizes a <a href="https://www.gallup.com/home.aspx">Gallup</a> survey measuring anxiety levels of Americans across all the continental states. This interactive dashboard allows users to have a quick comparative overview of different states in terms of the residents’ anxiety level.
+</p>
+</div>
+<iframe seamless frameborder="0" src="https://public.tableau.com/views/HowworriedareAmericans/ComparisonwithSelectedState?:embed=yes&amp;:display_count=yes&amp;:showVizHome=no" width="100%" height="800" scrolling="yes">
+</iframe>
 </div>
 </div>
 <!--- end tableau: worried americans -->
-<!-- tableau: pell students-->
-<div class="col-sm-6">
-<div id="where-are-the-low-income-students" class="section level3 well">
-<h3>Where are the Low Income Students?</h3>
-<p>🎫Tableau 🎫Data Viz</p>
-<p><a href="https://public.tableau.com/profile/curious.joe#!/vizhome/Pellv02/Dashboard1" class="button">Live Dashboard</a></p>
-<p>This <code>Tableau</code> dashboard visualizes data on <a href="https://studentaid.gov/understand-aid/types/grants/pell">Pell Grant</a> recipients as shared by the U.S. Department of Education. It shows a comparison among the states in terms of the total number of Pell Grant recipients. It also allows users to see highest Pell recipient receiving institutions, and how their positions change over the years.</p>
+<!-- tableau: pell students -->
+<div class="well">
+<div class="card">
+<div class="card-body">
+<h4 class="card-title">
+Where are all the Low Income Students?
+</h4>
+🎫Tableau 🎫Data Viz
+<a href="https://public.tableau.com/profile/curious.joe#!/vizhome/Pellv02/Dashboard1" class="button">Live Dashboard</a>
+<p class="card-text">
+This <code>Tableau</code> dashboard visualizes data on <a href="https://studentaid.gov/understand-aid/types/grants/pell">Pell Grant</a> recipients as shared by the U.S. Department of Education. It shows a comparison among the states in terms of the total number of Pell Grant recipients. It also allows users to see highest Pell recipient receiving institutions, and how their positions change over the years.
+</p>
+</div>
+<iframe seamless frameborder="0" src="https://public.tableau.com/views/Pellv02/Dashboard1?:embed=yes&amp;:display_count=yes&amp;:showVizHome=no" width="100%" height="800" scrolling="yes">
+</iframe>
 </div>
 </div>
-<!-- end tableau: pell students-->
+<!--- end tableau: pell students -->
