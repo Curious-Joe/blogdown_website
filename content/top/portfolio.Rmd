@@ -55,7 +55,7 @@ h1, h2, h3, p {
 
 ## Financial Aid App
 
-🎫Web App 🎫ML
+🎫R 🎫Web App 🎫ML
 
 ```{r, eval=TRUE, echo=FALSE}
 blogdown::shortcode("youtube", "Us32_Pu0W_Y")
